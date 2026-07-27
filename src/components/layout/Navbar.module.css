@@ -2,19 +2,14 @@
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  z-index: var(--z-navbar);
-  padding: 3.5rem 0 2rem 0; /* Generous top padding for editorial layout */
-  background: transparent;
-}
-
-.navbar__inner {
+  width: 100%;
+  height: 80px; /* Reduced height from 96px to 80px */
   display: flex;
   align-items: center;
   justify-content: space-between;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 var(--gutter);
+  padding: 0 80px;
+  background: transparent;
+  z-index: 100;
 }
 
 .navbar__logo {
@@ -22,13 +17,13 @@
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  margin-left: 2rem; /* Keep logo away from absolute edge */
+  font-family: var(--font-heading);
 }
 
+/* Logo N Icon: Refined & compact */
 .navbar__logo-icon {
-  font-family: var(--font-heading);
-  font-size: 2.3rem;
-  font-weight: 300; /* Lighter font weight */
+  font-size: 2.5rem; /* Reduced from 3.4rem */
+  font-weight: 500;
   color: var(--heritage-gold);
   line-height: 1;
 }
@@ -36,42 +31,45 @@
 .navbar__logo-text {
   display: flex;
   flex-direction: column;
-  line-height: 1.15;
+  line-height: 1.05;
 }
 
+/* Subtitle TENUN IKAT: Refined size */
 .navbar__logo-brand {
   font-family: var(--font-accent);
-  font-size: 0.52rem;
-  letter-spacing: 0.35em;
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--heritage-gold);
+  font-weight: 700;
 }
 
+/* Brand Name NURA: Refined size */
 .navbar__logo-name {
-  font-family: var(--font-heading);
-  font-size: 1.2rem;
-  font-weight: 400;
-  color: var(--dark-brown);
+  font-size: 1.38rem;
+  font-weight: 700;
+  color: #1A120C;
   letter-spacing: 0.08em;
 }
 
 .navbar__nav {
   display: flex;
   align-items: center;
-  gap: 3.2rem; /* Increased spacing between links */
+  gap: 44px; /* Reduced gap between links */
 }
 
+/* Navigation Links: Refined compact size (14.5px) */
 .navbar__link {
   font-family: var(--font-accent);
-  font-size: 0.65rem; /* Reduced navigation font size */
-  letter-spacing: 0.25em; /* Increased letter spacing */
-  font-weight: 300; /* Lighter font weight */
+  font-size: 14.5px;
+  letter-spacing: 2px;
+  font-weight: 700;
   text-transform: uppercase;
-  color: var(--dark-brown);
+  color: #1A120C;
   text-decoration: none;
   position: relative;
-  padding: 0.4rem 0;
-  transition: opacity var(--duration-fast) var(--ease-out);
+  padding: 0.3rem 0;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
 .navbar__link::after {
@@ -80,7 +78,7 @@
   bottom: 0;
   left: 0;
   width: 0;
-  height: 1px;
+  height: 2px;
   background-color: var(--heritage-gold);
   transition: width var(--duration-normal) var(--ease-out);
 }
@@ -95,53 +93,58 @@
   color: var(--heritage-gold);
 }
 
+/* 
+   Discover Collection CTA Button: 
+   Slimmer padding (12px 32px) and 13.5px font size.
+*/
 .navbar__cta {
   font-family: var(--font-accent);
-  font-size: 0.65rem;
-  letter-spacing: 0.25em;
-  font-weight: 300;
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 2.2px;
   text-transform: uppercase;
-  padding: 0.7rem 1.6rem;
-  border: 1px solid rgba(200, 162, 90, 0.4); /* Use exact border gold */
+  padding: 12px 32px; /* Slimmer padding */
+  border: 1.5px solid var(--heritage-gold);
   color: var(--heritage-gold);
-  background: transparent;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 2px;
   text-decoration: none;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(44, 32, 24, 0.02);
   transition: all var(--duration-normal) var(--ease-out);
-  margin-right: 2rem;
 }
 
+/* Dark Espresso High-Contrast Hover State */
 .navbar__cta:hover {
-  border-color: var(--heritage-gold);
-  background-color: var(--heritage-gold);
-  color: var(--white);
+  background-color: #1A120C;
+  border-color: #1A120C;
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px rgba(26, 18, 12, 0.2);
+  transform: translateY(-1px);
 }
 
 .navbar__toggle {
   display: none;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-  margin-right: 2rem;
-}
-
-.navbar__toggle-line {
-  width: 22px;
-  height: 1px;
-  background-color: var(--dark-brown);
 }
 
 @media (max-width: 1023px) {
+  .navbar {
+    padding: 0 40px;
+    height: 72px;
+  }
   .navbar__nav,
   .navbar__cta {
     display: none;
   }
   .navbar__toggle {
     display: flex;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
   }
-  .navbar__logo {
-    margin-left: 0;
-  }
-  .navbar__toggle {
-    margin-right: 0;
+  .navbar__toggle-line {
+    width: 22px;
+    height: 1.5px;
+    background-color: var(--dark-brown);
   }
 }

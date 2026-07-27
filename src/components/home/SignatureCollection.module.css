@@ -1,98 +1,63 @@
 .signature {
-  position: relative;
-  height: 85vh;
-  min-height: 500px;
-  display: flex;
+  padding: 120px 0;
+  background-color: var(--dark-brown);
+  color: var(--ivory);
+}
+
+.signature__inner {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 80px;
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 80px;
   align-items: center;
+}
+
+.signature__image-wrapper {
+  position: relative;
+  aspect-ratio: 16/10;
   overflow: hidden;
 }
 
-.signature__bg {
-  position: absolute;
-  inset: 0;
-}
-
-.signature__bg img {
+.signature__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.signature__overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(44, 24, 16, 0.75) 0%,
-    rgba(44, 24, 16, 0.4) 50%,
-    transparent 100%
-  );
-}
-
 .signature__content {
-  position: relative;
-  z-index: 2;
-  max-width: var(--content-width);
-  margin: 0 auto;
-  padding: 0 var(--gutter);
-  width: 100%;
-}
-
-.signature__inner {
-  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .signature__label {
   font-family: var(--font-accent);
-  font-size: var(--text-xs);
-  letter-spacing: 0.3em;
+  font-size: 13px;
+  letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--gold-light);
-  margin-bottom: var(--space-lg);
-  display: block;
+  color: var(--heritage-gold);
 }
 
 .signature__title {
   font-family: var(--font-heading);
-  font-size: var(--text-4xl);
+  font-size: clamp(2.4rem, 2rem + 2.5vw, 4rem);
   font-weight: 300;
   color: var(--ivory);
-  line-height: 1.1;
-  margin-bottom: var(--space-md);
-}
-
-.signature__tagline {
-  font-family: var(--font-heading);
-  font-style: italic;
-  font-size: var(--text-xl);
-  color: var(--gold-light);
-  margin-bottom: var(--space-lg);
+  line-height: 1.2;
 }
 
 .signature__desc {
-  font-size: var(--text-base);
-  color: var(--cream);
-  line-height: 1.8;
-  margin-bottom: var(--space-2xl);
+  font-size: 17px;
+  color: #DDD2C2;
+  line-height: 1.85;
 }
 
-@media (max-width: 767px) {
-  .signature {
-    height: 70vh;
-  }
-
-  .signature__overlay {
-    background: linear-gradient(
-      0deg,
-      rgba(44, 24, 16, 0.8) 0%,
-      rgba(44, 24, 16, 0.3) 100%
-    );
-  }
-
-  .signature__content {
-    display: flex;
-    align-items: flex-end;
-    padding-bottom: var(--space-3xl);
-    height: 100%;
+@media (max-width: 1023px) {
+  .signature__inner {
+    grid-template-columns: 1fr;
+    gap: 40px;
+    padding: 0 40px;
   }
 }

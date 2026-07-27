@@ -1,48 +1,16 @@
-'use client';
-
-import { useRef } from 'react';
-import testimonials from '@/data/testimonials.json';
-import ScrollReveal from '@/components/ui/ScrollReveal';
 import styles from './Testimonials.module.css';
 
 export default function Testimonials() {
-  const sliderRef = useRef(null);
-
-  const renderStars = (count) => {
-    return Array.from({ length: count }, (_, i) => (
-      <span key={i}>★</span>
-    ));
-  };
-
   return (
-    <section className={styles.testimonials} aria-labelledby="testimonials-title">
-      <div className={styles.testimonials__inner}>
-        <ScrollReveal>
-          <div className={styles.testimonials__header}>
-            <span className={styles.testimonials__label}>Testimonials</span>
-            <h2 id="testimonials-title" className={styles.testimonials__title}>
-              What Our Customers Say
-            </h2>
-          </div>
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <div className={styles.testimonials__slider} ref={sliderRef}>
-            {testimonials.map((item) => (
-              <div key={item.id} className={styles.testimonials__card}>
-                <span className={styles['testimonials__quote-icon']}>&ldquo;</span>
-                <p className={styles.testimonials__review}>{item.review}</p>
-                <div className={styles.testimonials__stars}>
-                  {renderStars(item.rating)}
-                </div>
-                <div className={styles.testimonials__author}>
-                  <span className={styles.testimonials__name}>{item.name}</span>
-                  <span className={styles.testimonials__role}>{item.role}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </ScrollReveal>
+    <section className={styles.testi} aria-label="Client Testimonial">
+      <div className={styles.testi__inner}>
+        <span className={styles.testi__label}>Collector Appreciations</span>
+        <blockquote className={styles.testi__quote}>
+          &ldquo;Kualitas tenun dan kerapian jahitannya luar biasa. 
+          Sangat bangga bisa mengenakan busana yang kental akan budaya Indonesia dengan potongan yang modern dan berkelas.&rdquo;
+        </blockquote>
+        <p className={styles.testi__author}>— Anindya Putri</p>
+        <p className={styles.testi__role}>Cultural Arts Enthusiast & Patron</p>
       </div>
     </section>
   );

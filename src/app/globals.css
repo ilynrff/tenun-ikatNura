@@ -1,89 +1,38 @@
 /* ============================================
    TENUN IKAT NURA — Design System
-   Luxury Fashion Heritage Website
+   Luxury Fashion House Editorial Palette
    ============================================ */
 
-/* ---------- Google Fonts ---------- */
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&display=swap');
 
-/* ---------- CSS Custom Properties ---------- */
 :root {
-  /* Colors — Heritage Palette */
+  /* Colors — Luxury Editorial Palette */
   --ivory: #F7F3EC;
   --beige: #F7F3EC;
   --cream: #F0EADF;
-  --heritage-gold: #C8A25A;
-  --gold-light: #D8C4A3;
-  --gold-muted: #D8C4A3;
-  --dark-brown: #2B1F18;
-  --charcoal: #5C4A3E;
-  --warm-brown: #5C4A3E;
-  --deep-maroon: #4A1A0A;
-  --navy-dark: #1A1F2E;
-  --border: #E8DDD0;
+  --heritage-gold: #C59A3D;
+  --gold-light: #D8B979;
+  --gold-muted: #D8B979;
+  --dark-brown: #2C2018;
+  --charcoal: #5C4A3D;
+  --warm-brown: #5C4A3D;
+  --border: #DDD2C2;
   --white: #FFFFFF;
   --black: #0A0A0A;
 
   /* Typography */
-  --font-heading: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-accent: 'Cormorant SC', serif;
 
-  /* Font Sizes — Fluid Typography */
-  --text-xs: clamp(0.7rem, 0.65rem + 0.25vw, 0.8rem);
-  --text-sm: clamp(0.8rem, 0.75rem + 0.25vw, 0.9rem);
-  --text-base: clamp(0.9rem, 0.85rem + 0.25vw, 1rem);
-  --text-md: clamp(1rem, 0.9rem + 0.5vw, 1.15rem);
-  --text-lg: clamp(1.1rem, 1rem + 0.5vw, 1.35rem);
-  --text-xl: clamp(1.25rem, 1.1rem + 0.75vw, 1.6rem);
-  --text-2xl: clamp(1.5rem, 1.2rem + 1.5vw, 2.2rem);
-  --text-3xl: clamp(2rem, 1.5rem + 2.5vw, 3.2rem);
-  --text-4xl: clamp(2.5rem, 1.8rem + 3.5vw, 4.5rem);
-  --text-5xl: clamp(3rem, 2rem + 5vw, 6rem);
-
-  /* Spacing */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-  --space-2xl: 3rem;
-  --space-3xl: 4.5rem;
-  --space-4xl: 6rem;
-  --space-5xl: 8rem;
-  --space-section: clamp(4rem, 3rem + 5vw, 8rem);
-
-  /* Layout */
-  --max-width: 1440px;
-  --content-width: 1200px;
-  --narrow-width: 900px;
-  --gutter: clamp(1.5rem, 1rem + 2vw, 4rem);
-
   /* Transitions */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
   --duration-fast: 200ms;
-  --duration-normal: 400ms;
-  --duration-slow: 700ms;
-  --duration-slower: 1000ms;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 3px rgba(44, 24, 16, 0.06);
-  --shadow-md: 0 4px 12px rgba(44, 24, 16, 0.08);
-  --shadow-lg: 0 8px 30px rgba(44, 24, 16, 0.12);
-
-  /* Border Radius */
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 8px;
-
-  /* Z-index */
-  --z-navbar: 100;
-  --z-overlay: 200;
-  --z-modal: 300;
+  --duration-normal: 450ms;
+  --duration-slow: 900ms;
+  --duration-slower: 1200ms;
 }
 
-/* ---------- CSS Reset ---------- */
 *,
 *::before,
 *::after {
@@ -92,18 +41,14 @@
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
+html, body {
+  background-color: var(--ivory);
+  color: var(--charcoal);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  font-family: var(--font-body);
-  font-size: var(--text-base);
-  color: var(--charcoal);
-  background-color: var(--ivory);
-  line-height: 1.7;
   overflow-x: hidden;
 }
 
@@ -118,10 +63,6 @@ a {
   text-decoration: none;
 }
 
-ul, ol {
-  list-style: none;
-}
-
 button {
   cursor: pointer;
   border: none;
@@ -129,277 +70,16 @@ button {
   font-family: inherit;
 }
 
-/* ---------- Typography ---------- */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 400;
+  font-weight: 300;
   color: var(--dark-brown);
   line-height: 1.2;
-  letter-spacing: 0.01em;
 }
 
-h1 { font-size: var(--text-5xl); }
-h2 { font-size: var(--text-4xl); }
-h3 { font-size: var(--text-3xl); }
-h4 { font-size: var(--text-2xl); }
-h5 { font-size: var(--text-xl); }
-h6 { font-size: var(--text-lg); }
-
-p {
-  margin-bottom: var(--space-md);
-  line-height: 1.8;
-}
-
-.accent-text {
-  font-family: var(--font-accent);
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  font-size: var(--text-sm);
-  color: var(--heritage-gold);
-}
-
-/* ---------- Layout Utilities ---------- */
 .container {
   width: 100%;
-  max-width: var(--content-width);
+  max-width: 1440px;
   margin: 0 auto;
-  padding: 0 var(--gutter);
-}
-
-.container--wide {
-  max-width: var(--max-width);
-}
-
-.container--narrow {
-  max-width: var(--narrow-width);
-}
-
-.section {
-  padding: var(--space-section) 0;
-}
-
-.section--dark {
-  background-color: var(--dark-brown);
-  color: var(--ivory);
-}
-
-.section--dark h1,
-.section--dark h2,
-.section--dark h3,
-.section--dark h4,
-.section--dark h5,
-.section--dark h6 {
-  color: var(--ivory);
-}
-
-.section--beige {
-  background-color: var(--beige);
-}
-
-/* ---------- Buttons ---------- */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-  font-family: var(--font-accent);
-  font-size: var(--text-sm);
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  padding: 1rem 2.5rem;
-  border: 1px solid transparent;
-  transition: all var(--duration-normal) var(--ease-out);
-  position: relative;
-  overflow: hidden;
-}
-
-.btn::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 0;
-  background: var(--heritage-gold);
-  transition: height var(--duration-normal) var(--ease-out);
-  z-index: -1;
-}
-
-.btn--primary {
-  background-color: var(--heritage-gold);
-  color: var(--white);
-  border-color: var(--heritage-gold);
-}
-
-.btn--primary:hover {
-  background-color: var(--gold-light);
-  border-color: var(--gold-light);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn--secondary {
-  background-color: transparent;
-  color: var(--dark-brown);
-  border-color: var(--dark-brown);
-}
-
-.btn--secondary:hover {
-  background-color: var(--dark-brown);
-  color: var(--ivory);
-  transform: translateY(-2px);
-}
-
-.btn--outline-light {
-  background-color: transparent;
-  color: var(--ivory);
-  border-color: var(--ivory);
-}
-
-.btn--outline-light:hover {
-  background-color: var(--ivory);
-  color: var(--dark-brown);
-  transform: translateY(-2px);
-}
-
-.btn--whatsapp {
-  background-color: #25D366;
-  color: var(--white);
-  border-color: #25D366;
-}
-
-.btn--whatsapp:hover {
-  background-color: #20BD5A;
-  border-color: #20BD5A;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn--shopee {
-  background-color: #EE4D2D;
-  color: var(--white);
-  border-color: #EE4D2D;
-}
-
-.btn--shopee:hover {
-  background-color: #D94429;
-  border-color: #D94429;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.btn--sm {
-  padding: 0.65rem 1.5rem;
-  font-size: var(--text-xs);
-}
-
-.btn--lg {
-  padding: 1.2rem 3rem;
-}
-
-/* ---------- Scroll Reveal Animation ---------- */
-.reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity var(--duration-slow) var(--ease-out),
-              transform var(--duration-slow) var(--ease-out);
-}
-
-.reveal.revealed {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.reveal-delay-1 { transition-delay: 100ms; }
-.reveal-delay-2 { transition-delay: 200ms; }
-.reveal-delay-3 { transition-delay: 300ms; }
-.reveal-delay-4 { transition-delay: 400ms; }
-
-/* ---------- Image Styles ---------- */
-.img-cover {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.img-zoom {
-  transition: transform var(--duration-slow) var(--ease-out);
-}
-
-.img-zoom:hover {
-  transform: scale(1.05);
-}
-
-/* ---------- Divider ---------- */
-.divider {
-  width: 60px;
-  height: 1px;
-  background-color: var(--heritage-gold);
-  margin: var(--space-lg) 0;
-}
-
-.divider--center {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-/* ---------- Gold Diamond Ornament ---------- */
-.ornament {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-sm);
-}
-
-.ornament::before,
-.ornament::after {
-  content: '';
-  width: 40px;
-  height: 1px;
-  background-color: var(--heritage-gold);
-}
-
-.ornament-diamond {
-  width: 8px;
-  height: 8px;
-  background-color: var(--heritage-gold);
-  transform: rotate(45deg);
-  flex-shrink: 0;
-}
-
-/* ---------- Responsive Helpers ---------- */
-@media (max-width: 1023px) {
-  .hide-tablet { display: none !important; }
-}
-
-@media (max-width: 767px) {
-  .hide-mobile { display: none !important; }
-}
-
-@media (min-width: 768px) {
-  .show-mobile-only { display: none !important; }
-}
-
-/* ---------- Selection ---------- */
-::selection {
-  background-color: var(--heritage-gold);
-  color: var(--white);
-}
-
-/* ---------- Scrollbar ---------- */
-::-webkit-scrollbar {
-  width: 6px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--ivory);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--gold-muted);
-  border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--heritage-gold);
+  padding: 0 80px;
 }

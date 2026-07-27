@@ -1,6 +1,4 @@
 import Navbar from '@/components/layout/Navbar';
-import Footer from '@/components/layout/Footer';
-import CTABanner from '@/components/layout/CTABanner';
 import Hero from '@/components/home/Hero';
 import BrandIntro from '@/components/home/BrandIntro';
 import OurStoryPreview from '@/components/home/OurStoryPreview';
@@ -10,6 +8,8 @@ import SignatureCollection from '@/components/home/SignatureCollection';
 import LookbookPreview from '@/components/home/LookbookPreview';
 import Testimonials from '@/components/home/Testimonials';
 import InstagramPreview from '@/components/home/InstagramPreview';
+import CTABanner from '@/components/home/CTABanner';
+import Footer from '@/components/layout/Footer';
 
 export default function HomePage() {
   return (
@@ -25,10 +25,7 @@ export default function HomePage() {
         <LookbookPreview />
         <Testimonials />
         <InstagramPreview />
-        <CTABanner
-          title="Interested in Our Collection?"
-          subtitle="Experience Indonesian Heritage Fashion. Let's Talk."
-        />
+        <CTABanner />
       </main>
       <Footer />
     </>
