@@ -1,0 +1,400 @@
+.heroContainer {
+  position: relative;
+  width: 100%;
+}
+
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 850px;
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr; /* 45% Left text column, 55% Right image column */
+  background-color: #F7F3EC; /* Exact Warm Ivory */
+  /* Premium textured linen background */
+  background-image: 
+    radial-gradient(circle at 30% 30%, rgba(250, 247, 242, 0.6) 0%, transparent 80%),
+    linear-gradient(rgba(43, 31, 24, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(43, 31, 24, 0.015) 1px, transparent 1px);
+  background-size: 100% 100%, 4px 4px, 4px 4px;
+  overflow: hidden;
+  padding: 3rem; /* Outer border margin */
+}
+
+/* Thin Editorial Gold Border framing the hero */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 1.5rem;
+  border: 1px solid var(--border);
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* Watermark Traditional Woven Motif behind headline (opacity 2.5%) */
+.hero__motif {
+  position: absolute;
+  top: 15%;
+  left: 6%;
+  width: 300px;
+  height: 300px;
+  background-image: url('/images/hero/woven-pattern.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.025;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Traditional Batik Floral Ornament in the Bottom Left Corner (opacity 4%) */
+.hero__batik {
+  position: absolute;
+  bottom: 3.5rem;
+  left: 2.5rem;
+  width: 350px;
+  height: 350px;
+  background-image: url('/images/hero/batik-ornament.svg');
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Left Content Column (45% layout width) */
+.hero__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 8rem 4% 4rem 15%; /* Generous left padding to breathe */
+  position: relative;
+  z-index: 3;
+}
+
+.hero__brand {
+  margin-bottom: 2.2rem;
+  opacity: 0;
+  animation: heroFadeUp 1s var(--ease-out) 0.2s forwards;
+}
+
+.hero__brand-label {
+  font-family: var(--font-accent);
+  font-size: 0.68rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--heritage-gold);
+  font-weight: 500;
+}
+
+.hero__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.6rem, 2.2rem + 3.5vw, 5.2rem);
+  font-weight: 300; /* Thin strokes */
+  color: var(--dark-brown);
+  line-height: 1.25; /* Elegant line height */
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: heroFadeUp 1s var(--ease-out) 0.5s forwards;
+}
+
+/* Thin gold luxury editorial divider */
+.hero__divider {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  margin-bottom: 2.2rem;
+  opacity: 0;
+  animation: heroFadeUp 1s var(--ease-out) 0.7s forwards;
+}
+
+.hero__divider-line {
+  width: 160px;
+  height: 1px;
+  background-color: var(--gold-light);
+}
+
+.hero__divider-diamond {
+  width: 5px;
+  height: 5px;
+  background-color: var(--heritage-gold);
+  transform: rotate(45deg);
+}
+
+.hero__subtitle {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  color: var(--warm-brown); /* Softer brown text */
+  line-height: 1.9;
+  margin-bottom: 3rem;
+  max-width: 420px; /* Constrains line width to 60-65 chars for premium hierarchy */
+  opacity: 0;
+  animation: heroFadeUp 1s var(--ease-out) 0.9s forwards;
+}
+
+/* Action CTA Buttons */
+.hero__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-lg);
+  opacity: 0;
+  animation: heroFadeUp 1s var(--ease-out) 1.1s forwards;
+}
+
+.hero__btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--heritage-gold); /* Warm muted gold */
+  color: var(--white);
+  border: 1px solid var(--heritage-gold);
+  padding: 1.1rem 3rem; /* Taller with large horizontal padding */
+  font-family: var(--font-accent);
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.hero__btn-primary:hover {
+  background-color: var(--dark-brown);
+  border-color: var(--dark-brown);
+  transform: translateY(-1px);
+}
+
+.hero__btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: transparent;
+  color: var(--dark-brown);
+  border: 1px solid var(--dark-brown); /* Thin brown outline */
+  padding: 1.1rem 3rem; /* Identical dimensions */
+  font-family: var(--font-accent);
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.hero__btn-secondary:hover {
+  background-color: var(--dark-brown);
+  color: var(--white);
+  transform: translateY(-1px);
+}
+
+/* Scroll indicator */
+.hero__scroll {
+  position: absolute;
+  bottom: 8.5rem;
+  left: 15%; /* Aligns perfectly with content left edge */
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  opacity: 0;
+  animation: heroFadeUp 1s var(--ease-out) 1.4s forwards;
+}
+
+.hero__scroll-text {
+  font-family: var(--font-accent);
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold-muted);
+}
+
+.hero__scroll-arrow {
+  color: var(--heritage-gold);
+  font-size: 1.1rem;
+  animation: bounceArrow 1.8s infinite;
+}
+
+@keyframes bounceArrow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+/* Right Column: Visual Campaign Section (55% layout width) */
+.hero__right {
+  position: relative;
+  height: 100%;
+  z-index: 2;
+  margin: -3rem -3rem -3rem -8%; /* 8% Overlap into the left text column */
+}
+
+.hero__image-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero__bg-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.05); /* Slight cinematic zoom */
+  transition: transform 2.5s var(--ease-out);
+}
+
+.hero__right:hover .hero__bg-image {
+  transform: scale(1.09);
+}
+
+/* 
+   Thick multi-stage editorial gradient overlay:
+   Dampens left image edge, blending the window white frame and overlapping 
+   into the left text area seamlessly. No rectangular container look.
+*/
+.hero__right-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    #F7F3EC 0%,
+    rgba(247, 243, 236, 0.95) 12%,
+    rgba(247, 243, 236, 0.7) 25%,
+    rgba(247, 243, 236, 0.2) 48%,
+    transparent 75%
+  );
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Bottom Value Pillars Bar */
+.pillars {
+  background-color: #F7F3EC;
+  border-top: 1px solid var(--border);
+  padding: 2.5rem 0;
+  z-index: 5;
+  position: relative;
+}
+
+.pillars__inner {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-xl);
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.pillar {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-md);
+  padding: 0 1rem;
+}
+
+.pillar:not(:last-child) {
+  border-right: 1px solid var(--border);
+}
+
+.pillar__icon {
+  flex-shrink: 0;
+  color: var(--heritage-gold);
+  margin-top: 2px;
+}
+
+.pillar__content {
+  display: flex;
+  flex-direction: column;
+}
+
+.pillar__title {
+  font-family: var(--font-accent);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--dark-brown);
+  margin-bottom: var(--space-xs);
+  font-weight: 500;
+}
+
+.pillar__desc {
+  font-size: 0.72rem;
+  color: var(--warm-brown);
+  line-height: 1.5;
+}
+
+@keyframes heroFadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1023px) {
+  .hero {
+    grid-template-columns: 1fr;
+    height: auto;
+    min-height: 100vh;
+    padding: 1.5rem;
+  }
+
+  .hero::after {
+    inset: 0.75rem;
+  }
+
+  .hero__left {
+    padding: 8rem 1.5rem 4rem 1.5rem;
+  }
+
+  .hero__scroll {
+    display: none;
+  }
+
+  .hero__right {
+    margin: 0 -1.5rem -1.5rem -1.5rem;
+    height: 520px;
+  }
+
+  .hero__right-overlay {
+    background: linear-gradient(
+      0deg,
+      #F7F3EC 0%,
+      rgba(247, 243, 236, 0.95) 15%,
+      rgba(247, 243, 236, 0) 50%
+    );
+  }
+
+  .pillars__inner {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+  }
+
+  .pillar {
+    padding: 0;
+  }
+
+  .pillar:not(:last-child) {
+    border-right: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero__actions {
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .hero__btn-primary,
+  .hero__btn-secondary {
+    width: 100%;
+  }
+
+  .hero__right {
+    height: 400px;
+  }
+
+  .pillars__inner {
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+  }
+}

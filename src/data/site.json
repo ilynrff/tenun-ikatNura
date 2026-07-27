@@ -1,0 +1,31 @@
+{
+  "brand": {
+    "name": "Tenun Ikat Nura",
+    "tagline": "Keindahan Tenun, Warisan Nusantara",
+    "subtitle": "Baju Tenun",
+    "description": "Brand fashion heritage Indonesia yang menghadirkan koleksi pakaian tenun berkualitas dengan desain modern, elegan, dan autentik.",
+    "heroHeadline": "Woven Heritage,\nDesigned for Today.",
+    "heroSubheadline": "Celebrating Indonesian craftsmanship through timeless fashion pieces, woven with tradition and designed for the modern world."
+  },
+  "contact": {
+    "whatsapp": "6285800100254",
+    "whatsappDisplay": "085800100254",
+    "instagram": "Tenun_ikat_nura",
+    "instagramUrl": "https://instagram.com/Tenun_ikat_nura",
+    "shopee": "Tenun Ikat Nura",
+    "shopeeUrl": "https://shopee.co.id/tenun_ikat_nura",
+    "email": "hello@tenuniratnura.com",
+    "address": "Indonesia"
+  },
+  "social": [
+    { "name": "Instagram", "url": "https://instagram.com/Tenun_ikat_nura", "handle": "@Tenun_ikat_nura" },
+    { "name": "WhatsApp", "url": "https://wa.me/6285800100254", "label": "085800100254" },
+    { "name": "Shopee", "url": "https://shopee.co.id/tenun_ikat_nura", "label": "Tenun Ikat Nura" }
+  ],
+  "seo": {
+    "title": "Tenun Ikat Nura — Keindahan Tenun, Warisan Nusantara",
+    "description": "Brand fashion heritage Indonesia yang menghadirkan koleksi pakaian tenun berkualitas dengan desain modern, elegan, dan autentik untuk pelanggan yang menghargai keindahan budaya.",
+    "keywords": ["tenun ikat", "fashion indonesia", "heritage fashion", "baju tenun", "tenun nura", "pakaian tenun modern"],
+    "ogImage": "/images/og-image.jpg"
+  }
+}

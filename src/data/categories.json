@@ -1,0 +1,8 @@
+[
+  { "id": "women", "name": "Women", "slug": "women", "description": "Elegant tenun pieces crafted for the modern woman." },
+  { "id": "men", "name": "Men", "slug": "men", "description": "Refined tenun collections designed for the contemporary gentleman." },
+  { "id": "couple", "name": "Couple", "slug": "couple", "description": "Matching tenun sets for memorable moments together." },
+  { "id": "outer", "name": "Outer", "slug": "outer", "description": "Statement outerwear woven with heritage artistry." },
+  { "id": "blouse", "name": "Blouse", "slug": "blouse", "description": "Timeless tenun blouses that blend tradition with elegance." },
+  { "id": "dress", "name": "Dress", "slug": "dress", "description": "Heritage-inspired dresses for every occasion." }
+]

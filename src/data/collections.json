@@ -1,0 +1,140 @@
+[
+  {
+    "id": "nusa-indah",
+    "slug": "nusa-indah",
+    "name": "Nusa Indah",
+    "category": "women",
+    "categoryLabel": "Women",
+    "tagline": "Elegance Rooted in Tradition",
+    "description": "Terinspirasi dari keindahan bunga Nusa Indah yang melambangkan keanggunan dan kelembutan. Koleksi ini menghadirkan potongan modern dengan sentuhan motif tenun ikat klasik yang timeless.",
+    "story": "Setiap helai benang dalam koleksi Nusa Indah dipilih dengan teliti untuk menciptakan harmoni antara tradisi dan modernitas. Motif yang terinspirasi dari flora Nusantara memberikan sentuhan elegan yang cocok untuk berbagai kesempatan.",
+    "material": {
+      "type": "Tenun Ikat Premium",
+      "composition": "100% Cotton Tenun",
+      "texture": "Halus dengan tekstur tenun yang khas",
+      "comfort": "Nyaman digunakan sepanjang hari, menyerap keringat dengan baik"
+    },
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["Navy Gold", "Maroon Classic"],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
+    "price": null,
+    "images": ["/images/collections/nusa-indah-1.jpg", "/images/collections/nusa-indah-2.jpg", "/images/collections/nusa-indah-3.jpg", "/images/collections/nusa-indah-4.jpg"],
+    "featured": true,
+    "signature": false
+  },
+  {
+    "id": "cendrawasih",
+    "slug": "cendrawasih",
+    "name": "Cendrawasih",
+    "category": "women",
+    "categoryLabel": "Women",
+    "tagline": "The Bird of Paradise",
+    "description": "Koleksi yang terinspirasi dari keindahan burung Cendrawasih, simbol keindahan dan kemewahan alam Indonesia. Dengan detail tenun yang rumit dan warna-warna yang hangat.",
+    "story": "Cendrawasih, sang burung surga, menjadi inspirasi utama koleksi ini. Setiap motif merepresentasikan keindahan sayap yang megah, dituangkan dalam teknik tenun ikat yang teliti.",
+    "material": {
+      "type": "Tenun Ikat Premium",
+      "composition": "100% Cotton Tenun",
+      "texture": "Medium dengan karakter tenun yang menonjol",
+      "comfort": "Breathable dan nyaman untuk iklim tropis"
+    },
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Burgundy Gold", "Deep Teal"],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
+    "price": null,
+    "images": ["/images/collections/cendrawasih-1.jpg", "/images/collections/cendrawasih-2.jpg", "/images/collections/cendrawasih-3.jpg"],
+    "featured": true,
+    "signature": true
+  },
+  {
+    "id": "parang-modern",
+    "slug": "parang-modern",
+    "name": "Parang Modern",
+    "category": "men",
+    "categoryLabel": "Men",
+    "tagline": "Heritage Meets Contemporary",
+    "description": "Reinterpretasi motif parang klasik dalam potongan modern yang maskulin. Cocok untuk acara formal maupun semi-formal.",
+    "story": "Motif parang telah menjadi simbol kekuatan dan keberanian sejak berabad-abad lalu. Koleksi Parang Modern menghadirkan kembali warisan tersebut dalam desain kontemporer yang tetap menghormati tradisi.",
+    "material": {
+      "type": "Tenun Ikat Premium",
+      "composition": "100% Cotton Tenun",
+      "texture": "Kokoh dengan detail tenun yang presisi",
+      "comfort": "Nyaman dan breathable untuk penggunaan seharian"
+    },
+    "sizes": ["M", "L", "XL", "XXL"],
+    "colors": ["Charcoal Brown", "Navy Heritage"],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
+    "price": null,
+    "images": ["/images/collections/parang-modern-1.jpg", "/images/collections/parang-modern-2.jpg", "/images/collections/parang-modern-3.jpg"],
+    "featured": true,
+    "signature": false
+  },
+  {
+    "id": "sekar-jagad",
+    "slug": "sekar-jagad",
+    "name": "Sekar Jagad",
+    "category": "couple",
+    "categoryLabel": "Couple",
+    "tagline": "Two Souls, One Heritage",
+    "description": "Koleksi couple yang menggabungkan motif Sekar Jagad — simbol keberagaman dan keindahan dunia. Set pasangan yang sempurna untuk momen spesial bersama.",
+    "story": "Sekar Jagad bermakna 'bunga dunia', melambangkan keindahan dan keberagaman. Koleksi ini dirancang agar pasangan dapat tampil serasi dengan sentuhan budaya yang kuat.",
+    "material": {
+      "type": "Tenun Ikat Premium",
+      "composition": "100% Cotton Tenun",
+      "texture": "Lembut dengan motif yang detail",
+      "comfort": "Cocok untuk acara spesial maupun kasual"
+    },
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "colors": ["Gold Classic"],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
+    "price": null,
+    "images": ["/images/collections/sekar-jagad-1.jpg", "/images/collections/sekar-jagad-2.jpg", "/images/collections/sekar-jagad-3.jpg"],
+    "featured": true,
+    "signature": false
+  },
+  {
+    "id": "tenun-cape",
+    "slug": "tenun-cape",
+    "name": "Tenun Cape",
+    "category": "outer",
+    "categoryLabel": "Outer",
+    "tagline": "Wrap Yourself in Heritage",
+    "description": "Cape elegan berbahan tenun ikat yang memberikan statement look. Layer piece yang sempurna untuk melengkapi penampilan Anda.",
+    "story": "Terinspirasi dari kebiasaan para wanita Nusantara yang menyelimutkan kain tenun di bahu mereka. Cape ini adalah reinterpretasi modern dari tradisi tersebut.",
+    "material": {
+      "type": "Tenun Ikat Premium",
+      "composition": "100% Cotton Tenun",
+      "texture": "Drape yang indah dengan bobot medium",
+      "comfort": "Versatile untuk berbagai cuaca"
+    },
+    "sizes": ["Free Size"],
+    "colors": ["Earth Tone", "Ivory Brown"],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
+    "price": null,
+    "images": ["/images/collections/tenun-cape-1.jpg", "/images/collections/tenun-cape-2.jpg", "/images/collections/tenun-cape-3.jpg"],
+    "featured": true,
+    "signature": false
+  },
+  {
+    "id": "nara-blouse",
+    "slug": "nara-blouse",
+    "name": "Nara Blouse",
+    "category": "blouse",
+    "categoryLabel": "Blouse",
+    "tagline": "Effortless Heritage Chic",
+    "description": "Blouse tenun dengan potongan modern yang cocok untuk kegiatan sehari-hari maupun acara semi-formal. Menggabungkan kenyamanan dengan keanggunan.",
+    "story": "Nama 'Nara' berasal dari bahasa Sanskerta yang bermakna 'manusia'. Blouse ini dirancang untuk merayakan keindahan setiap wanita Indonesia melalui sentuhan tenun ikat.",
+    "material": {
+      "type": "Tenun Ikat Premium",
+      "composition": "100% Cotton Tenun",
+      "texture": "Ringan dan lembut di kulit",
+      "comfort": "Sangat nyaman untuk penggunaan harian"
+    },
+    "sizes": ["S", "M", "L", "XL"],
+    "colors": ["Sage Heritage", "Dusty Rose"],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
+    "price": null,
+    "images": ["/images/collections/nara-blouse-1.jpg", "/images/collections/nara-blouse-2.jpg", "/images/collections/nara-blouse-3.jpg"],
+    "featured": false,
+    "signature": false
+  }
+]

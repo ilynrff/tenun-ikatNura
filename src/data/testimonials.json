@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Sari Wulandari",
+    "role": "Marketing Manager",
+    "review": "Kualitas tenunnya luar biasa! Saya sudah membeli beberapa koleksi dan semuanya sangat nyaman dipakai. Motifnya cantik dan modern, cocok untuk acara kantor.",
+    "rating": 5
+  },
+  {
+    "id": 2,
+    "name": "Dimas Prasetyo",
+    "role": "Event Organizer",
+    "review": "Kami memesan pakaian couple untuk acara pernikahan. Hasilnya sangat memuaskan, jahitannya rapi dan kainnya premium. Pasti akan pesan lagi!",
+    "rating": 5
+  },
+  {
+    "id": 3,
+    "name": "Ratna Dewi",
+    "role": "Entrepreneur",
+    "review": "Tenun Ikat Nura berhasil membuat tenun terasa modern tanpa kehilangan nilai budayanya. Saya bangga memakai produk lokal seindah ini.",
+    "rating": 5
+  },
+  {
+    "id": 4,
+    "name": "Andika Rahman",
+    "role": "Government Official",
+    "review": "Kami memesan seragam tenun untuk instansi dan hasilnya melebihi ekspektasi. Pelayanan sangat profesional dan kualitas terjaga.",
+    "rating": 5
+  }
+]
