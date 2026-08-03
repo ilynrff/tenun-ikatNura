@@ -1,61 +1,62 @@
-/* ============================================
-   TENUN IKAT NURA — Design System
-   Luxury Fashion House Editorial Palette
-   ============================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Cormorant+SC:wght@300;400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&display=swap');
-
 :root {
-  /* Colors — Luxury Editorial Palette */
-  --ivory: #F7F3EC;
-  --beige: #F7F3EC;
-  --cream: #F0EADF;
-  --heritage-gold: #C59A3D;
-  --gold-light: #D8B979;
-  --gold-muted: #D8B979;
-  --dark-brown: #2C2018;
-  --charcoal: #5C4A3D;
-  --warm-brown: #5C4A3D;
-  --border: #DDD2C2;
-  --white: #FFFFFF;
-  --black: #0A0A0A;
-
-  /* Typography */
-  --font-heading: 'Cormorant Garamond', Georgia, serif;
-  --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-accent: 'Cormorant SC', serif;
-
-  /* Transitions */
-  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  /* Color Palette - Warm Earthy & Indonesian Heritage (Richer Warm Linen / Coklat Krem) */
+  --ivory: #ECE6DA;          /* Richer warm linen cream */
+  --ivory-light: #F4EFE6;    /* Soft warm accent cream */
+  --ivory-card: #E8E1D3;     /* Warm card background */
+  
+  --dark-brown: #1A120C;     /* Deep Espresso */
+  --warm-brown: #5C4A3D;     /* Terracotta/Earth Brown */
+  --heritage-gold: #C59A3D;  /* Traditional Gold */
+  --gold-muted: #A37928;     /* Aged Muted Gold */
+  --sand: #DDD2C2;           /* Soft Sand Border */
+  --border: rgba(197, 154, 61, 0.22);
+  
+  /* Fonts */
+  --font-heading: var(--font-cormorant), 'Cormorant Garamond', Georgia, serif;
+  --font-body: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
+  --font-accent: var(--font-dm-sans), 'DM Sans', system-ui, sans-serif;
+  
+  /* Layout */
+  --max-width: 1440px;
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2.5rem;
+  --space-xl: 4rem;
+  
+  /* Motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-fast: 200ms;
-  --duration-normal: 450ms;
-  --duration-slow: 900ms;
-  --duration-slower: 1200ms;
+  --duration-normal: 400ms;
+  --duration-slower: 800ms;
 }
 
-*,
-*::before,
-*::after {
+* {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
-  background-color: var(--ivory);
-  color: var(--charcoal);
-  font-family: var(--font-body);
+html {
+  scroll-behavior: smooth;
   font-size: 16px;
-  line-height: 1.8;
+}
+
+body {
+  background-color: var(--ivory);
+  color: var(--dark-brown);
+  font-family: var(--font-body);
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-img {
-  max-width: 100%;
-  height: auto;
-  display: block;
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--dark-brown);
 }
 
 a {
@@ -68,18 +69,4 @@ button {
   border: none;
   background: none;
   font-family: inherit;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  font-weight: 300;
-  color: var(--dark-brown);
-  line-height: 1.2;
-}
-
-.container {
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 80px;
 }

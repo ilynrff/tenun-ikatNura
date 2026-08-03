@@ -46,6 +46,23 @@ export default function RootLayout({ children }) {
 
   return (
     <html lang="id">
+      <head>
+        {/* Suppress transient extension / HMR removeChild DOM errors */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (typeof window !== 'undefined') {
+                window.addEventListener('error', function(e) {
+                  if (e.message && e.message.includes('removeChild')) {
+                    e.stopImmediatePropagation();
+                    e.preventDefault();
+                  }
+                }, true);
+              }
+            `,
+          }}
+        />
+      </head>
       <body>
         <script
           type="application/ld+json"

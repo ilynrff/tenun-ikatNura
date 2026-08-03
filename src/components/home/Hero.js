@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './Hero.module.css';
 
@@ -9,9 +8,17 @@ const pillars = [
     title: 'Handcrafted',
     desc: 'Made by skilled artisans with dedication and care.',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-        <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
-        <path d="M12 6v12M6 12h12" />
+      <svg width="44" height="44" viewBox="0 0 48 48" fill="none" stroke="#8C6418" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        {/* Loom Wooden Frame Top */}
+        <path d="M16 10v14M32 10v14" strokeWidth="2.2" />
+        <path d="M14 13h20M14 23h20" strokeWidth="1.8" />
+        <path d="M20 13v10M24 13v10M28 13v10" strokeWidth="1.2" strokeDasharray="1.5 1.5" />
+        
+        {/* Two Hands Holding the Frame Below */}
+        <path d="M10 28c1 4 4 9 7 13M38 28c-1 4-4 9-7 13" strokeWidth="1.8" />
+        <path d="M13 26c1 3 3 7 5 9M35 26c-1 3-3 7-5 9" strokeWidth="1.5" />
+        <path d="M12 30c2 3 4 6 6 8M36 30c-2 3-4 6-6 8" strokeWidth="1.4" />
+        <path d="M17 41c2 2 5 3 7 3s5-1 7-3" strokeWidth="1.8" />
       </svg>
     ),
   },
@@ -19,8 +26,21 @@ const pillars = [
     title: 'Authentic',
     desc: 'Preserving the beauty of Indonesian woven heritage.',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-        <path d="M12 3L2 12h3v8h14v-8h3L12 3z" />
+      <svg width="42" height="42" viewBox="0 0 48 48" fill="none" stroke="#8C6418" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        {/* Outer Diamond Framework */}
+        <path d="M24 4L44 24L24 44L4 24Z" strokeWidth="2" />
+        <path d="M24 10L38 24L24 38L10 24Z" strokeWidth="1.4" />
+        
+        {/* Inner Weave Grid */}
+        <path d="M17 17l14 14M31 17L17 31" strokeWidth="1.4" />
+        <path d="M21 13l14 14M27 13L13 27" strokeWidth="1.2" />
+        <path d="M13 21l14 14M35 21L21 35" strokeWidth="1.2" />
+
+        {/* Crown Accents on 4 Corners */}
+        <path d="M24 1l2.5 3L24 7l-2.5-3Z" strokeWidth="1" fill="#8C6418" />
+        <path d="M47 24l-3 2.5L41 24l3-2.5Z" strokeWidth="1" fill="#8C6418" />
+        <path d="M24 47l-2.5-3L24 41l2.5 3Z" strokeWidth="1" fill="#8C6418" />
+        <path d="M1 24l3-2.5L7 24l-3 2.5Z" strokeWidth="1" fill="#8C6418" />
       </svg>
     ),
   },
@@ -28,9 +48,18 @@ const pillars = [
     title: 'Quality Material',
     desc: 'Premium natural fibers for comfort and long lasting.',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-        <path d="M12 2a10 10 0 0 0-10 10c0 5.52 4.48 10 10 10s10-4.48 10-10A10 10 0 0 0 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-        <path d="M12 6a6 6 0 0 0-6 6c0 3.31 2.69 6 6 6s6-2.69 6-6a6 6 0 0 0-6-6z" />
+      <svg width="42" height="42" viewBox="0 0 48 48" fill="none" stroke="#8C6418" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        {/* Smooth Natural Leaf Contour */}
+        <path d="M12 36c-3-6-2-14 4-20 6-5 15-6 20-4 2 5 1 14-4 20-6 7-15 8-20 4z" strokeWidth="2" />
+        
+        {/* Main Curved Stem */}
+        <path d="M8 40c4-4 9-9 14-15 5-6 11-12 18-17" strokeWidth="2.2" />
+        
+        {/* Veins Branches Right */}
+        <path d="M18 27c4-1 8-2 13-1M23 21c4-2 9-3 14-2M28 15c3-2 7-3 10-2" strokeWidth="1.4" />
+        
+        {/* Veins Branches Left */}
+        <path d="M15 32c-1-3-2-7-1-10M20 25c-1-4-1-8 0-11M25 19c-1-3 0-6 1-8" strokeWidth="1.4" />
       </svg>
     ),
   },
@@ -38,47 +67,57 @@ const pillars = [
     title: 'Made in Indonesia',
     desc: 'Proudly created to support local craftsmanship.',
     icon: (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.2">
-        <path d="M2 12h20M12 2v20" />
+      <svg width="48" height="32" viewBox="0 0 54 32" fill="none" stroke="#8C6418" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+        {/* Sumatra */}
+        <path d="M4 12c2-3 5-5 8-7 2 1 3 4 2 7-2 3-5 5-7 7-2-1-3-4-3-7z" strokeWidth="1.5" />
+        
+        {/* Jawa & Bali Chain */}
+        <path d="M11 22c3 0 6 1 8 1 3 0 6 1 8 1" strokeWidth="1.5" />
+        <path d="M29 24c2 0 4 1 6 1 2 0 4-1 6-2" strokeWidth="1.5" />
+
+        {/* Kalimantan */}
+        <path d="M19 11c0-3 2-5 4-6 3 2 4 4 3 6-2 3-4 4-7 2z" strokeWidth="1.5" />
+        
+        {/* Sulawesi */}
+        <path d="M30 14c2-2 3-1 2 1-1 1 0 3 2 3-2 2-3 3-4 2 0-2-1-4 0-6z" strokeWidth="1.5" />
+        
+        {/* Papua */}
+        <path d="M43 12c3-2 6-1 8 0 1 3 0 6-2 8-3-1-5-4-6-8z" strokeWidth="1.5" />
+        
+        {/* Maluku Dots */}
+        <circle cx="36" cy="13" r="0.8" fill="#8C6418" />
+        <circle cx="39" cy="16" r="0.8" fill="#8C6418" />
+        <circle cx="41" cy="12" r="0.8" fill="#8C6418" />
       </svg>
     ),
   },
 ];
 
 export default function Hero() {
-  const bgRef = useRef(null);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (bgRef.current) {
-        const scrolled = window.scrollY;
-        bgRef.current.style.transform = `translateY(${scrolled * 0.08}px)`;
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
   return (
     <div className={styles.heroContainer}>
       <section className={styles.hero} aria-label="Hero campaign">
-        {/* Soft background batik watermark */}
-        <div className={styles.hero__batik} aria-hidden="true" />
+        {/* Render exact user PNG image directly via img element */}
+        <img
+          src="/images/hero/user-batik-floral.png"
+          alt="Traditional Batik Floral Motif"
+          className={styles.hero__batik}
+          aria-hidden="true"
+        />
 
         {/* Left Column */}
         <div className={styles.hero__left}>
-          {/* BOLDER & LARGER Label with extended gold lines */}
+          {/* Refined BAJU TENUN Label */}
           <div className={styles.hero__brand}>
             <span className={styles['hero__brand-label']}>BAJU TENUN</span>
           </div>
 
-          {/* BOLDER Headline */}
+          {/* Light & Refined Headline */}
           <h1 className={styles.hero__title}>
             Woven Heritage,<br />Designed for Today.
           </h1>
 
-          {/* Ornate Gold Filigree Divider */}
+          {/* Understated Subtle Gold Divider */}
           <div className={styles.hero__divider} aria-hidden="true" />
 
           {/* Subtitle */}
@@ -86,7 +125,7 @@ export default function Hero() {
             Celebrating Indonesian craftsmanship through timeless fashion pieces, woven with tradition and designed for the modern world.
           </p>
 
-          {/* Actions with darker rich gold Explore Collections button */}
+          {/* Refined Luxury CTA Actions */}
           <div className={styles.hero__actions}>
             <Link href="/collections" className={styles['hero__btn-primary']}>
               Explore Collections &nbsp; &rarr;
@@ -96,10 +135,13 @@ export default function Hero() {
             </Link>
           </div>
 
-          {/* Scroll indicator centered in left section */}
+          {/* Subtle Minimal Scroll Indicator with Taller Longer Arrow */}
           <div className={styles.hero__scroll}>
             <span className={styles['hero__scroll-text']}>Scroll</span>
-            <span className={styles['hero__scroll-arrow']}>↓</span>
+            <svg width="14" height="30" viewBox="0 0 14 30" fill="none" stroke="#A37928" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className={styles['hero__scroll-arrow']}>
+              <line x1="7" y1="2" x2="7" y2="25" />
+              <path d="M2 20l5 6 5-6" />
+            </svg>
           </div>
         </div>
 
@@ -107,18 +149,16 @@ export default function Hero() {
         <div className={styles.hero__right}>
           <div className={styles['hero__image-wrapper']}>
             <img
-              ref={bgRef}
               src="/images/hero/hero-main.jpg"
               alt="Premium Woven Fabrics on Rustic Wooden Table"
               className={styles['hero__bg-image']}
               loading="eager"
             />
-            <div className={styles['hero__right-overlay']} />
           </div>
         </div>
       </section>
 
-      {/* Bottom Bar: 4 Value Pillars */}
+      {/* Refined Luxury 4 Value Pillars Bar */}
       <section className={styles.pillars} aria-label="Value Pillars">
         <div className={styles.pillars__inner}>
           {pillars.map((pillar) => (

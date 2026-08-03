@@ -3,7 +3,7 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px; /* Reduced height from 96px to 80px */
+  height: 84px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -15,15 +15,15 @@
 .navbar__logo {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.85rem;
   text-decoration: none;
   font-family: var(--font-heading);
 }
 
-/* Logo N Icon: Refined & compact */
+/* Logo N Icon: Increased size by ~10% for strong brand presence */
 .navbar__logo-icon {
-  font-size: 2.5rem; /* Reduced from 3.4rem */
-  font-weight: 500;
+  font-size: 2.85rem; /* Increased size by 10% */
+  font-weight: 400;
   color: var(--heritage-gold);
   line-height: 1;
 }
@@ -34,20 +34,20 @@
   line-height: 1.05;
 }
 
-/* Subtitle TENUN IKAT: Refined size */
+/* Subtitle TENUN IKAT */
 .navbar__logo-brand {
   font-family: var(--font-accent);
-  font-size: 0.62rem;
-  letter-spacing: 0.3em;
+  font-size: 0.68rem;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
   color: var(--heritage-gold);
-  font-weight: 700;
+  font-weight: 600;
 }
 
-/* Brand Name NURA: Refined size */
+/* Brand Name NURA */
 .navbar__logo-name {
-  font-size: 1.38rem;
-  font-weight: 700;
+  font-size: 1.55rem; /* Increased size by 10% */
+  font-weight: 600;
   color: #1A120C;
   letter-spacing: 0.08em;
 }
@@ -55,17 +55,17 @@
 .navbar__nav {
   display: flex;
   align-items: center;
-  gap: 44px; /* Reduced gap between links */
+  gap: 48px;
 }
 
-/* Navigation Links: Refined compact size (14.5px) */
+/* Navigation Links: Refined light & sophisticated typography */
 .navbar__link {
   font-family: var(--font-accent);
-  font-size: 14.5px;
-  letter-spacing: 2px;
-  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 2.8px; /* Increased letter spacing for luxury feel */
+  font-weight: 500; /* Lighter font weight for refined look */
   text-transform: uppercase;
-  color: #1A120C;
+  color: #2C2018;
   text-decoration: none;
   position: relative;
   padding: 0.3rem 0;
@@ -78,7 +78,7 @@
   bottom: 0;
   left: 0;
   width: 0;
-  height: 2px;
+  height: 1.5px;
   background-color: var(--heritage-gold);
   transition: width var(--duration-normal) var(--ease-out);
 }
@@ -95,22 +95,21 @@
 
 /* 
    Discover Collection CTA Button: 
-   Slimmer padding (12px 32px) and 13.5px font size.
+   Understated, refined luxury styling with thin border and subtle background fill.
 */
 .navbar__cta {
   font-family: var(--font-accent);
-  font-size: 13.5px;
-  font-weight: 700;
-  letter-spacing: 2.2px;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
   text-transform: uppercase;
-  padding: 12px 32px; /* Slimmer padding */
-  border: 1.5px solid var(--heritage-gold);
+  padding: 12px 30px;
+  border: 1px solid var(--heritage-gold); /* Thinner refined border */
   color: var(--heritage-gold);
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 2px;
   text-decoration: none;
   backdrop-filter: blur(4px);
-  box-shadow: 0 2px 8px rgba(44, 32, 24, 0.02);
   transition: all var(--duration-normal) var(--ease-out);
 }
 
@@ -119,7 +118,6 @@
   background-color: #1A120C;
   border-color: #1A120C;
   color: #FFFFFF;
-  box-shadow: 0 4px 14px rgba(26, 18, 12, 0.2);
   transform: translateY(-1px);
 }
 
