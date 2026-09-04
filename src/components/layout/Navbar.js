@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import styles from './Navbar.module.css';
@@ -10,15 +10,35 @@ const navLinks = [
   { href: '/collections', label: 'Collections' },
   { href: '/our-story', label: 'Our Story' },
   { href: '/lookbook', label: 'Lookbook' },
-  { href: '/journal', label: 'Journal' },
   { href: '/contact', label: 'Contact' },
 ];
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
 
   return (
-    <header className={styles.navbar} role="banner">
+    <header
+      className={`${styles.navbar} ${isScrolled ? styles['navbar--scrolled'] : ''}`}
+      role="banner"
+    >
       <div className={styles.navbar__logo}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', textDecoration: 'none' }}>
           <span className={styles['navbar__logo-icon']}>N</span>

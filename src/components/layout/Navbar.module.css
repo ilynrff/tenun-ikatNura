@@ -1,5 +1,5 @@
 .navbar {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -9,7 +9,23 @@
   justify-content: space-between;
   padding: 0 80px;
   background: transparent;
-  z-index: 100;
+  z-index: 1000;
+  transition: background-color 0.4s var(--ease-out), 
+              backdrop-filter 0.4s var(--ease-out), 
+              -webkit-backdrop-filter 0.4s var(--ease-out), 
+              box-shadow 0.4s var(--ease-out), 
+              border-bottom 0.4s var(--ease-out),
+              height 0.4s var(--ease-out);
+}
+
+/* Glassmorphism Background Blur when Scrolled Down */
+.navbar--scrolled {
+  background-color: rgba(236, 230, 218, 0.85); /* Rich warm linen translucent background */
+  backdrop-filter: blur(14px) saturate(180%);
+  -webkit-backdrop-filter: blur(14px) saturate(180%);
+  box-shadow: 0 4px 24px rgba(26, 18, 12, 0.06);
+  border-bottom: 1px solid rgba(197, 154, 61, 0.2);
+  height: 76px; /* Slightly slimmer height on scroll for refined luxury look */
 }
 
 .navbar__logo {
@@ -22,7 +38,7 @@
 
 /* Logo N Icon: Increased size by ~10% for strong brand presence */
 .navbar__logo-icon {
-  font-size: 2.85rem; /* Increased size by 10% */
+  font-size: 2.85rem;
   font-weight: 400;
   color: var(--heritage-gold);
   line-height: 1;
@@ -46,7 +62,7 @@
 
 /* Brand Name NURA */
 .navbar__logo-name {
-  font-size: 1.55rem; /* Increased size by 10% */
+  font-size: 1.55rem;
   font-weight: 600;
   color: #1A120C;
   letter-spacing: 0.08em;
@@ -62,8 +78,8 @@
 .navbar__link {
   font-family: var(--font-accent);
   font-size: 14px;
-  letter-spacing: 2.8px; /* Increased letter spacing for luxury feel */
-  font-weight: 500; /* Lighter font weight for refined look */
+  letter-spacing: 2.8px;
+  font-weight: 500;
   text-transform: uppercase;
   color: #2C2018;
   text-decoration: none;
@@ -104,7 +120,7 @@
   letter-spacing: 2.5px;
   text-transform: uppercase;
   padding: 12px 30px;
-  border: 1px solid var(--heritage-gold); /* Thinner refined border */
+  border: 1px solid var(--heritage-gold);
   color: var(--heritage-gold);
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 2px;
@@ -129,6 +145,9 @@
   .navbar {
     padding: 0 40px;
     height: 72px;
+  }
+  .navbar--scrolled {
+    height: 68px;
   }
   .navbar__nav,
   .navbar__cta {

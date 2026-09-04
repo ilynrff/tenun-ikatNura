@@ -1,74 +1,160 @@
+/* 
+   ====================================================
+   TENUN IKAT NURA - OUR IDENTITY (BRAND INTRO) SECTION
+   Luxury Editorial Fashion Brand Introduction Spread
+   ====================================================
+*/
+
 .intro {
-  padding: 80px 0; /* Reduced vertical padding by 20% */
-  background-color: var(--ivory);
+  padding: 120px 0; /* Generous 120px vertical padding */
+  background-color: #ECE6DA; /* Warm Linen Ivory Background matching Hero */
+  position: relative;
+  overflow: hidden;
 }
 
+/* 
+   Two-Column Editorial Composition:
+   Left Typography (approx 44%) & Right Large Photography (approx 56%)
+*/
 .intro__inner {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 70px;
-  align-items: center;
+  grid-template-columns: 44fr 56fr;
+  gap: 72px; /* Generous gap between text and photography */
+  align-items: center; /* Vertically centered text relative to image */
   max-width: 1440px;
   margin: 0 auto;
   padding: 0 80px;
 }
 
+/* Left Column Container */
 .intro__content {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  justify-content: center;
 }
 
-.intro__label {
+/* Eyebrow Label */
+.intro__eyebrow {
   font-family: var(--font-accent);
   font-size: 13px;
   letter-spacing: 4px;
   text-transform: uppercase;
-  color: var(--heritage-gold);
+  color: #A37928;
+  font-weight: 600;
+  margin-bottom: 1.2rem;
+  display: inline-block;
 }
 
+/* Large Serif Heading: Dominates Left Column */
 .intro__title {
   font-family: var(--font-heading);
-  font-size: clamp(2.2rem, 1.8rem + 2vw, 3.5rem);
-  font-weight: 300;
-  color: var(--dark-brown);
-  line-height: 1.2;
+  font-size: clamp(3.1rem, 3.8vw, 4.2rem);
+  font-weight: 300; /* Light & Refined weight */
+  color: #4A3525; /* Soft Warm Brown matching 4 Pillars title */
+  line-height: 1.02;
+  letter-spacing: -0.6px;
+  margin-bottom: 1.5rem;
+  max-width: 500px;
 }
 
+/* Subtle Minimal Gold Horizontal Line Divider */
 .intro__divider {
-  width: 60px;
+  width: 48px;
   height: 1px;
-  background-color: var(--heritage-gold);
-  opacity: 0.5;
+  background-color: rgba(197, 154, 61, 0.65);
+  margin-bottom: 1.8rem;
 }
 
-.intro__text {
-  font-size: 17px;
-  color: var(--warm-brown);
-  line-height: 1.85;
+/* Body Copy Paragraph */
+.intro__body {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.82;
+  font-weight: 400;
+  color: #5C4A3D; /* Soft Warm Earthy Charcoal */
+  max-width: 540px;
 }
 
-.intro__image-wrapper {
+/* 
+   Desktop Editorial Photography Wrapper (approx 600-700px height)
+   No rounded corners, no cards, no shadows for true luxury magazine feel
+*/
+.intro__desktop-image-wrapper {
+  width: 100%;
+  height: 640px;
   position: relative;
-  aspect-ratio: 4/5;
   overflow: hidden;
+  display: block;
+}
+
+/* Mobile Image Wrapper (Hidden on desktop) */
+.intro__mobile-image-wrapper {
+  display: none;
 }
 
 .intro__image {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 1.2s var(--ease-out);
+  object-position: center;
+  filter: contrast(1.02) saturate(0.98);
+  transition: transform var(--duration-slower) var(--ease-out);
 }
 
-.intro__image-wrapper:hover .intro__image {
-  transform: scale(1.03);
+.intro__desktop-image-wrapper:hover .intro__image {
+  transform: scale(1.025);
 }
 
+/* 
+   ====================================================
+   DEDICATED MOBILE COMPOSITION
+   Flow: 1. OUR IDENTITY -> 2. Heading -> 3. Image -> 4. Body
+   ====================================================
+*/
 @media (max-width: 1023px) {
+  .intro {
+    padding: 72px 0;
+  }
+
   .intro__inner {
     grid-template-columns: 1fr;
-    gap: 40px;
-    padding: 0 40px;
+    gap: 0;
+    padding: 0 28px;
+  }
+
+  .intro__eyebrow {
+    font-size: 12px;
+    letter-spacing: 3.5px;
+    margin-bottom: 0.9rem;
+  }
+
+  .intro__title {
+    font-size: clamp(2.3rem, 7vw, 2.9rem);
+    line-height: 1.08;
+    margin-bottom: 1.2rem;
+    max-width: 100%;
+  }
+
+  .intro__divider {
+    width: 40px;
+    margin-bottom: 1.5rem;
+  }
+
+  .intro__desktop-image-wrapper {
+    display: none; /* Hide desktop column on mobile */
+  }
+
+  .intro__mobile-image-wrapper {
+    display: block;
+    width: 100%;
+    height: 420px;
+    margin-bottom: 1.8rem;
+    overflow: hidden;
+  }
+
+  .intro__body {
+    font-size: 16px;
+    line-height: 1.75;
+    max-width: 100%;
   }
 }

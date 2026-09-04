@@ -1,8 +1,9 @@
 [
-  { "id": "women", "name": "Women", "slug": "women", "description": "Elegant tenun pieces crafted for the modern woman." },
-  { "id": "men", "name": "Men", "slug": "men", "description": "Refined tenun collections designed for the contemporary gentleman." },
-  { "id": "couple", "name": "Couple", "slug": "couple", "description": "Matching tenun sets for memorable moments together." },
-  { "id": "outer", "name": "Outer", "slug": "outer", "description": "Statement outerwear woven with heritage artistry." },
-  { "id": "blouse", "name": "Blouse", "slug": "blouse", "description": "Timeless tenun blouses that blend tradition with elegance." },
-  { "id": "dress", "name": "Dress", "slug": "dress", "description": "Heritage-inspired dresses for every occasion." }
+  { "id": "all", "name": "All Pieces", "slug": "all", "description": "Seluruh koleksi karya tenun ikat otentik Tenun Ikat Nura." },
+  { "id": "women", "name": "Womenswear", "slug": "women", "description": "Busana tenun wanita dengan potongan modern dan anggun." },
+  { "id": "men", "name": "Menswear", "slug": "men", "description": "Busana tenun pria yang elegan, berkarakter, dan berkelas." },
+  { "id": "couple", "name": "Couple Sets", "slug": "couple", "description": "Koleksi sarimbit pasangan tenun ikat untuk momen istimewa." },
+  { "id": "outer", "name": "Outerwear", "slug": "outer", "description": "Statement outer, blazer, dan kimono tenun ikat." },
+  { "id": "blouse", "name": "Blouses", "slug": "blouse", "description": "Blouse tenun kontemporer yang nyaman dan timeless." },
+  { "id": "dress", "name": "Dresses", "slug": "dress", "description": "Gaun dan tunic tenun warisan budaya bergaya modern." }
 ]

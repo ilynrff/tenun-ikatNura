@@ -6,20 +6,22 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CTABanner from '@/components/layout/CTABanner';
 import ScrollReveal from '@/components/ui/ScrollReveal';
+import ProductModal from './ProductModal';
 import collectionsData from '@/data/collections.json';
 import categoriesData from '@/data/categories.json';
 import styles from './CollectionsPage.module.css';
-import Link from 'next/link';
 
 export default function CollectionsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeCategory = searchParams.get('category') || 'all';
-  const [visibleCount, setVisibleCount] = useState(6);
+
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(9);
 
   // Reset pagination on category change
   useEffect(() => {
-    setVisibleCount(6);
+    setVisibleCount(9);
   }, [activeCategory]);
 
   const handleCategorySelect = (categorySlug) => {
@@ -40,33 +42,31 @@ export default function CollectionsPage() {
     <>
       <Navbar />
       <main className={styles.collectionsPage}>
-        {/* Editorial Hero */}
+        {/* Luxury Editorial Katalog Hero */}
         <section className={styles.hero}>
           <ScrollReveal>
             <div className={styles.hero__inner}>
-              <span className={styles.hero__label}>Katalog</span>
-              <h1 className={styles.hero__title}>Collections</h1>
+              <span className={styles.hero__label}>Katalog Karya Tenun</span>
+              <h1 className={styles.hero__title}>Editorial Collections</h1>
+              <div className={styles.hero__divider} />
               <p className={styles.hero__desc}>
-                Discover timeless pieces inspired by Indonesian heritage and crafted for modern living.
+                Jelajahi keindahan mahakarya tenun ikat otentik Nusantara. 
+                Setiap helai kain ditenun secara terbatas dengan dedikasi pengrajin terampil untuk keanggunan gaya modern Anda.
               </p>
             </div>
           </ScrollReveal>
         </section>
 
-        {/* Luxury Tab Navigation */}
+        {/* Modern & Stylish Filter Navigation Bar */}
         <nav className={styles.filterNav} aria-label="Filter by category">
           <div className={styles.filterNav__inner}>
-            <button
-              onClick={() => handleCategorySelect('all')}
-              className={`${styles.filterNav__tab} ${activeCategory === 'all' ? styles['filterNav__tab--active'] : ''}`}
-            >
-              All Pieces
-            </button>
-            {categoriesData.map(cat => (
+            {categoriesData.map((cat) => (
               <button
                 key={cat.id}
                 onClick={() => handleCategorySelect(cat.slug)}
-                className={`${styles.filterNav__tab} ${activeCategory === cat.slug ? styles['filterNav__tab--active'] : ''}`}
+                className={`${styles.filterNav__tab} ${
+                  activeCategory === cat.slug ? styles['filterNav__tab--active'] : ''
+                }`}
               >
                 {cat.name}
               </button>
@@ -74,62 +74,68 @@ export default function CollectionsPage() {
           </div>
         </nav>
 
-        {/* Introduction */}
-        <section className={styles.intro}>
-          <ScrollReveal>
-            <p className={styles.intro__text}>
-              &ldquo;Every collection is designed to celebrate Indonesian craftsmanship while embracing contemporary fashion.&rdquo;
-            </p>
-          </ScrollReveal>
-        </section>
-
-        {/* Grid Catalog */}
+        {/* Catalog Grid Section */}
         <section className={styles.catalogSection}>
-          <div className="container">
+          <div className={styles.catalogContainer}>
             {filteredPieces.length === 0 ? (
-              <div className={styles.empty}>No pieces found in this collection.</div>
+              <div className={styles.empty}>
+                <p>Tidak ada koleksi dalam kategori ini saat ini.</p>
+              </div>
             ) : (
               <>
                 <div className={styles.grid}>
                   {visiblePieces.map((item, index) => (
-                    <ScrollReveal key={item.id} delay={Math.min((index % 3) + 1, 3)}>
-                      <Link href={`/collections/${item.slug}`} style={{ display: 'block', textDecoration: 'none' }}>
-                        <div style={{
-                          position: 'relative',
-                          aspectRatio: '4/5',
-                          overflow: 'hidden',
-                          marginBottom: 'var(--space-lg)',
-                          backgroundColor: 'var(--cream)'
-                        }}>
+                    <ScrollReveal key={item.id || item.sku} delay={Math.min((index % 3) + 1, 3)}>
+                      <div
+                        className={styles.card}
+                        onClick={() => setSelectedProduct(item)}
+                        role="button"
+                        tabIndex={0}
+                        aria-label={`Lihat detail ${item.name}`}
+                      >
+                        {/* Image & SKU Badge Container */}
+                        <div className={styles.card__imageWrapper}>
                           <img
-                            src={item.images[0]}
+                            src={item.images ? item.images[0] : '/images/hero/hero-main.jpg'}
                             alt={`${item.name} - ${item.categoryLabel}`}
-                            style={{
-                              width: '100%',
-                              height: '100%',
-                              objectFit: 'cover',
-                              transition: 'transform var(--duration-slow) var(--ease-out)'
-                            }}
-                            className="img-hover-zoom"
+                            className={styles.card__image}
+                            loading="lazy"
                           />
+                          {/* SKU Badge */}
+                          <span className={styles.card__skuBadge}>
+                            {item.sku || 'NURA-ITEM'}
+                          </span>
+                          
+                          {/* Quick View Overlay Button */}
+                          <div className={styles.card__overlay}>
+                            <button
+                              className={styles.card__quickBtn}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedProduct(item);
+                              }}
+                            >
+                              Quick Preview &amp; Order &rarr;
+                            </button>
+                          </div>
                         </div>
-                        <div style={{ textAlign: 'center' }}>
-                          <h3 style={{
-                            fontFamily: 'var(--font-heading)',
-                            fontSize: 'var(--text-xl)',
-                            color: 'var(--dark-brown)',
-                            marginBottom: '0.25rem',
-                            fontWeight: '500'
-                          }}>{item.name}</h3>
-                          <span style={{
-                            fontFamily: 'var(--font-accent)',
-                            fontSize: 'var(--text-xs)',
-                            letterSpacing: '0.2em',
-                            textTransform: 'uppercase',
-                            color: 'var(--gold-muted)'
-                          }}>{item.categoryLabel}</span>
+
+                        {/* Card Info */}
+                        <div className={styles.card__info}>
+                          <div className={styles.card__metaRow}>
+                            <span className={styles.card__category}>{item.categoryLabel}</span>
+                            <span className={styles.card__skuCode}>KODE: {item.sku}</span>
+                          </div>
+                          <h3 className={styles.card__name}>{item.name}</h3>
+                          <p className={styles.card__material}>
+                            {item.material?.type || item.tagline}
+                          </p>
+                          <div className={styles.card__footer}>
+                            <span className={styles.card__price}>{item.price || 'Custom Order'}</span>
+                            <span className={styles.card__actionLink}>Pesan &rarr;</span>
+                          </div>
                         </div>
-                      </Link>
+                      </div>
                     </ScrollReveal>
                   ))}
                 </div>
@@ -139,10 +145,10 @@ export default function CollectionsPage() {
                   <ScrollReveal>
                     <div className={styles.loadMoreContainer}>
                       <button
-                        onClick={() => setVisibleCount(prev => prev + 6)}
-                        className="btn btn--secondary"
+                        onClick={() => setVisibleCount((prev) => prev + 6)}
+                        className={styles.loadMoreBtn}
                       >
-                        Load More
+                        Tampilkan Lebih Banyak
                       </button>
                     </div>
                   </ScrollReveal>
@@ -152,12 +158,22 @@ export default function CollectionsPage() {
           </div>
         </section>
 
+        {/* CTA Banner */}
         <CTABanner
-          title="Interested in Our Collection?"
-          subtitle="Let's find the perfect piece for your special occasion."
+          title="Ingin Custom Order / Konsultasi?"
+          subtitle="Hubungi tim artisan kami untuk pemesanan seragam, busana pesta, maupun sarimbit tenun custom."
         />
       </main>
+
       <Footer />
+
+      {/* Quick Preview Detail Modal */}
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={() => setSelectedProduct(null)}
+        />
+      )}
     </>
   );
 }
