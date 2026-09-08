@@ -1,0 +1,155 @@
+'use client';
+
+import Link from 'next/link';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/layout/Footer';
+import ScrollReveal from '@/components/ui/ScrollReveal';
+import styles from './OurStoryPage.module.css';
+
+export default function OurStoryPage() {
+  const imgPhilosophy = '/images/story/brand-intro.jpg';
+  const imgCraftsmanship = '/images/story/our-story.jpg';
+  const imgApproach = '/images/collections/ratna-dress-1.jpg';
+
+  return (
+    <>
+      <Navbar />
+      <main className={styles.storyPage}>
+        {/* SECTION 1 — Editorial Page Hero */}
+        <section className={styles.hero}>
+          <ScrollReveal>
+            <div className={styles.hero__inner}>
+              <span className={styles.hero__eyebrow}>OUR STORY</span>
+              <h1 className={styles.hero__title}>A Heritage Worth Preserving</h1>
+              <div className={styles.hero__divider} />
+              <p className={styles.hero__desc}>
+                &ldquo;Every thread carries a story — of culture, craftsmanship, and the enduring beauty of Indonesian woven heritage.&rdquo;
+              </p>
+            </div>
+          </ScrollReveal>
+        </section>
+
+        {/* SECTION 2 — Brand Story (OUR PHILOSOPHY) */}
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <div className={styles.gridTwoCol}>
+              {/* LEFT: Image */}
+              <ScrollReveal>
+                <div className={styles.imageWrapper}>
+                  <img
+                    src={imgPhilosophy}
+                    alt="Master Indonesian artisan weaving traditional Ikat textile"
+                    className={styles.image}
+                    loading="eager"
+                  />
+                </div>
+              </ScrollReveal>
+
+              {/* RIGHT: Text Content */}
+              <ScrollReveal delay={2}>
+                <div className={styles.textContent}>
+                  <span className={styles.sectionEyebrow}>OUR PHILOSOPHY</span>
+                  <h2 className={styles.sectionTitle}>Where Tradition Meets Elegance</h2>
+                  <div className={styles.sectionDivider} />
+                  <p className={styles.bodyParagraph}>
+                    Tenun Ikat Nura lahir dari kecintaan terhadap warisan budaya Indonesia. Kami percaya bahwa keindahan tenun ikat tidak hanya layak dilestarikan, tetapi juga pantas dihadirkan dalam kehidupan modern.
+                  </p>
+                  <p className={styles.bodyParagraph}>
+                    Setiap kain membawa karakter, proses, dan cerita yang berbeda. Melalui perpaduan antara teknik tradisional, material pilihan, dan pendekatan desain yang lebih kontemporer, Tenun Ikat Nura menghadirkan tenun sebagai bagian dari gaya hidup modern tanpa kehilangan akar budayanya.
+                  </p>
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 3 — The Art of Weaving (CRAFTSMANSHIP) */}
+        <section className={`${styles.section} ${styles.sectionBeige}`}>
+          <div className={styles.container}>
+            <div className={styles.gridTwoColReverse}>
+              {/* LEFT: Text Content */}
+              <ScrollReveal>
+                <div className={styles.textContent}>
+                  <span className={styles.sectionEyebrow}>CRAFTSMANSHIP</span>
+                  <h2 className={styles.sectionTitle}>The Art of Weaving</h2>
+                  <div className={styles.sectionDivider} />
+                  <p className={styles.bodyParagraph}>
+                    Behind every Tenun Ikat Nura piece lies a process that values patience, precision, and the hands of skilled artisans.
+                  </p>
+                  <p className={styles.bodyParagraph}>
+                    From preparing the yarn and forming the motif to dyeing and weaving, each stage requires careful attention. The traditional process gives every fabric its own character — subtle variations that make each piece unique.
+                  </p>
+                </div>
+              </ScrollReveal>
+
+              {/* RIGHT: Image */}
+              <ScrollReveal delay={2}>
+                <div className={styles.imageWrapper}>
+                  <img
+                    src={imgCraftsmanship}
+                    alt="Pure natural silk Indonesian Ikat woven scarf detail"
+                    className={styles.image}
+                    loading="lazy"
+                  />
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4 — Tradition Meets Modernity (THE NURA APPROACH) */}
+        <section className={styles.section}>
+          <div className={styles.container}>
+            <div className={styles.gridTwoCol}>
+              {/* LEFT: Image */}
+              <ScrollReveal>
+                <div className={styles.imageWrapper}>
+                  <img
+                    src={imgApproach}
+                    alt="Modern Indonesian Ikat woven contemporary fashion dress"
+                    className={styles.image}
+                    loading="lazy"
+                  />
+                </div>
+              </ScrollReveal>
+
+              {/* RIGHT: Text Content */}
+              <ScrollReveal delay={2}>
+                <div className={styles.textContent}>
+                  <span className={styles.sectionEyebrow}>THE NURA APPROACH</span>
+                  <h2 className={styles.sectionTitle}>Tradition Meets Modernity</h2>
+                  <div className={styles.sectionDivider} />
+                  <p className={styles.bodyParagraph}>
+                    Tenun Ikat Nura brings traditional woven heritage into contemporary silhouettes. The goal is not to change the identity of tenun, but to allow its beauty to live naturally within modern wardrobes.
+                  </p>
+                  <p className={styles.bodyParagraph}>
+                    Through thoughtful cuts, refined materials, and contemporary styling, traditional craftsmanship becomes something that can be appreciated not only as cultural heritage, but also as modern expression.
+                  </p>
+                </div>
+              </ScrollReveal>
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 5 — Closing CTA */}
+        <section className={styles.ctaSection}>
+          <ScrollReveal>
+            <div className={styles.ctaInner}>
+              <h2 className={styles.ctaTitle}>Discover the Collection</h2>
+              <p className={styles.ctaDesc}>
+                Explore pieces where Indonesian heritage meets contemporary elegance.
+              </p>
+              <div>
+                <Link href="/collections" className={styles.ctaBtn}>
+                  DISCOVER COLLECTION &nbsp; &rarr;
+                </Link>
+              </div>
+            </div>
+          </ScrollReveal>
+        </section>
+      </main>
+
+      <Footer />
+    </>
+  );
+}

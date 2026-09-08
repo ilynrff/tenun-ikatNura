@@ -1,0 +1,260 @@
+/* 
+   ====================================================
+   TENUN IKAT NURA - OUR STORY EDITORIAL SPREAD
+   Visual Language: Luxury Fashion Editorial Magazine
+   ====================================================
+*/
+
+.storyPage {
+  background-color: #ECE6DA; /* Warm Linen Ivory Background */
+  min-height: 100vh;
+  padding-top: 84px; /* Clearance for fixed navbar */
+}
+
+/* SECTION 1 — Editorial Page Hero */
+.hero {
+  padding: 100px 0 60px 0;
+  text-align: center;
+  position: relative;
+  border-bottom: 1px solid rgba(197, 154, 61, 0.2);
+}
+
+.hero__inner {
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hero__eyebrow {
+  font-family: var(--font-accent);
+  font-size: 13px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #A37928;
+  font-weight: 600;
+  margin-bottom: 14px;
+  display: block;
+}
+
+.hero__title {
+  font-family: var(--font-heading);
+  font-size: clamp(2.8rem, 4vw, 4.2rem);
+  font-weight: 300;
+  color: #4A3525;
+  line-height: 1.05;
+  margin-bottom: 18px;
+}
+
+.hero__divider {
+  width: 48px;
+  height: 1px;
+  background-color: rgba(197, 154, 61, 0.6);
+  margin: 0 auto 24px auto;
+}
+
+.hero__desc {
+  font-family: var(--font-heading);
+  font-style: italic;
+  font-size: 1.25rem;
+  line-height: 1.7;
+  color: #5C4A3D;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* General Section Container & Spacing */
+.section {
+  padding: 120px 0;
+  position: relative;
+}
+
+.sectionBeige {
+  background-color: #E6DFD2; /* Slightly deeper warm beige tone for rhythmic separation */
+  border-top: 1px solid rgba(197, 154, 61, 0.15);
+  border-bottom: 1px solid rgba(197, 154, 61, 0.15);
+}
+
+.container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+
+/* Two-Column Desktop Layout (Image | Text) */
+.gridTwoCol {
+  display: grid;
+  grid-template-columns: 48fr 52fr;
+  gap: 72px;
+  align-items: center;
+}
+
+/* Two-Column Desktop Layout (Text | Image) */
+.gridTwoColReverse {
+  display: grid;
+  grid-template-columns: 52fr 48fr;
+  gap: 72px;
+  align-items: center;
+}
+
+/* Image Wrapper Styling: Editorial Magazine Frame */
+.imageWrapper {
+  width: 100%;
+  height: 600px;
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: contrast(1.02) saturate(0.98);
+  transition: transform var(--duration-slower) var(--ease-out);
+}
+
+.imageWrapper:hover .image {
+  transform: scale(1.025);
+}
+
+/* Text Content Area */
+.textContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.sectionEyebrow {
+  font-family: var(--font-accent);
+  font-size: 13px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #A37928;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.sectionTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2.4rem, 3.2vw, 3.6rem);
+  font-weight: 300;
+  color: #4A3525;
+  line-height: 1.08;
+  margin-bottom: 18px;
+  max-width: 520px;
+}
+
+.sectionDivider {
+  width: 48px;
+  height: 1px;
+  background-color: rgba(197, 154, 61, 0.65);
+  margin-bottom: 24px;
+}
+
+.bodyParagraph {
+  font-family: var(--font-body);
+  font-size: 18px;
+  line-height: 1.82;
+  font-weight: 400;
+  color: #5C4A3D;
+  margin-bottom: 20px;
+  max-width: 540px;
+}
+
+.bodyParagraph:last-child {
+  margin-bottom: 0;
+}
+
+/* SECTION 5 — Closing CTA Section */
+.ctaSection {
+  padding: 110px 0;
+  text-align: center;
+  background-color: #ECE6DA;
+  border-top: 1px solid rgba(197, 154, 61, 0.25);
+}
+
+.ctaInner {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.ctaTitle {
+  font-family: var(--font-heading);
+  font-size: clamp(2.2rem, 3vw, 3.2rem);
+  font-weight: 300;
+  color: #4A3525;
+  margin-bottom: 16px;
+}
+
+.ctaDesc {
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.7;
+  color: #5C4A3D;
+  margin-bottom: 32px;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 52px;
+  padding: 0 36px;
+  background-color: #8C6418;
+  color: #FFFFFF;
+  border: 1px solid #8C6418;
+  border-radius: 2px;
+  font-family: var(--font-accent);
+  font-size: 13px;
+  letter-spacing: 2.8px;
+  text-transform: uppercase;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 4px 14px rgba(140, 100, 24, 0.18);
+  transition: all var(--duration-normal) var(--ease-out);
+}
+
+.ctaBtn:hover {
+  background-color: #1A120C;
+  border-color: #1A120C;
+  transform: translateY(-2px);
+}
+
+/* Responsive Tablet & Mobile Design */
+@media (max-width: 1023px) {
+  .section {
+    padding: 72px 0;
+  }
+
+  .container {
+    padding: 0 28px;
+  }
+
+  .gridTwoCol,
+  .gridTwoColReverse {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  /* Force image above text on mobile for natural reading flow */
+  .gridTwoColReverse {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  .imageWrapper {
+    height: 420px;
+  }
+
+  .sectionTitle {
+    font-size: clamp(2.1rem, 6vw, 2.6rem);
+  }
+
+  .bodyParagraph {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+}
