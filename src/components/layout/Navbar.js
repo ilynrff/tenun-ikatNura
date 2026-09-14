@@ -8,8 +8,6 @@ import styles from './Navbar.module.css';
 const navLinks = [
   { href: '/', label: 'Home' },
   { href: '/collections', label: 'Collections' },
-  { href: '/our-story', label: 'Our Story' },
-  { href: '/lookbook', label: 'Lookbook' },
   { href: '/contact', label: 'Contact' },
 ];
 

@@ -97,8 +97,8 @@ export default function Hero() {
             <Link href="/collections" className={styles['hero__btn-primary']}>
               Explore Collections &nbsp; &rarr;
             </Link>
-            <Link href="/our-story" className={styles['hero__btn-secondary']}>
-              Our Story &nbsp; &rarr;
+            <Link href="/contact" className={styles['hero__btn-secondary']}>
+              Contact Us &nbsp; &rarr;
             </Link>
           </div>
 

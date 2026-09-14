@@ -1,32 +1,49 @@
 import Navbar from '@/components/layout/Navbar';
 import Hero from '@/components/home/Hero';
-import BrandIntro from '@/components/home/BrandIntro';
-import OurStoryPreview from '@/components/home/OurStoryPreview';
-import Craftsmanship from '@/components/home/Craftsmanship';
+import ExploreCollectionsSection from '@/components/home/ExploreCollectionsSection';
 import FeaturedCollection from '@/components/home/FeaturedCollection';
-import SignatureCollection from '@/components/home/SignatureCollection';
-import LookbookPreview from '@/components/home/LookbookPreview';
-import Testimonials from '@/components/home/Testimonials';
-import InstagramPreview from '@/components/home/InstagramPreview';
-import CTABanner from '@/components/home/CTABanner';
+import Craftsmanship from '@/components/home/Craftsmanship';
+import FashionVisualBreak from '@/components/home/FashionVisualBreak';
+import BrandIntro from '@/components/home/BrandIntro';
+import CTABanner from '@/components/layout/CTABanner';
 import Footer from '@/components/layout/Footer';
+
+export const metadata = {
+  title: 'Tenun Ikat Nura — Keindahan Tenun, Warisan Nusantara',
+  description: 'Brand fashion heritage Indonesia yang menghadirkan koleksi pakaian tenun berkualitas dengan desain modern, elegan, dan autentik.',
+};
 
 export default function HomePage() {
   return (
     <>
       <Navbar />
       <main>
+        {/* Section 1: Hero */}
         <Hero />
-        <BrandIntro />
-        <OurStoryPreview />
-        <Craftsmanship />
+
+        {/* Section 2: Explore Collections */}
+        <ExploreCollectionsSection />
+
+        {/* Section 3: Featured Products */}
         <FeaturedCollection />
-        <SignatureCollection />
-        <LookbookPreview />
-        <Testimonials />
-        <InstagramPreview />
-        <CTABanner />
+
+        {/* Section 4: Why Tenun Ikat Nura (Craftsmanship & Value Points) */}
+        <Craftsmanship />
+
+        {/* Section 5: Textile / Fashion Visual */}
+        <FashionVisualBreak />
+
+        {/* Section 6: About Tenun Ikat Nura */}
+        <BrandIntro />
+
+        {/* Section 7: Final CTA */}
+        <CTABanner
+          title="Discover the Collection"
+          subtitle="Explore pieces where Indonesian heritage meets contemporary elegance."
+        />
       </main>
+
+      {/* Section 8: Footer */}
       <Footer />
     </>
   );

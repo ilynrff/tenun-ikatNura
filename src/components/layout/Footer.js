@@ -1,7 +1,10 @@
 import Link from 'next/link';
+import siteData from '@/data/site.json';
 import styles from './Footer.module.css';
 
 export default function Footer() {
+  const waDisplay = siteData.contact.whatsappDisplay || '0812-5278-3496';
+
   return (
     <footer className={styles.footer} role="contentinfo">
       <div className={styles.footer__inner}>
@@ -18,27 +21,15 @@ export default function Footer() {
             <ul className={styles.footer__links}>
               <li><Link href="/">Home</Link></li>
               <li><Link href="/collections">Collections</Link></li>
-              <li><Link href="/our-story">Our Story</Link></li>
-              <li><Link href="/lookbook">Lookbook</Link></li>
-              <li><Link href="/journal">Journal</Link></li>
+              <li><Link href="/contact">Contact</Link></li>
             </ul>
           </div>
 
           <div>
-            <h4 className={styles['footer__col-title']}>Legal & Info</h4>
+            <h4 className={styles['footer__col-title']}>Boutique &amp; Connect</h4>
             <ul className={styles.footer__links}>
-              <li><Link href="/privacy">Privacy Policy</Link></li>
-              <li><Link href="/terms">Terms of Service</Link></li>
-              <li><Link href="/care">Care Instructions</Link></li>
-              <li><Link href="/contact">Contact Us</Link></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className={styles['footer__col-title']}>Boutique & Connect</h4>
-            <ul className={styles.footer__links}>
-              <li>WhatsApp: +62 858-0010-0254</li>
-              <li>Shopee: tenun_ikat_nura</li>
+              <li>WhatsApp: {waDisplay}</li>
+              <li>Shopee: Tenun Ikat Nura</li>
               <li>Instagram: @Tenun_ikat_nura</li>
               <li>Jepara, Jawa Tengah, Indonesia</li>
             </ul>
