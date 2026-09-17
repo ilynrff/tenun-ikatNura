@@ -1,5 +1,6 @@
 import './globals.css';
 import siteData from '@/data/site.json';
+import AppProviders from '@/context/AppProviders';
 
 export const metadata = {
   title: siteData.seo.title,
@@ -68,7 +69,7 @@ export default function RootLayout({ children }) {
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        {children}
+        <AppProviders>{children}</AppProviders>
       </body>
     </html>
   );

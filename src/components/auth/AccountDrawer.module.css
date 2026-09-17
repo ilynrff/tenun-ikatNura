@@ -1,0 +1,201 @@
+.backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(20, 15, 12, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 2000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s step-end;
+}
+
+.backdropOpen {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 380px;
+  max-width: 90vw;
+  height: 100vh;
+  background-color: #ECE6DA; /* Warm linen */
+  box-shadow: -15px 0 45px rgba(0, 0, 0, 0.22);
+  z-index: 2001;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  border-left: 1px solid rgba(197, 154, 61, 0.3);
+  will-change: transform;
+}
+
+.drawerOpen {
+  transform: translateX(0);
+}
+
+.header {
+  padding: 24px 28px;
+  border-bottom: 1px solid rgba(197, 154, 61, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.title {
+  font-family: var(--font-heading, serif);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #2C2018;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #2C2018;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+}
+
+.closeBtn:hover {
+  color: var(--heritage-gold, #A37928);
+}
+
+.body {
+  padding: 32px 28px;
+  flex: 1;
+}
+
+.subtitle {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.88rem;
+  color: #665243;
+  margin-bottom: 24px;
+}
+
+.loginBtn {
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  padding: 14px 20px;
+  background-color: #2C2018;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+  margin-bottom: 24px;
+  transition: background-color 0.25s ease;
+}
+
+.loginBtn:hover {
+  background-color: var(--heritage-gold, #A37928);
+}
+
+.registerBox {
+  border-top: 1px dashed rgba(197, 154, 61, 0.3);
+  padding-top: 24px;
+  text-align: center;
+}
+
+.registerPrompt {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.85rem;
+  color: #5C4839;
+  margin-bottom: 12px;
+}
+
+.registerBtn {
+  display: inline-block;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--heritage-gold, #A37928);
+  background: none;
+  border: 1px solid var(--heritage-gold, #A37928);
+  border-radius: 2px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.registerBtn:hover {
+  background-color: var(--heritage-gold, #A37928);
+  color: #FFFFFF;
+}
+
+.greeting {
+  font-family: var(--font-heading, serif);
+  font-size: 1.25rem;
+  color: #2C2018;
+  margin-bottom: 6px;
+}
+
+.userEmail {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.8rem;
+  color: #7A6655;
+  margin-bottom: 32px;
+}
+
+.menuList {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #2C2018;
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(197, 154, 61, 0.15);
+  transition: color 0.2s ease;
+}
+
+.menuItem:hover {
+  color: var(--heritage-gold, #A37928);
+}
+
+.logoutBtn {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #A34839;
+  background: none;
+  border: 1px solid rgba(163, 72, 57, 0.4);
+  border-radius: 2px;
+  padding: 10px 20px;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.logoutBtn:hover {
+  background-color: rgba(163, 72, 57, 0.1);
+}

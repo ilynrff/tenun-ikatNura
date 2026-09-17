@@ -1,15 +1,20 @@
-.navbar {
+.headerWrapper {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  height: 84px;
+  z-index: 1000;
+  transition: transform 0.3s ease;
+}
+
+.navbar {
+  width: 100%;
+  height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 80px;
+  padding: 0 60px;
   background: transparent;
-  z-index: 1000;
   transition: background-color 0.4s var(--ease-out), 
               backdrop-filter 0.4s var(--ease-out), 
               -webkit-backdrop-filter 0.4s var(--ease-out), 
@@ -18,14 +23,13 @@
               height 0.4s var(--ease-out);
 }
 
-/* Glassmorphism Background Blur when Scrolled Down */
 .navbar--scrolled {
-  background-color: rgba(236, 230, 218, 0.85); /* Rich warm linen translucent background */
+  background-color: rgba(236, 230, 218, 0.92);
   backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
-  box-shadow: 0 4px 24px rgba(26, 18, 12, 0.06);
-  border-bottom: 1px solid rgba(197, 154, 61, 0.2);
-  height: 76px; /* Slightly slimmer height on scroll for refined luxury look */
+  box-shadow: 0 4px 24px rgba(26, 18, 12, 0.08);
+  border-bottom: 1px solid rgba(197, 154, 61, 0.25);
+  height: 72px;
 }
 
 .navbar__logo {
@@ -36,11 +40,10 @@
   font-family: var(--font-heading);
 }
 
-/* Logo N Icon: Increased size by ~10% for strong brand presence */
 .navbar__logo-icon {
-  font-size: 2.85rem;
+  font-size: 2.5rem;
   font-weight: 400;
-  color: var(--heritage-gold);
+  color: var(--heritage-gold, #A37928);
   line-height: 1;
 }
 
@@ -50,118 +53,185 @@
   line-height: 1.05;
 }
 
-/* Subtitle TENUN IKAT */
 .navbar__logo-brand {
   font-family: var(--font-accent);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: var(--heritage-gold);
+  color: var(--heritage-gold, #A37928);
   font-weight: 600;
 }
 
-/* Brand Name NURA */
 .navbar__logo-name {
-  font-size: 1.55rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: #1A120C;
   letter-spacing: 0.08em;
 }
 
-.navbar__nav {
+/* Pill Floating Navigation Bar Container */
+.navbar__navPill {
   display: flex;
   align-items: center;
-  gap: 48px;
+  gap: 6px;
+  background-color: rgba(44, 32, 24, 0.08);
+  border: 1px solid rgba(197, 154, 61, 0.35);
+  padding: 5px 6px;
+  border-radius: 999px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
 }
 
-/* Navigation Links: Refined light & sophisticated typography */
-.navbar__link {
-  font-family: var(--font-accent);
-  font-size: 14px;
-  letter-spacing: 2.8px;
+.navbar__linkPill {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 12.5px;
+  letter-spacing: 1.8px;
   font-weight: 500;
   text-transform: uppercase;
-  color: #2C2018;
+  color: #4A3525;
   text-decoration: none;
-  position: relative;
-  padding: 0.3rem 0;
-  transition: color var(--duration-fast) var(--ease-out);
+  padding: 8px 22px;
+  border-radius: 999px;
+  transition: all 0.25s ease;
 }
 
-.navbar__link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 1.5px;
-  background-color: var(--heritage-gold);
-  transition: width var(--duration-normal) var(--ease-out);
+.navbar__linkPill:hover {
+  color: #1A120C;
+  background-color: rgba(255, 255, 255, 0.5);
 }
 
-.navbar__link:hover::after,
-.navbar__link--active::after {
-  width: 100%;
+.navbar__linkPillActive {
+  background-color: #2C2018;
+  color: #ECE6DA;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(44, 32, 24, 0.2);
 }
 
-.navbar__link:hover,
-.navbar__link--active {
-  color: var(--heritage-gold);
-}
-
-/* 
-   Discover Collection CTA Button: 
-   Understated, refined luxury styling with thin border and subtle background fill.
-*/
-.navbar__cta {
-  font-family: var(--font-accent);
-  font-size: 13px;
-  font-weight: 500;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  padding: 12px 30px;
-  border: 1px solid var(--heritage-gold);
-  color: var(--heritage-gold);
-  background-color: rgba(255, 255, 255, 0.15);
-  border-radius: 2px;
-  text-decoration: none;
-  backdrop-filter: blur(4px);
-  transition: all var(--duration-normal) var(--ease-out);
-}
-
-/* Dark Espresso High-Contrast Hover State */
-.navbar__cta:hover {
+.navbar__linkPillActive:hover {
   background-color: #1A120C;
-  border-color: #1A120C;
   color: #FFFFFF;
+}
+
+.navbar__right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Utility Icons Pill Group */
+.navbar__iconBtnPill {
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(197, 154, 61, 0.35);
+  color: #2C2018;
+  cursor: pointer;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  backdrop-filter: blur(8px);
+}
+
+.navbar__iconBtnPill:hover {
+  background-color: #2C2018;
+  color: #FFFFFF;
+  border-color: #2C2018;
   transform: translateY(-1px);
 }
 
+.cartBadge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  background-color: var(--heritage-gold, #A37928);
+  color: #FFFFFF;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
 .navbar__toggle {
+  display: none;
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.mobileMenu {
   display: none;
 }
 
 @media (max-width: 1023px) {
   .navbar {
-    padding: 0 40px;
-    height: 72px;
-  }
-  .navbar--scrolled {
+    padding: 0 24px;
     height: 68px;
   }
-  .navbar__nav,
-  .navbar__cta {
+  .navbar--scrolled {
+    height: 64px;
+  }
+  .navbar__navPill {
     display: none;
   }
   .navbar__toggle {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    cursor: pointer;
   }
   .navbar__toggle-line {
     width: 22px;
     height: 1.5px;
-    background-color: var(--dark-brown);
+    background-color: #2C2018;
+    transition: all 0.3s ease;
+  }
+
+  .mobileMenu {
+    display: block;
+    position: fixed;
+    top: 100px;
+    left: 0;
+    width: 100%;
+    background-color: #ECE6DA;
+    border-bottom: 1px solid rgba(197, 154, 61, 0.3);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 24px;
+    transform: translateY(-150%);
+    opacity: 0;
+    transition: transform 0.35s ease, opacity 0.35s ease;
+    z-index: 999;
+  }
+
+  .mobileMenuOpen {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .mobileNavList {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+  }
+
+  .mobileNavLink {
+    font-family: var(--font-accent);
+    font-size: 14px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #2C2018;
+    text-decoration: none;
+    font-weight: 500;
   }
 }
