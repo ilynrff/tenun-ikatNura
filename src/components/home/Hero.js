@@ -86,7 +86,6 @@ export default function Hero() {
             <div className={styles.archOverlay}>
               <span className={styles.archCategory}>{item.category}</span>
               <h3 className={styles.archTitle}>{item.title}</h3>
-              <span className={styles.archPrice}>{item.price}</span>
             </div>
           </Link>
         ))}
