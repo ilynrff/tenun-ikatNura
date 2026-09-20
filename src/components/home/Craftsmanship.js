@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import styles from './Craftsmanship.module.css';
 
 const steps = [
@@ -56,15 +57,21 @@ export default function Craftsmanship() {
         <div className={styles.craft__timeline}>
           {steps.map((step) => (
             <div key={step.num} className={styles.craft__step}>
-              <div className={styles['craft__step-image']}>
+              <div className={styles['craft__step-visual']}>
                 <img src={step.img} alt={step.title} loading="lazy" />
               </div>
-              <span className={styles['craft__step-number']}>{step.num}</span>
-              <h3 className={styles['craft__step-title']}>{step.title}</h3>
-              <p className={styles['craft__step-desc']}>{step.desc}</p>
+              <div className={styles['craft__step-copy']}>
+                <span className={styles['craft__step-number']}>{step.num}</span>
+                <h3 className={styles['craft__step-title']}>{step.title}</h3>
+                <p className={styles['craft__step-desc']}>{step.desc}</p>
+              </div>
             </div>
           ))}
         </div>
+
+        <Link href="/our-story" className={styles.craft__cta}>
+          Discover the Story Behind the Craft <span aria-hidden="true">→</span>
+        </Link>
       </div>
     </section>
   );

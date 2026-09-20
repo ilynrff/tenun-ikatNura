@@ -1,13 +1,10 @@
 .heroContainer {
   position: relative;
   width: 100%;
-  height: 100vh;
-  height: 100svh; /* safe viewport height — avoids mobile browser bar issues */
-  padding-top: 110px;
+  padding-top: 120px;
   padding-bottom: 0;
   background-color: #ECE6DA;
-  /* Soft warm linen texture background */
-  background-image: 
+  background-image:
     radial-gradient(circle at 50% 30%, rgba(255, 255, 255, 0.5) 0%, transparent 70%),
     linear-gradient(rgba(44, 32, 24, 0.02) 1px, transparent 1px),
     linear-gradient(90deg, rgba(44, 32, 24, 0.02) 1px, transparent 1px);
@@ -18,34 +15,58 @@
   overflow: hidden;
 }
 
+.heroHeader {
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto 18px;
+  display: flex;
+  justify-content: center;
+}
+
+.editionWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  width: min(100%, 560px);
+  padding: 12px 22px 16px;
+  border: 2px solid rgba(163, 121, 40, 0.5);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: #5E4635;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.ornament {
+  color: var(--heritage-gold, #A37928);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.editionText {
+  white-space: nowrap;
+}
+
+.editionDivider {
+  color: var(--heritage-gold, #A37928);
+  font-size: 16px;
+  line-height: 1;
+}
+
 .heroContent {
   text-align: center;
   max-width: 820px;
-  margin: 0 auto 20px auto;
+  margin: 0 auto 18px auto;
   padding: 0 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   z-index: 2;
-  flex-shrink: 0; /* keep text area at its natural size */
-}
-
-.badgePill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 20px;
-  background-color: rgba(163, 121, 40, 0.1);
-  border: 1px solid rgba(163, 121, 40, 0.35);
-  border-radius: 999px;
-  font-family: var(--font-accent, sans-serif);
-  font-size: 11px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: #8C6418;
-  font-weight: 600;
-  margin-bottom: 24px;
 }
 
 .title {
@@ -61,14 +82,13 @@
 
 .subtitle {
   font-family: var(--font-body, sans-serif);
-  font-size: 11px;
+  font-size: 15px;
   line-height: 1.75;
   color: #665243;
-  max-width: 580px;
+  max-width: 640px;
   margin: 0 0 32px 0;
 }
 
-/* Pill CTA Button with Circular Arrow */
 .ctaPill {
   display: inline-flex;
   align-items: center;
@@ -112,33 +132,27 @@
   transform: translateX(3px);
 }
 
-/* 
-   ====================================================
-   ARCH-WINDOW (KUBAH LENGKUNG) PHOTO GALLERY
-   Inspired by Flaire Modern Fashion Showcase
-   ====================================================
-*/
 .archGallery {
   width: 100%;
   max-width: 1380px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 24px 28px;
   display: flex;
   align-items: flex-end;
   justify-content: center;
   gap: 20px;
   position: relative;
   z-index: 2;
-  flex: 1;          /* fills all remaining vertical space */
-  min-height: 0;    /* allow flex children to shrink */
+  flex: 1;
+  min-height: 0;
 }
 
 .archCard {
   position: relative;
   flex: 1;
   max-width: 240px;
-  height: 92%;      /* proportional — more room for full-body model shots */
-  border-radius: 160px 160px 0 0; /* Arch window cutout shape */
+  height: 92%;
+  border-radius: 160px 160px 0 0;
   overflow: hidden;
   background-color: #E2DACB;
   box-shadow: 0 16px 36px rgba(44, 32, 24, 0.12);
@@ -153,10 +167,9 @@
   box-shadow: 0 24px 48px rgba(44, 32, 24, 0.22);
 }
 
-/* Center Featured Arch Card (Taller & Elevated) */
 .archCardFeatured {
   max-width: 270px;
-  height: 100%;     /* full height — showcase the featured model fully */
+  height: 100%;
   border-radius: 200px 200px 0 0;
   border: 1.5px solid var(--heritage-gold, #A37928);
   box-shadow: 0 20px 44px rgba(163, 121, 40, 0.2);
@@ -165,8 +178,8 @@
 .archImage {
   width: 100%;
   height: 100%;
-  object-fit: contain;        /* show full model body, no cropping */
-  object-position: center bottom; /* model stands at bottom of arch */
+  object-fit: contain;
+  object-position: center bottom;
   transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -208,22 +221,23 @@
   line-height: 1.2;
 }
 
-/* .archPrice removed — lookbook cards don't show pricing */
-
 @media (max-width: 1023px) {
   .heroContainer {
     padding-top: 110px;
   }
+
   .archGallery {
     gap: 12px;
     overflow-x: auto;
     justify-content: flex-start;
     padding-bottom: 12px;
   }
+
   .archCard {
     min-width: 180px;
     height: 88%;
   }
+
   .archCardFeatured {
     min-width: 210px;
     height: 98%;
@@ -232,26 +246,40 @@
 
 @media (max-width: 767px) {
   .heroContainer {
-    height: auto;
     min-height: 100svh;
   }
+
+  .heroHeader {
+    width: calc(100% - 32px);
+  }
+
+  .editionWrap {
+    gap: 10px;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+  }
+
   .title {
     font-size: 2.2rem;
   }
+
   .subtitle {
     font-size: 14.5px;
   }
+
   .archGallery {
     flex: none;
     height: 300px;
   }
+
   .archCard {
     height: 85%;
   }
+
   .archCardFeatured {
     height: 97%;
   }
-  /* Show overlay always on touch devices */
+
   .archOverlay {
     opacity: 1;
     background: linear-gradient(to top, rgba(20, 15, 12, 0.6) 0%, transparent 50%);

@@ -7,35 +7,30 @@ const archLookbook = [
   {
     title: 'Nusa Indah Outer',
     category: 'Outerwear',
-    price: 'Rp 650.000',
     image: '/images/collections/nusa-indah-1.jpg',
     featured: false,
   },
   {
     title: 'Majapahit Blazer',
     category: 'Heritage Blazer',
-    price: 'Rp 890.000',
     image: '/images/collections/majapahit-blazer-1.jpg',
     featured: false,
   },
   {
     title: 'Ratna Tenun Dress',
     category: 'Couture Dress',
-    price: 'Rp 780.000',
     image: '/images/collections/ratna-dress-1.jpg',
-    featured: true, // Center Elevated Card
+    featured: true,
   },
   {
     title: 'Swarna Bumi Kimono',
     category: 'Kimono Outer',
-    price: 'Rp 720.000',
     image: '/images/collections/swarna-kimono-1.jpg',
     featured: false,
   },
   {
     title: 'Surya Kencana Shirt',
     category: 'Men Collection',
-    price: 'Rp 580.000',
     image: '/images/collections/surya-shirt-1.jpg',
     featured: false,
   },
@@ -44,13 +39,17 @@ const archLookbook = [
 export default function Hero() {
   return (
     <section className={styles.heroContainer} aria-label="Hero campaign">
-      {/* Centered Flaire-inspired Header Content */}
-      <div className={styles.heroContent}>
-        <div className={styles.badgePill}>
-          <span style={{ color: 'var(--heritage-gold, #A37928)' }}>✦</span>
-          WARISAN NUSANTARA • EDITION 2026
+      <div className={styles.heroHeader}>
+        <div className={styles.editionWrap}>
+          <span className={styles.ornament} aria-hidden="true">✦</span>
+          <span className={styles.editionText}>WARISAN NUSANTARA</span>
+          <span className={styles.editionDivider}>•</span>
+          <span className={styles.editionText}>EDITION 2026</span>
+          <span className={styles.ornament} aria-hidden="true">✦</span>
         </div>
+      </div>
 
+      <div className={styles.heroContent}>
         <h1 className={styles.title}>
           Woven Heritage,<br />Designed for Today.
         </h1>
@@ -69,7 +68,6 @@ export default function Hero() {
         </Link>
       </div>
 
-      {/* 5 Arch-Window (Kubah Lengkung) Lookbook Cards Gallery */}
       <div className={styles.archGallery}>
         {archLookbook.map((item, index) => (
           <Link

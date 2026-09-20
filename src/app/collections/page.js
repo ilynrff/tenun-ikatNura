@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import CollectionsPage from '@/components/collections/CollectionsPage';
 
 export const metadata = {
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function Page() {
-  return <CollectionsPage />;
+  return (
+    <Suspense fallback={null}>
+      <CollectionsPage />
+    </Suspense>
+  );
 }
