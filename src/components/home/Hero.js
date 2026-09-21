@@ -39,16 +39,6 @@ const archLookbook = [
 export default function Hero() {
   return (
     <section className={styles.heroContainer} aria-label="Hero campaign">
-      <div className={styles.heroHeader}>
-        <div className={styles.editionWrap}>
-          <span className={styles.ornament} aria-hidden="true">✦</span>
-          <span className={styles.editionText}>WARISAN NUSANTARA</span>
-          <span className={styles.editionDivider}>•</span>
-          <span className={styles.editionText}>EDITION 2026</span>
-          <span className={styles.ornament} aria-hidden="true">✦</span>
-        </div>
-      </div>
-
       <div className={styles.heroContent}>
         <h1 className={styles.title}>
           Woven Heritage,<br />Designed for Today.

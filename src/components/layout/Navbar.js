@@ -67,9 +67,8 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`${styles.navbar__linkPill} ${
-                  isActive ? styles.navbar__linkPillActive : ''
-                }`}
+                className={`${styles.navbar__linkPill} ${isActive ? styles.navbar__linkPillActive : ''
+                  }`}
               >
                 {link.label}
               </Link>

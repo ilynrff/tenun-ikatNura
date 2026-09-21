@@ -1,7 +1,8 @@
 .heroContainer {
   position: relative;
   width: 100%;
-  padding-top: 120px;
+  min-height: 100svh;
+  padding-top: 104px;
   padding-bottom: 0;
   background-color: #ECE6DA;
   background-image:
@@ -13,48 +14,6 @@
   flex-direction: column;
   align-items: center;
   overflow: hidden;
-}
-
-.heroHeader {
-  width: min(1240px, calc(100% - 48px));
-  margin: 0 auto 18px;
-  display: flex;
-  justify-content: center;
-}
-
-.editionWrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-  width: min(100%, 560px);
-  padding: 12px 22px 16px;
-  border: 2px solid rgba(163, 121, 40, 0.5);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
-  color: #5E4635;
-  font-family: var(--font-accent, sans-serif);
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.ornament {
-  color: var(--heritage-gold, #A37928);
-  font-size: 14px;
-  line-height: 1;
-}
-
-.editionText {
-  white-space: nowrap;
-}
-
-.editionDivider {
-  color: var(--heritage-gold, #A37928);
-  font-size: 16px;
-  line-height: 1;
 }
 
 .heroContent {
@@ -77,7 +36,7 @@
   line-height: 1.05;
   letter-spacing: -0.5px;
   text-transform: uppercase;
-  margin: 0 0 20px 0;
+  margin: 0 0 14px 0;
 }
 
 .subtitle {
@@ -86,7 +45,7 @@
   line-height: 1.75;
   color: #665243;
   max-width: 640px;
-  margin: 0 0 32px 0;
+  margin: 0 0 24px 0;
 }
 
 .ctaPill {
@@ -144,7 +103,8 @@
   position: relative;
   z-index: 2;
   flex: 1;
-  min-height: 0;
+  min-height: 360px;
+  margin-top: -18px;
 }
 
 .archCard {
@@ -223,7 +183,7 @@
 
 @media (max-width: 1023px) {
   .heroContainer {
-    padding-top: 110px;
+    padding-top: 92px;
   }
 
   .archGallery {
@@ -231,6 +191,7 @@
     overflow-x: auto;
     justify-content: flex-start;
     padding-bottom: 12px;
+    min-height: 280px;
   }
 
   .archCard {
@@ -249,16 +210,6 @@
     min-height: 100svh;
   }
 
-  .heroHeader {
-    width: calc(100% - 32px);
-  }
-
-  .editionWrap {
-    gap: 10px;
-    font-size: 9px;
-    letter-spacing: 0.12em;
-  }
-
   .title {
     font-size: 2.2rem;
   }
@@ -270,6 +221,8 @@
   .archGallery {
     flex: none;
     height: 300px;
+    min-height: 0;
+    margin-top: -28px;
   }
 
   .archCard {
