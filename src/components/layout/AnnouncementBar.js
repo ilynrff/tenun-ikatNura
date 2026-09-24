@@ -2,7 +2,7 @@
 
 import styles from './AnnouncementBar.module.css';
 
-const STATEMENT = 'TENUN IKAT NURA • WOVEN HERITAGE • HANDCRAFTED IN INDONESIA • DESIGNED FOR TODAY';
+const STATEMENT = 'TENUN IKAT NURA • WARISAN TENUN NUSANTARA • 100% BUATAN TANGAN INDONESIA • DIRANCANG UNTUK MASA KINI';
 
 export default function AnnouncementBar() {
   // Duplicate array so marquee loops 100% seamlessly

@@ -15,11 +15,11 @@ export default function Footer() {
         <div className={styles.footer__top}>
           <div className={styles.footer__brand}>
             <p className={styles.footer__eyebrow}>Tenun Ikat Nura</p>
-            <h3 className={styles['footer__brand-title']}>Woven heritage,<br />designed for today.</h3>
+            <h3 className={styles['footer__brand-title']}>Warisan tenun,<br />dirancang untuk masa kini.</h3>
             <p className={styles['footer__brand-desc']}>
               Tenun ikat dari Jepara, dibuat dengan penuh cinta untuk menghadirkan warisan tradisi dalam gaya modern.
             </p>
-            <div className={styles.footer__socials} aria-label="Social media">
+            <div className={styles.footer__socials} aria-label="Media sosial">
               <a href={instagramUrl} target="_blank" rel="noreferrer">Instagram</a>
               <a href={waUrl} target="_blank" rel="noreferrer">WhatsApp</a>
               <a href={shopeeUrl} target="_blank" rel="noreferrer">Shopee</a>
@@ -27,28 +27,28 @@ export default function Footer() {
           </div>
 
           <div className={styles.footer__newsletter}>
-            <h4 className={styles['footer__col-title']}>Stay connected</h4>
+            <h4 className={styles['footer__col-title']}>Tetap Terhubung</h4>
             <p className={styles['footer__newsletter-copy']}>
-              Discover new collections, stories, and updates from Tenun Ikat Nura.
+              Dapatkan info koleksi terbaru, kisah wastra, dan penawaran eksklusif dari Tenun Ikat Nura.
             </p>
             <form className={styles.footer__subscribe}>
-              <label className={styles.footer__srOnly} htmlFor="footer-email">Your email address</label>
-              <input id="footer-email" type="email" placeholder="Your email address" />
-              <button type="button">Subscribe</button>
+              <label className={styles.footer__srOnly} htmlFor="footer-email">Alamat email Anda</label>
+              <input id="footer-email" type="email" placeholder="Alamat email Anda" />
+              <button type="button">Langganan</button>
             </form>
           </div>
 
           <div className={styles.footer__column}>
-            <h4 className={styles['footer__col-title']}>Navigation</h4>
+            <h4 className={styles['footer__col-title']}>Navigasi</h4>
             <ul className={styles.footer__links}>
-              <li><Link href="/">Home</Link></li>
-              <li><Link href="/collections">Collections</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
+              <li><Link href="/">Beranda</Link></li>
+              <li><Link href="/collections">Koleksi</Link></li>
+              <li><Link href="/contact">Kontak</Link></li>
             </ul>
           </div>
 
           <div className={styles.footer__column}>
-            <h4 className={styles['footer__col-title']}>Contact</h4>
+            <h4 className={styles['footer__col-title']}>Kontak</h4>
             <address className={styles.footer__contact}>
               <p>{siteData.contact.address || 'Jepara, Jawa Tengah, Indonesia'}</p>
               <a href={`mailto:${email}`}>{email}</a>
@@ -58,8 +58,8 @@ export default function Footer() {
         </div>
 
         <div className={styles.footer__bottom}>
-          <p>&copy; {new Date().getFullYear()} Tenun Ikat Nura. All rights reserved.</p>
-          <p>Tenun Heritage <span aria-hidden="true">·</span> Crafted in Indonesia</p>
+          <p>&copy; {new Date().getFullYear()} Tenun Ikat Nura. Hak cipta dilindungi.</p>
+          <p>Warisan Tenun <span aria-hidden="true">·</span> Mahakarya Indonesia</p>
         </div>
       </div>
     </footer>

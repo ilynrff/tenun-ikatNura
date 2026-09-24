@@ -10,10 +10,10 @@ export default function BrandIntro() {
       <div className={styles.intro__inner}>
         {/* Left Column: Editorial Typography & Brand Introduction */}
         <div className={styles.intro__content}>
-          <span className={styles.intro__eyebrow}>OUR IDENTITY</span>
+          <span className={styles.intro__eyebrow}>IDENTITAS KAMI</span>
           
           <h2 id="identity-title" className={styles.intro__title}>
-            Where Tradition<br />Meets Elegance
+            Di Mana Tradisi<br />Bertemu Keanggunan
           </h2>
 
           {/* Minimal Subtle Gold Line Ornament */}
@@ -23,7 +23,7 @@ export default function BrandIntro() {
           <div className={styles['intro__mobile-image-wrapper']}>
             <img
               src={artisanImageSrc}
-              alt="Indonesian master artisan weaving traditional Ikat fabric on an antique wooden loom"
+              alt="Pengrajin ahli Indonesia sedang menenun kain tenun ikat tradisional pada alat tenun kayu"
               className={styles.intro__image}
               loading="eager"
             />
@@ -41,7 +41,7 @@ export default function BrandIntro() {
         <div className={styles['intro__desktop-image-wrapper']}>
           <img
             src={artisanImageSrc}
-            alt="Indonesian master artisan weaving traditional Ikat fabric on an antique wooden loom"
+            alt="Pengrajin ahli Indonesia sedang menenun kain tenun ikat tradisional pada alat tenun kayu"
             className={styles.intro__image}
             loading="eager"
           />

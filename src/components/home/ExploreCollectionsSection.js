@@ -4,12 +4,54 @@ import Link from 'next/link';
 import styles from './ExploreCollectionsSection.module.css';
 
 const categories = [
-  { number: '01', name: 'Dress', slug: 'dress', label: 'Gaun & Tunic' },
-  { number: '02', name: 'Blazer', slug: 'outer', label: 'Structured Blazer' },
-  { number: '03', name: 'Couple Set', slug: 'couple', label: 'Sarimbit Pasangan' },
-  { number: '04', name: 'Kimono', slug: 'outer', label: 'Resortwear Kimono' },
-  { number: '05', name: 'Kemeja', slug: 'men', label: 'Menswear Shirt' },
-  { number: '06', name: 'Outerwear', slug: 'outer', label: 'Statement Outer' },
+  {
+    number: '01',
+    name: 'GAUN',
+    slug: 'dress',
+    label: 'Gaun & Tunik',
+    image: '/images/collections/ratna-dress-1.jpg',
+    desc: 'Siluet feminin anggun berpadu motif tenun nusantara',
+  },
+  {
+    number: '02',
+    name: 'BLAZER',
+    slug: 'outer',
+    label: 'Blazer Berstruktur',
+    image: '/images/collections/majapahit-blazer-1.jpg',
+    desc: 'Potongan tegas dan presisi untuk tampilan formal berkelas',
+  },
+  {
+    number: '03',
+    name: 'SET PASANGAN',
+    slug: 'couple',
+    label: 'Busana Sarimbit',
+    image: '/images/collections/signature-piece.jpg',
+    desc: 'Harmoni busana serasi untuk momen istimewa bersama',
+  },
+  {
+    number: '04',
+    name: 'KIMONO',
+    slug: 'outer',
+    label: 'Kimono Modern',
+    image: '/images/collections/swarna-kimono-1.jpg',
+    desc: 'Luaran relaks berpotongan lebar dengan sentuhan tradisi',
+  },
+  {
+    number: '05',
+    name: 'KEMEJA',
+    slug: 'men',
+    label: 'Kemeja Pria',
+    image: '/images/collections/surya-shirt-1.jpg',
+    desc: 'Kemeja tenun pria berkarakter modern dan nyaman',
+  },
+  {
+    number: '06',
+    name: 'OUTER',
+    slug: 'outer',
+    label: 'Luaran Berkarakter',
+    image: '/images/collections/nusa-indah-1.jpg',
+    desc: 'Aksen statement busana wastra serbaguna untuk segala suasana',
+  },
 ];
 
 export default function ExploreCollectionsSection() {
@@ -17,29 +59,41 @@ export default function ExploreCollectionsSection() {
     <section className={styles.section} aria-labelledby="explore-title">
       <div className={styles.container}>
         <div className={styles.header}>
-          <span className={styles.label}>Kategori Pilihan</span>
+          <span className={styles.eyebrow}>PILIHAN EKSKLUSIF</span>
           <h2 id="explore-title" className={styles.title}>
-            Curated Edit
+            Kategori Pilihan
           </h2>
           <p className={styles.desc}>
-            Modern silhouettes shaped by the beauty of Indonesian woven heritage.
+            Pilihan busana yang mempertemukan keindahan tenun Nusantara dengan siluet modern.
           </p>
         </div>
 
-        <div className={styles.rail} role="list" aria-label="Collection categories">
+        <div className={styles.categoryGrid} role="list" aria-label="Kategori pilihan koleksi tenun">
           {categories.map((cat) => (
             <Link
-              key={cat.name}
+              key={cat.number}
               href={`/collections?category=${cat.slug}`}
-              className={styles.card}
+              className={styles.categoryCard}
               role="listitem"
             >
-              <span className={styles.cardNumber}>{cat.number}</span>
-              <div className={styles.cardText}>
-                <span className={styles.cardName}>{cat.name}</span>
-                <span className={styles.cardLabel}>{cat.label}</span>
+              <div className={styles.imageContainer}>
+                <span className={styles.categoryNumber}>{cat.number}</span>
+                <img
+                  src={cat.image}
+                  alt={`${cat.name} — ${cat.label}`}
+                  className={styles.categoryImage}
+                  loading="lazy"
+                />
+                <div className={styles.imageOverlay} />
               </div>
-              <span className={styles.cardArrow} aria-hidden="true">→</span>
+
+              <div className={styles.cardContent}>
+                <div className={styles.titleRow}>
+                  <h3 className={styles.categoryName}>{cat.name}</h3>
+                  <span className={styles.arrowIcon} aria-hidden="true">→</span>
+                </div>
+                <span className={styles.categoryLabel}>{cat.label}</span>
+              </div>
             </Link>
           ))}
         </div>
