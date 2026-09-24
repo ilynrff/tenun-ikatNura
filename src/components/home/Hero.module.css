@@ -384,7 +384,7 @@
 /* RESPONSIVE BREAKPOINTS */
 @media (max-width: 1023px) {
   .heroContainer {
-    padding-top: 90px;
+    padding-top: 92px;
     padding-bottom: 20px;
   }
 
@@ -410,36 +410,55 @@
 @media (max-width: 767px) {
   .heroContainer {
     min-height: auto;
-    padding-top: 86px;
-    padding-bottom: 30px;
+    /* Precise breathing room between fixed Navbar and Headline */
+    padding-top: 118px;
+    padding-bottom: 24px;
+  }
+
+  .heroContent {
+    padding: 0 16px;
   }
 
   .title {
-    font-size: 1.8rem;
-    margin-bottom: 10px;
+    font-size: 1.75rem;
+    line-height: 1.18;
+    margin-bottom: 8px;
   }
 
   .subtitle {
     font-size: 13.5px;
-    margin-bottom: 18px;
+    line-height: 1.55;
+    margin-bottom: 14px;
+    max-width: 90%;
+  }
+
+  .ctaPill {
+    font-size: 11px;
+    letter-spacing: 1.8px;
+    padding: 6px 8px 6px 20px;
+  }
+
+  .ctaArrowCircle {
+    width: 30px;
+    height: 30px;
   }
 
   .galleryWrapper {
-    margin-top: 24px;
+    margin-top: 14px;
     padding: 0;
     overflow: hidden;
     width: 100vw;
   }
 
-  /* Interactive Horizontal Swipe Rail for Mobile */
+  /* Interactive Horizontal Swipe Rail for Mobile with Item 03 Centered */
   .archGallery {
-    height: 310px;
+    height: 305px;
     justify-content: flex-start;
     overflow-x: auto;
     overflow-y: hidden;
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
-    padding: 10px 20px 20px;
+    padding: 6px 24px 14px;
     gap: 12px;
     scrollbar-width: none;
   }
@@ -449,8 +468,8 @@
   }
 
   .archCard {
-    flex: 0 0 170px;
-    max-width: 170px;
+    flex: 0 0 165px;
+    max-width: 165px;
     height: 94%;
     scroll-snap-align: center;
     border-radius: 110px 110px 0 0;
@@ -458,15 +477,15 @@
 
   .archCard:nth-child(1),
   .archCard:nth-child(5) {
-    flex: 0 0 160px;
-    max-width: 160px;
+    flex: 0 0 155px;
+    max-width: 155px;
     height: 90%;
     opacity: 1;
   }
 
   .archCardFeatured {
-    flex: 0 0 180px;
-    max-width: 180px;
+    flex: 0 0 175px;
+    max-width: 175px;
     height: 100%;
     border-radius: 120px 120px 0 0;
   }

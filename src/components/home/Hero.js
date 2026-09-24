@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Link from 'next/link';
 import styles from './Hero.module.css';
 
@@ -49,11 +49,13 @@ const archLookbook = [
 
 export default function Hero() {
   const [activePreview, setActivePreview] = useState(null);
+  const archGalleryRef = useRef(null);
 
   const closePreview = useCallback(() => {
     setActivePreview(null);
   }, []);
 
+  // Modal ESC key and body scroll lock handler
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') {
@@ -73,6 +75,37 @@ export default function Hero() {
       document.body.style.overflow = '';
     };
   }, [activePreview, closePreview]);
+
+  // Initial mobile centering for Item 03 (Index 2 - Ratna Tenun Dress)
+  useEffect(() => {
+    const centerMobileArch = () => {
+      if (typeof window === 'undefined') return;
+      if (window.innerWidth > 767) return; // Keep desktop layout untouched
+
+      const gallery = archGalleryRef.current;
+      if (!gallery) return;
+
+      const cards = gallery.querySelectorAll(`.${styles.archCard}`);
+      const centerCard = cards[2]; // Item ke-3 (Index 2)
+
+      if (centerCard) {
+        const cardCenter = centerCard.offsetLeft + centerCard.offsetWidth / 2;
+        const galleryCenter = gallery.clientWidth / 2;
+        const targetScrollLeft = cardCenter - galleryCenter;
+
+        gallery.scrollLeft = Math.max(0, targetScrollLeft);
+      }
+    };
+
+    // Execute immediately after layout mount
+    const timeoutId = setTimeout(centerMobileArch, 60);
+    const secondaryTimeoutId = setTimeout(centerMobileArch, 300);
+
+    return () => {
+      clearTimeout(timeoutId);
+      clearTimeout(secondaryTimeoutId);
+    };
+  }, []);
 
   return (
     <section className={styles.heroContainer} aria-label="Hero campaign">
@@ -96,7 +129,12 @@ export default function Hero() {
       </div>
 
       <div className={styles.galleryWrapper}>
-        <div className={styles.archGallery} role="region" aria-label="Galeri busana tenun">
+        <div
+          ref={archGalleryRef}
+          className={styles.archGallery}
+          role="region"
+          aria-label="Galeri busana tenun"
+        >
           {archLookbook.map((item, index) => (
             <button
               key={item.id}
