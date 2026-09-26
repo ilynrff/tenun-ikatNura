@@ -70,7 +70,7 @@ Apakah produk ini masih tersedia atau bisa di-custom order? Terima kasih!`;
             </div>
 
             <div className={styles.priceRow}>
-              <span className={styles.price}>{product.price || 'Custom Handcrafted Order'}</span>
+              <span className={styles.price}>{product.price || 'Sesuai Pesanan'}</span>
             </div>
 
             <p className={styles.description}>{product.description}</p>
@@ -122,7 +122,7 @@ Apakah produk ini masih tersedia atau bisa di-custom order? Terima kasih!`;
                   <line x1="3" y1="6" x2="21" y2="6"></line>
                   <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
-                <span>ADD TO CART</span>
+                <span>TAMBAH KE KERANJANG</span>
               </button>
 
               <a

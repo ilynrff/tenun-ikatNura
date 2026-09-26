@@ -1,83 +1,204 @@
+/* CTABanner Stylesheet - Tenun Ikat Nura */
+
 .cta {
-  background-color: var(--dark-brown);
-  padding: var(--space-4xl) 0;
+  background-color: var(--dark-brown, #1A120C);
+  padding: 4.5rem 1.25rem;
   text-align: center;
   position: relative;
   overflow: hidden;
+  border-top: 1px solid rgba(197, 154, 61, 0.15);
 }
 
+/* Subtle warm ambient lighting */
 .cta::before {
   content: '';
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 200px;
-  height: 200px;
-  background: radial-gradient(circle, rgba(184, 134, 11, 0.08) 0%, transparent 70%);
+  width: 480px;
+  height: 280px;
+  background: radial-gradient(circle, rgba(197, 154, 61, 0.09) 0%, transparent 70%);
   pointer-events: none;
 }
 
 .cta__inner {
-  max-width: var(--narrow-width);
+  max-width: 620px;
   margin: 0 auto;
-  padding: 0 var(--gutter);
+  position: relative;
+  z-index: 1;
 }
 
+/* Top Decorative Ornament */
 .cta__ornament {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
-  margin-bottom: var(--space-2xl);
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
 }
 
 .cta__ornament-line {
-  width: 50px;
+  width: 40px;
   height: 1px;
-  background-color: var(--heritage-gold);
+  background-color: var(--heritage-gold, #C59A3D);
   opacity: 0.5;
 }
 
 .cta__ornament-diamond {
-  width: 6px;
-  height: 6px;
-  background-color: var(--heritage-gold);
-  transform: rotate(45deg);
+  color: var(--heritage-gold, #C59A3D);
+  font-size: 0.75rem;
+  line-height: 1;
+  opacity: 0.85;
 }
 
+/* Heading */
 .cta__title {
-  font-family: var(--font-heading);
-  font-size: var(--text-3xl);
-  color: var(--ivory);
-  margin-bottom: var(--space-md);
+  font-family: var(--font-heading, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(1.75rem, 3.2vw, 2.35rem);
   font-weight: 400;
+  color: #F4EFE6;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  margin: 0 0 0.85rem;
 }
 
+/* Subtitle / Description */
 .cta__subtitle {
-  font-family: var(--font-heading);
-  font-style: italic;
-  font-size: var(--text-lg);
-  color: var(--gold-muted);
-  margin-bottom: var(--space-2xl);
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size: clamp(0.9rem, 1.5vw, 0.98rem);
+  color: rgba(236, 230, 218, 0.82);
+  line-height: 1.68;
+  max-width: 560px;
+  margin: 0 auto 2rem;
 }
 
-.cta__buttons {
+/* Action Group Hierarchy (WhatsApp Primary & Shopee Secondary) */
+.cta__actions {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-lg);
-  flex-wrap: wrap;
+  gap: 1.1rem;
 }
 
-@media (max-width: 767px) {
-  .cta__buttons {
-    flex-direction: column;
-    gap: var(--space-md);
+/* Primary WhatsApp Button */
+.cta__primaryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 48px;
+  padding: 0.75rem 1.85rem;
+  background-color: #C59A3D;
+  color: #1A120C;
+  border-radius: 9999px;
+  text-decoration: none;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size: 0.88rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), 0 0 12px rgba(197, 154, 61, 0.2);
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+.cta__primaryBtn:hover {
+  background-color: #D6AB4E;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3), 0 0 18px rgba(197, 154, 61, 0.35);
+  color: #120B06;
+}
+
+.cta__primaryBtn:focus-visible {
+  outline: 2px solid #F4EFE6;
+  outline-offset: 3px;
+}
+
+.cta__waIcon {
+  flex-shrink: 0;
+}
+
+.cta__arrow {
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.cta__primaryBtn:hover .cta__arrow {
+  transform: translateX(3px);
+}
+
+/* Secondary Shopee Link */
+.cta__secondaryLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 38px;
+  padding: 0.35rem 0.85rem;
+  color: #DDD2C2;
+  text-decoration: none;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  transition: color 0.2s ease, opacity 0.2s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.cta__secondaryLink:hover {
+  color: #F4EFE6;
+  border-bottom-color: var(--heritage-gold, #C59A3D);
+}
+
+.cta__secondaryLink:focus-visible {
+  outline: 2px solid var(--heritage-gold, #C59A3D);
+  outline-offset: 2px;
+}
+
+.cta__secondaryArrow {
+  font-size: 0.9rem;
+  color: var(--heritage-gold, #C59A3D);
+  transition: transform 0.2s ease;
+}
+
+.cta__secondaryLink:hover .cta__secondaryArrow {
+  transform: translateX(2px);
+}
+
+/* Bottom Subtle Accent Line */
+.cta__bottomLine {
+  width: 44px;
+  height: 1px;
+  background-color: var(--heritage-gold, #C59A3D);
+  opacity: 0.35;
+  margin: 2.25rem auto 0;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 640px) {
+  .cta {
+    padding: 3.5rem 1rem;
   }
-  
-  .cta__buttons .btn {
+
+  .cta__title {
+    font-size: 1.55rem;
+    margin-bottom: 0.65rem;
+  }
+
+  .cta__subtitle {
+    font-size: 0.88rem;
+    margin-bottom: 1.75rem;
+    padding: 0 0.5rem;
+  }
+
+  .cta__primaryBtn {
     width: 100%;
     max-width: 280px;
+    font-size: 0.86rem;
+  }
+
+  .cta__bottomLine {
+    margin-top: 1.75rem;
   }
 }

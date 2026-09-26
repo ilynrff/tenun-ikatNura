@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import CTABanner from '@/components/layout/CTABanner';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import ProductModal from './ProductModal';
+import { useWishlist } from '@/context/WishlistContext';
 import collectionsData from '@/data/collections.json';
 import categoriesData from '@/data/categories.json';
 import styles from './CollectionsPage.module.css';
@@ -16,25 +18,46 @@ export default function CollectionsPage() {
   const searchParams = useSearchParams();
   const activeCategory = searchParams.get('category') || 'all';
 
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [visibleCount, setVisibleCount] = useState(9);
+  const [visibleCount, setVisibleCount] = useState(12);
 
-  // Reset pagination on category change
+  const { isInWishlist, toggleWishlist } = useWishlist();
+
+  // Reset pagination when category or search changes
   useEffect(() => {
-    setVisibleCount(9);
-  }, [activeCategory]);
+    setVisibleCount(12);
+  }, [activeCategory, searchQuery]);
 
   const handleCategorySelect = (categorySlug) => {
     if (categorySlug === 'all') {
-      router.push('/collections');
+      router.push('/collections', { scroll: false });
     } else {
-      router.push(`/collections?category=${categorySlug}`);
+      router.push(`/collections?category=${categorySlug}`, { scroll: false });
     }
   };
 
-  const filteredPieces = activeCategory === 'all'
-    ? collectionsData
-    : collectionsData.filter(item => item.category === activeCategory);
+  // Filter products by category and search query
+  const filteredPieces = useMemo(() => {
+    return collectionsData.filter((item) => {
+      // Category match
+      const matchesCategory =
+        activeCategory === 'all' || item.category === activeCategory;
+
+      // Search match
+      if (!matchesCategory) return false;
+      if (!searchQuery.trim()) return true;
+
+      const q = searchQuery.toLowerCase().trim();
+      const nameMatch = item.name?.toLowerCase().includes(q);
+      const skuMatch = item.sku?.toLowerCase().includes(q);
+      const catMatch = item.categoryLabel?.toLowerCase().includes(q);
+      const descMatch = item.description?.toLowerCase().includes(q);
+      const matMatch = item.material?.type?.toLowerCase().includes(q);
+
+      return nameMatch || skuMatch || catMatch || descMatch || matMatch;
+    });
+  }, [activeCategory, searchQuery]);
 
   const visiblePieces = filteredPieces.slice(0, visibleCount);
 
@@ -42,102 +65,211 @@ export default function CollectionsPage() {
     <>
       <Navbar />
       <main className={styles.collectionsPage}>
-        {/* Luxury Editorial Katalog Hero */}
+        {/* Header / Intro Section */}
         <section className={styles.hero}>
           <ScrollReveal>
             <div className={styles.hero__inner}>
-              <span className={styles.hero__label}>Katalog Karya Tenun</span>
-              <h1 className={styles.hero__title}>Editorial Collections</h1>
+              <span className={styles.hero__label}>Etalase Karya Tenun</span>
+              <h1 className={styles.hero__title}>Koleksi</h1>
               <div className={styles.hero__divider} />
               <p className={styles.hero__desc}>
-                Jelajahi keindahan mahakarya tenun ikat otentik Nusantara. 
-                Setiap helai kain ditenun secara terbatas dengan dedikasi pengrajin terampil untuk keanggunan gaya modern Anda.
+                Temukan pilihan busana tenun yang memadukan warisan Nusantara dengan siluet modern.
               </p>
             </div>
           </ScrollReveal>
         </section>
 
-        {/* Modern & Stylish Filter Navigation Bar */}
-        <nav className={styles.filterNav} aria-label="Filter by category">
-          <div className={styles.filterNav__inner}>
-            {categoriesData.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => handleCategorySelect(cat.slug)}
-                className={`${styles.filterNav__tab} ${
-                  activeCategory === cat.slug ? styles['filterNav__tab--active'] : ''
-                }`}
-              >
-                {cat.name}
-              </button>
-            ))}
+        {/* Search & Category Filter Section */}
+        <section className={styles.controlSection}>
+          <div className={styles.controlContainer}>
+            {/* Search Bar */}
+            <div className={styles.searchWrapper}>
+              <div className={styles.searchBox}>
+                <svg
+                  className={styles.searchIcon}
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="11" cy="11" r="8" />
+                  <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Cari produk atau koleksi..."
+                  className={styles.searchInput}
+                  aria-label="Cari produk atau koleksi"
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => setSearchQuery('')}
+                    className={styles.clearBtn}
+                    aria-label="Hapus pencarian"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Horizontal Scrollable Category Chips */}
+            <nav className={styles.categoryNav} aria-label="Kategori Produk">
+              <div className={styles.categoryTrack}>
+                {categoriesData.map((cat) => {
+                  const isActive = activeCategory === cat.slug;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => handleCategorySelect(cat.slug)}
+                      className={`${styles.categoryChip} ${
+                        isActive ? styles['categoryChip--active'] : ''
+                      }`}
+                      aria-pressed={isActive}
+                    >
+                      {cat.name}
+                    </button>
+                  );
+                })}
+              </div>
+            </nav>
           </div>
-        </nav>
+        </section>
 
         {/* Catalog Grid Section */}
         <section className={styles.catalogSection}>
           <div className={styles.catalogContainer}>
             {filteredPieces.length === 0 ? (
               <div className={styles.empty}>
-                <p>Tidak ada koleksi dalam kategori ini saat ini.</p>
+                <div className={styles.emptyIcon}>🔍</div>
+                <h3 className={styles.emptyTitle}>Koleksi Tidak Ditemukan</h3>
+                <p className={styles.emptyDesc}>
+                  {searchQuery
+                    ? `Tidak ada hasil untuk pencarian "${searchQuery}". Silakan coba kata kunci lain.`
+                    : 'Belum ada produk dalam kategori yang dipilih saat ini.'}
+                </p>
+                {(searchQuery || activeCategory !== 'all') && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      handleCategorySelect('all');
+                    }}
+                    className={styles.resetBtn}
+                  >
+                    Lihat Semua Koleksi
+                  </button>
+                )}
               </div>
             ) : (
               <>
                 <div className={styles.grid}>
-                  {visiblePieces.map((item, index) => (
-                    <ScrollReveal key={item.id || item.sku} delay={Math.min((index % 3) + 1, 3)}>
-                      <div
-                        className={styles.card}
-                        onClick={() => setSelectedProduct(item)}
-                        role="button"
-                        tabIndex={0}
-                        aria-label={`Lihat detail ${item.name}`}
+                  {visiblePieces.map((item, index) => {
+                    const isFavorited = isInWishlist(item.id);
+                    const isOutOfStock = item.stock === 0;
+
+                    return (
+                      <ScrollReveal
+                        key={item.id || item.sku}
+                        delay={Math.min((index % 4) + 1, 3)}
                       >
-                        {/* Image & SKU Badge Container */}
-                        <div className={styles.card__imageWrapper}>
-                          <img
-                            src={item.images ? item.images[0] : '/images/hero/hero-main.jpg'}
-                            alt={`${item.name} - ${item.categoryLabel}`}
-                            className={styles.card__image}
-                            loading="lazy"
-                          />
-                          {/* SKU Badge */}
-                          <span className={styles.card__skuBadge}>
-                            {item.sku || 'NURA-ITEM'}
-                          </span>
-                          
-                          {/* Quick View Overlay Button */}
-                          <div className={styles.card__overlay}>
+                        <article className={styles.card}>
+                          {/* Image Container with Link */}
+                          <div className={styles.card__imageWrapper}>
+                            <Link
+                              href={`/collections/${item.slug}`}
+                              className={styles.card__imageLink}
+                              aria-label={`Lihat detail ${item.name}`}
+                            >
+                              <img
+                                src={item.images ? item.images[0] : '/images/hero/hero-main.jpg'}
+                                alt={`${item.name} - ${item.categoryLabel}`}
+                                className={styles.card__image}
+                                loading="lazy"
+                              />
+                            </Link>
+
+                            {/* Stock / Out of Stock Badge */}
+                            {isOutOfStock ? (
+                              <span className={styles.card__stockBadgeOut}>Habis</span>
+                            ) : item.stock && item.stock <= 3 ? (
+                              <span className={styles.card__stockBadgeLow}>Sisa {item.stock}</span>
+                            ) : null}
+
+                            {/* Wishlist Heart Button */}
                             <button
-                              className={styles.card__quickBtn}
+                              type="button"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setSelectedProduct(item);
+                                toggleWishlist(item.id);
                               }}
+                              className={`${styles.card__wishlistBtn} ${
+                                isFavorited ? styles['card__wishlistBtn--active'] : ''
+                              }`}
+                              aria-label={
+                                isFavorited
+                                  ? `Hapus ${item.name} dari favorit`
+                                  : `Tambahkan ${item.name} ke favorit`
+                              }
                             >
-                              Quick Preview &amp; Order &rarr;
+                              <svg
+                                width="18"
+                                height="18"
+                                viewBox="0 0 24 24"
+                                fill={isFavorited ? 'currentColor' : 'none'}
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                              </svg>
+                            </button>
+
+                            {/* Desktop Quick Preview Button */}
+                            <button
+                              type="button"
+                              className={styles.card__quickViewBtn}
+                              onClick={() => setSelectedProduct(item)}
+                              aria-label={`Pratinjau cepat ${item.name}`}
+                            >
+                              Pratinjau Cepat
                             </button>
                           </div>
-                        </div>
 
-                        {/* Card Info */}
-                        <div className={styles.card__info}>
-                          <div className={styles.card__metaRow}>
-                            <span className={styles.card__category}>{item.categoryLabel}</span>
-                            <span className={styles.card__skuCode}>KODE: {item.sku}</span>
+                          {/* Card Meta Info */}
+                          <div className={styles.card__info}>
+                            <div className={styles.card__categoryRow}>
+                              <span className={styles.card__category}>
+                                {item.categoryLabel}
+                              </span>
+                            </div>
+
+                            <h2 className={styles.card__name}>
+                              <Link href={`/collections/${item.slug}`} className={styles.card__nameLink}>
+                                {item.name}
+                              </Link>
+                            </h2>
+
+                            <div className={styles.card__footer}>
+                              <span className={styles.card__price}>
+                                {item.price || 'Sesuai Pesanan'}
+                              </span>
+                            </div>
                           </div>
-                          <h3 className={styles.card__name}>{item.name}</h3>
-                          <p className={styles.card__material}>
-                            {item.material?.type || item.tagline}
-                          </p>
-                          <div className={styles.card__footer}>
-                            <span className={styles.card__price}>{item.price || 'Custom Order'}</span>
-                            <span className={styles.card__actionLink}>Pesan &rarr;</span>
-                          </div>
-                        </div>
-                      </div>
-                    </ScrollReveal>
-                  ))}
+                        </article>
+                      </ScrollReveal>
+                    );
+                  })}
                 </div>
 
                 {/* Load More Button */}
@@ -145,7 +277,8 @@ export default function CollectionsPage() {
                   <ScrollReveal>
                     <div className={styles.loadMoreContainer}>
                       <button
-                        onClick={() => setVisibleCount((prev) => prev + 6)}
+                        type="button"
+                        onClick={() => setVisibleCount((prev) => prev + 8)}
                         className={styles.loadMoreBtn}
                       >
                         Tampilkan Lebih Banyak
@@ -160,8 +293,8 @@ export default function CollectionsPage() {
 
         {/* CTA Banner */}
         <CTABanner
-          title="Ingin Custom Order / Konsultasi?"
-          subtitle="Hubungi tim artisan kami untuk pemesanan seragam, busana pesta, maupun sarimbit tenun custom."
+          title="Ingin Pesanan Khusus atau Konsultasi?"
+          subtitle="Hubungi tim artisan Tenun Ikat Nura untuk pemesanan seragam, busana pesta, maupun sarimbit tenun custom."
         />
       </main>
 

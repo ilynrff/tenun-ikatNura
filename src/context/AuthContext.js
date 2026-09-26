@@ -10,7 +10,7 @@ export function AuthProvider({ children }) {
   const [authModalMode, setAuthModalMode] = useState('login'); // 'login' | 'register' | 'checkout-prompt' | 'account'
   const [isAccountDrawerOpen, setIsAccountDrawerOpen] = useState(false);
 
-  // Sync auth state with localStorage
+  // Sync auth state with localStorage on mount
   useEffect(() => {
     try {
       const savedUser = localStorage.getItem('tenun_user');
@@ -22,17 +22,24 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  const login = (email, password) => {
-    // Demo authentication - mock user login
+  const login = (email, password, extraData = {}) => {
     const nameFromEmail = email.split('@')[0];
     const formattedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
-    const mockUser = {
-      name: formattedName || 'Pelanggan Nura',
+    
+    const userRole = extraData.role || (email.toLowerCase() === 'admin@tenunikatnura.com' ? 'ADMIN' : 'USER');
+
+    const authUser = {
+      name: extraData.name || formattedName || 'Pelanggan Nura',
       email: email,
-      phone: '0812-3456-7890',
+      phone: extraData.phone || '0812-3456-7890',
+      role: userRole,
     };
-    setUser(mockUser);
-    localStorage.setItem('tenun_user', JSON.stringify(mockUser));
+
+    setUser(authUser);
+    try {
+      localStorage.setItem('tenun_user', JSON.stringify(authUser));
+    } catch (e) {}
+
     setIsAuthModalOpen(false);
     setIsAccountDrawerOpen(false);
     return true;
@@ -43,17 +50,33 @@ export function AuthProvider({ children }) {
       name: fullName,
       email: email,
       phone: phone,
+      role: 'USER',
     };
+
     setUser(newUser);
-    localStorage.setItem('tenun_user', JSON.stringify(newUser));
+    try {
+      localStorage.setItem('tenun_user', JSON.stringify(newUser));
+    } catch (e) {}
+
     setIsAuthModalOpen(false);
     setIsAccountDrawerOpen(false);
     return true;
   };
 
-  const logout = () => {
+  const logout = async () => {
+    const wasAdmin = user?.role === 'ADMIN';
     setUser(null);
-    localStorage.removeItem('tenun_user');
+    try {
+      localStorage.removeItem('tenun_user');
+    } catch (e) {}
+
+    // If was admin, trigger server cookie cleanup
+    if (wasAdmin) {
+      try {
+        await fetch('/api/admin/auth/logout', { method: 'POST' });
+      } catch (e) {}
+    }
+
     setIsAccountDrawerOpen(false);
   };
 
@@ -83,6 +106,7 @@ export function AuthProvider({ children }) {
       value={{
         user,
         isLoggedIn: !!user,
+        isAdmin: user?.role === 'ADMIN',
         login,
         register,
         logout,

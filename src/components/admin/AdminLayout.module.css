@@ -1,0 +1,323 @@
+/* Admin Layout & Navigation Stylesheet - Tenun Ikat Nura */
+
+.adminWrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F7F5F0;
+  color: #1A120C;
+  font-family: var(--font-body, 'DM Sans', sans-serif);
+}
+
+/* Sidebar for Desktop */
+.sidebar {
+  width: 260px;
+  background-color: #1A120C;
+  color: #F4EFE6;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  border-right: 1px solid rgba(197, 154, 61, 0.2);
+  z-index: 40;
+  transition: transform 0.3s ease;
+}
+
+.sidebarHeader {
+  padding: 1.75rem 1.5rem;
+  border-bottom: 1px solid rgba(197, 154, 61, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brandLink {
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.brandTagline {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #C59A3D;
+  margin-bottom: 0.2rem;
+}
+
+.brandTitle {
+  font-family: var(--font-heading, serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #F4EFE6;
+  letter-spacing: 0.02em;
+}
+
+.closeDrawerBtn {
+  display: none;
+  background: none;
+  border: none;
+  color: #F4EFE6;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  line-height: 1;
+}
+
+/* Sidebar Nav Links */
+.navSection {
+  flex: 1;
+  padding: 1.5rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  overflow-y: auto;
+}
+
+.navLabel {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(197, 154, 61, 0.7);
+  padding: 0 0.75rem 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 0.85rem;
+  color: rgba(244, 239, 230, 0.8);
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.navItem:hover {
+  background-color: rgba(197, 154, 61, 0.12);
+  color: #F4EFE6;
+}
+
+.navItemActive {
+  background-color: #C59A3D;
+  color: #1A120C !important;
+  font-weight: 600;
+}
+
+.navIcon {
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+.navItemActive .navIcon {
+  opacity: 1;
+}
+
+/* Sidebar Footer (Admin Info & Logout) */
+.sidebarFooter {
+  padding: 1.25rem 1rem;
+  border-top: 1px solid rgba(197, 154, 61, 0.15);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.adminInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.adminAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #C59A3D;
+  color: #1A120C;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.adminDetails {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.adminName {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #F4EFE6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.adminRole {
+  font-size: 0.7rem;
+  color: #C59A3D;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.65rem 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(197, 154, 61, 0.15);
+  border-radius: 6px;
+  color: #E8A598;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.logoutBtn:hover {
+  background-color: rgba(192, 57, 43, 0.15);
+  border-color: #C0392B;
+  color: #FF7B6B;
+}
+
+/* Main Content Area */
+.mainArea {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+/* Topbar */
+.topbar {
+  height: 64px;
+  background-color: #FFFFFF;
+  border-bottom: 1px solid rgba(92, 74, 61, 0.12);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.75rem;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.topbarLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.menuToggleBtn {
+  display: none;
+  background: none;
+  border: none;
+  color: #1A120C;
+  font-size: 1.35rem;
+  cursor: pointer;
+  padding: 0.35rem;
+  line-height: 1;
+}
+
+.pageTitle {
+  font-family: var(--font-heading, serif);
+  font-size: 1.35rem;
+  font-weight: 500;
+  color: #1A120C;
+  margin: 0;
+}
+
+.topbarRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.storeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: #5C4A3D;
+  text-decoration: none;
+  padding: 0.45rem 0.85rem;
+  border: 1px solid rgba(92, 74, 61, 0.2);
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.storeLink:hover {
+  background-color: #ECE6DA;
+  color: #1A120C;
+}
+
+/* Page Content Container */
+.contentContainer {
+  flex: 1;
+  padding: 2rem 1.75rem 3rem;
+  max-width: 1280px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Mobile Backdrop */
+.drawerBackdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(2px);
+  z-index: 35;
+}
+
+/* Responsive Breakpoints (Tablet & Mobile) */
+@media (max-width: 900px) {
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
+  }
+
+  .sidebarOpen {
+    transform: translateX(0);
+  }
+
+  .closeDrawerBtn {
+    display: block;
+  }
+
+  .menuToggleBtn {
+    display: block;
+  }
+
+  .drawerBackdrop {
+    display: block;
+  }
+
+  .topbar {
+    padding: 0 1rem;
+  }
+
+  .contentContainer {
+    padding: 1.5rem 1rem 2.5rem;
+  }
+}

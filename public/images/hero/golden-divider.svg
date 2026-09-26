@@ -1,0 +1,26 @@
+<svg width="600" height="40" viewBox="0 0 600 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Extended Left Thin Line -->
+  <line x1="0" y1="20" x2="235" y2="20" stroke="#C59A3D" stroke-width="1.2" stroke-linecap="round"/>
+  
+  <!-- Center Classic Filigree Ornament -->
+  <g transform="translate(240, 0)">
+    <!-- Central Fleur-de-lis Spire -->
+    <path d="M60 4 L63 12 L60 20 L57 12 Z" fill="#C59A3D"/>
+    <circle cx="60" cy="22" r="1.5" fill="#C59A3D"/>
+    
+    <!-- Left Filigree Scrolls -->
+    <path d="M56 18 C 45 12, 38 8, 30 14 C 24 18, 28 24, 34 22 C 40 20, 48 24, 55 20" stroke="#C59A3D" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <path d="M48 20 C 40 10, 26 12, 18 20 C 12 26, 18 30, 24 26 C 28 22, 36 20, 45 22" stroke="#C59A3D" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <circle cx="16" cy="20" r="2" fill="#C59A3D"/>
+    <circle cx="34" cy="22" r="1.8" fill="#C59A3D"/>
+
+    <!-- Right Filigree Scrolls (Mirrored) -->
+    <path d="M64 18 C 75 12, 82 8, 90 14 C 96 18, 92 24, 86 22 C 80 20, 72 24, 65 20" stroke="#C59A3D" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+    <path d="M72 20 C 80 10, 94 12, 102 20 C 108 26, 102 30, 96 26 C 92 22, 84 20, 75 22" stroke="#C59A3D" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+    <circle cx="104" cy="20" r="2" fill="#C59A3D"/>
+    <circle cx="86" cy="22" r="1.8" fill="#C59A3D"/>
+  </g>
+
+  <!-- Extended Right Thin Line -->
+  <line x1="365" y1="20" x2="600" y2="20" stroke="#C59A3D" stroke-width="1.2" stroke-linecap="round"/>
+</svg>

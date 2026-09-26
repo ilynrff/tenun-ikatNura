@@ -1,9 +1,9 @@
 [
-  { "id": "all", "name": "All Pieces", "slug": "all", "description": "Seluruh koleksi karya tenun ikat otentik Tenun Ikat Nura." },
-  { "id": "women", "name": "Womenswear", "slug": "women", "description": "Busana tenun wanita dengan potongan modern dan anggun." },
-  { "id": "men", "name": "Menswear", "slug": "men", "description": "Busana tenun pria yang elegan, berkarakter, dan berkelas." },
-  { "id": "couple", "name": "Couple Sets", "slug": "couple", "description": "Koleksi sarimbit pasangan tenun ikat untuk momen istimewa." },
+  { "id": "all", "name": "Semua", "slug": "all", "description": "Seluruh koleksi karya busana tenun ikat otentik Tenun Ikat Nura." },
+  { "id": "dress", "name": "Gaun", "slug": "dress", "description": "Gaun dan tunik tenun warisan budaya bergaya kontemporer." },
   { "id": "outer", "name": "Outerwear", "slug": "outer", "description": "Statement outer, blazer, dan kimono tenun ikat." },
-  { "id": "blouse", "name": "Blouses", "slug": "blouse", "description": "Blouse tenun kontemporer yang nyaman dan timeless." },
-  { "id": "dress", "name": "Dresses", "slug": "dress", "description": "Gaun dan tunic tenun warisan budaya bergaya modern." }
+  { "id": "couple", "name": "Couple Set", "slug": "couple", "description": "Koleksi sarimbit pasangan tenun ikat untuk momen istimewa." },
+  { "id": "men", "name": "Kemeja", "slug": "men", "description": "Busana tenun kemeja pria yang elegan, berkarakter, dan berkelas." },
+  { "id": "blouse", "name": "Blus", "slug": "blouse", "description": "Blus tenun kontemporer yang nyaman dan timeless." },
+  { "id": "women", "name": "Busana Wanita", "slug": "women", "description": "Busana tenun wanita dengan potongan modern dan anggun." }
 ]

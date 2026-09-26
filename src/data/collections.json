@@ -6,19 +6,25 @@
     "name": "Nusa Indah Outer",
     "category": "outer",
     "categoryLabel": "Outerwear",
-    "tagline": "Elegance Rooted in Heritage",
+    "tagline": "Elegansi Berakar dari Warisan Nusantara",
     "description": "Outerwear tenun ikat eksklusif berpotongan tegas dan modern. Memadukan motif tenun NTT klasik rona terakota dan krem hangat dengan kenyamanan sutra alam premium.",
-    "story": "Setiap helai benang ditenun menggunakan teknik tenun ikat tradisional Jepara & NTT. Potongan luar yang struktural memberikan kesan anggun dan elegan untuk acara formal maupun kasual.",
+    "story": "Setiap helai benang ditenun menggunakan teknik tenun ikat tradisional Jepara & NTT. Potongan luar yang struktural memberikan kesan anggun dan berwibawa untuk berbagai suasana istimewa.",
     "material": {
       "type": "Tenun Ikat NTT & Sutra Alam",
       "composition": "80% Fine Woven Cotton, 20% Natural Silk",
       "texture": "Halus bertekstur dengan drape jatuh yang mewah",
       "comfort": "Adem, lembut di kulit, dan menyerap keringat"
     },
+    "stock": 6,
     "sizes": ["S", "M", "L", "XL", "Custom Size"],
     "colors": ["Terracotta Gold", "Warm Linen"],
     "price": "Rp 1.450.000",
-    "images": ["/images/collections/nusa-indah-1.jpg"],
+    "images": [
+      "/images/collections/nusa-indah-1.jpg",
+      "/images/lookbook/lookbook-1.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": true,
     "signature": true
   },
@@ -28,8 +34,8 @@
     "slug": "ratna-dress",
     "name": "Ratna Dress",
     "category": "dress",
-    "categoryLabel": "Dresses",
-    "tagline": "Timeless Feminine Silhouette",
+    "categoryLabel": "Gaun",
+    "tagline": "Siluet Feminin Nan Abadi",
     "description": "Gaun tenun ikat kontemporer dengan motif floral khas Jepara bernuansa emas dan cokelat kayu. Didesain dengan siluet waist-cinched yang memberikan kesan ramping dan anggun.",
     "story": "Diilhami dari kecantikan wanita Nusantara. Gaun ini menggabungkan warisan kriya tenun ikat tradisional dengan standar fashion internasional.",
     "material": {
@@ -38,10 +44,16 @@
       "texture": "Sangat lembut, ringan, dan flowy",
       "comfort": "Sangat nyaman untuk pemakaian seharian"
     },
+    "stock": 4,
     "sizes": ["S", "M", "L", "XL", "Custom Size"],
     "colors": ["Gold Walnut", "Ivory Cream"],
     "price": "Rp 1.250.000",
-    "images": ["/images/collections/ratna-dress-1.jpg"],
+    "images": [
+      "/images/collections/ratna-dress-1.jpg",
+      "/images/lookbook/lookbook-2.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": true,
     "signature": false
   },
@@ -52,19 +64,25 @@
     "name": "Majapahit Blazer",
     "category": "outer",
     "categoryLabel": "Outerwear",
-    "tagline": "Royal Majesty Statement Piece",
+    "tagline": "Wibawa Klasik Berbalut Kemewahan",
     "description": "Blazer terstruktur pria dan wanita dengan motif tenun Troso cokelat tua berkilau emas. Simbol kepemimpinan dan kewibawaan bertema warisan Nusantara.",
-    "story": "Motif Majapahit direpresentasikan melalui barisan benang pewarna nabati yang ditenun selama lebih dari 60 hari pengerjaan tangan.",
+    "story": "Motif Majapahit direpresentasikan melalui barisan benang pewarna nabati yang ditenun secara teliti dengan tangan pengrajin berpengalaman.",
     "material": {
       "type": "Tenun Ikat Troso & Katun Halus",
       "composition": "100% Cotton Tenun Coated",
       "texture": "Kokoh, terstruktur, dan tahan lama",
       "comfort": "Furing katun breathable yang adem"
     },
+    "stock": 8,
     "sizes": ["S", "M", "L", "XL", "XXL"],
     "colors": ["Deep Espresso", "Antique Gold"],
     "price": "Rp 1.650.000",
-    "images": ["/images/collections/majapahit-blazer-1.jpg"],
+    "images": [
+      "/images/collections/majapahit-blazer-1.jpg",
+      "/images/lookbook/lookbook-3.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": true,
     "signature": false
   },
@@ -74,8 +92,8 @@
     "slug": "surya-kencana-shirt",
     "name": "Surya Kencana Shirt",
     "category": "men",
-    "categoryLabel": "Menswear",
-    "tagline": "Sophisticated Gentleman Woven Shirt",
+    "categoryLabel": "Kemeja",
+    "tagline": "Kemeja Tenun Berkarakter Maskulin",
     "description": "Kemeja lengan panjang pria berbahan tenun ikat Toraja warna bumi. Potongan slim-tailored yang memberikan tampilan rapi, berwibawa, dan karismatik.",
     "story": "Dirancang khusus untuk pria modern yang bangga mengenakan karya seni tekstil asli Indonesia dalam pertemuan bisnis maupun acara keluarga.",
     "material": {
@@ -84,10 +102,16 @@
       "texture": "Bertekstur tenun otentik dan tegas",
       "comfort": "Sangat sejuk dan mudah dirawat"
     },
+    "stock": 7,
     "sizes": ["M", "L", "XL", "XXL", "Custom Size"],
     "colors": ["Earthy Amber", "Warm Bark"],
     "price": "Rp 1.150.000",
-    "images": ["/images/collections/surya-shirt-1.jpg"],
+    "images": [
+      "/images/collections/surya-shirt-1.jpg",
+      "/images/lookbook/lookbook-4.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": true,
     "signature": false
   },
@@ -97,9 +121,9 @@
     "slug": "sekar-jagad-couple",
     "name": "Sekar Jagad Couple Set",
     "category": "couple",
-    "categoryLabel": "Couple Sets",
-    "tagline": "Two Hearts United in Heritage",
-    "description": "Set busana serasi pasangan (Kemeja Pria & Dress Wanita) bermotif Sekar Jagad yang melambangkan keharmonisan dan keberagaman keindahan Nusantara.",
+    "categoryLabel": "Couple Set",
+    "tagline": "Dua Hati Bersatu dalam Balutan Warisan",
+    "description": "Set busana serasi pasangan (Kemeja Pria & Gaun Wanita) bermotif Sekar Jagad yang melambangkan keharmonisan dan keberagaman keindahan Nusantara.",
     "story": "Satu pasang mahakarya tenun yang ditenun secara bersamaan untuk memastikan konsistensi warna, jalinan benang, dan makna kebersamaan.",
     "material": {
       "type": "Tenun Ikat Sarimbit Premium",
@@ -107,10 +131,16 @@
       "texture": "Halus mengkilap lembut",
       "comfort": "Nyaman dipakai untuk acara pernikahan & formal"
     },
+    "stock": 3,
     "sizes": ["S", "M", "L", "XL", "XXL", "Custom Size"],
     "colors": ["Royal Gold Mahogany"],
     "price": "Rp 2.450.000",
-    "images": ["/images/collections/nusa-indah-1.jpg"],
+    "images": [
+      "/images/collections/nusa-indah-1.jpg",
+      "/images/collections/ratna-dress-1.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": true,
     "signature": false
   },
@@ -120,8 +150,8 @@
     "slug": "nara-blouse",
     "name": "Nara Heritage Blouse",
     "category": "blouse",
-    "categoryLabel": "Blouses",
-    "tagline": "Effortless Everyday Chic",
+    "categoryLabel": "Blus",
+    "tagline": "Keanggunan Praktis untuk Keseharian",
     "description": "Blouse wanita kasual-elegan berbahan tenun ikat Jepara pilihan. Memiliki kerah V-neck minimalis dan aksen lengan puff yang manis.",
     "story": "Nama 'Nara' merepresentasikan keindahan alami. Blouse ini sangat versatile dipadukan dengan celana bahan maupun rok batik.",
     "material": {
@@ -130,10 +160,16 @@
       "texture": "Ringan dan lembut di kulit",
       "comfort": "Sangat nyaman untuk pemakaian harian"
     },
+    "stock": 5,
     "sizes": ["S", "M", "L", "XL"],
     "colors": ["Sage Brown", "Warm Sand"],
     "price": "Rp 850.000",
-    "images": ["/images/collections/ratna-dress-1.jpg"],
+    "images": [
+      "/images/collections/ratna-dress-1.jpg",
+      "/images/lookbook/lookbook-1.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": false,
     "signature": false
   },
@@ -144,7 +180,7 @@
     "name": "Swarna Bumi Kimono",
     "category": "outer",
     "categoryLabel": "Outerwear",
-    "tagline": "Relaxed Resort Woven Luxury",
+    "tagline": "Kemewahan Kasual Bernuansa Resor",
     "description": "Cardigan kimono berpotongan longgar (*loose fit*) berbahan perpaduan tenun ikat Bali & linen alami. Sempurna untuk penampilan santai nan mewah.",
     "story": "Membawa nuansa tropis Bali yang tenang. Kimono ini menghadirkan kenyamanan luar biasa bagi pencinta seni tekstil alami.",
     "material": {
@@ -153,10 +189,16 @@
       "texture": "Adem berserat alami khas linen",
       "comfort": "Sangat ringan dan mudah dipadupadankan"
     },
+    "stock": 5,
     "sizes": ["Free Size (All Size)"],
     "colors": ["Linen Beige", "Terracotta"],
     "price": "Rp 1.100.000",
-    "images": ["/images/collections/swarna-kimono-1.jpg"],
+    "images": [
+      "/images/collections/swarna-kimono-1.jpg",
+      "/images/lookbook/lookbook-2.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": true,
     "signature": false
   },
@@ -166,8 +208,8 @@
     "slug": "candramawa-silk-scarf",
     "name": "Candramawa Silk Scarf",
     "category": "women",
-    "categoryLabel": "Womenswear",
-    "tagline": "Pure Natural Silk Masterpiece",
+    "categoryLabel": "Busana Wanita",
+    "tagline": "Mahakarya Sutra Tenun Murni",
     "description": "Selendang sutra tenun ikat 100% buatan tangan dengan rumbai sutra yang mewah. Aksen pelengkap gaun dan outer yang memberikan sentuhan royal.",
     "story": "Ditenun secara khusus menggunakan benang sutra alami pilihan dengan proses pewarnaan nabati dari akar kayu dan daun alami.",
     "material": {
@@ -176,10 +218,16 @@
       "texture": "Sangat halus berkilau mewah",
       "comfort": "Sangat lembut dan dingin di kulit"
     },
+    "stock": 10,
     "sizes": ["One Size (200cm x 60cm)"],
     "colors": ["Indigo Gold", "Bronze Brown"],
     "price": "Rp 950.000",
-    "images": ["/images/collections/candramawa-scarf-1.jpg"],
+    "images": [
+      "/images/collections/candramawa-scarf-1.jpg",
+      "/images/lookbook/lookbook-3.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": false,
     "signature": false
   },
@@ -189,8 +237,8 @@
     "slug": "srikandi-tunic-dress",
     "name": "Srikandi Tunic Dress",
     "category": "dress",
-    "categoryLabel": "Dresses",
-    "tagline": "Modern Graceful Tunic",
+    "categoryLabel": "Gaun",
+    "tagline": "Tunik Modern Berpotongan Elegan",
     "description": "Tunik tenun ikat berlengan panjang dengan belahan samping yang stylish. Cocok dikombinasikan dengan celana panjang maupun hijab berselera tinggi.",
     "story": "Didedikasikan untuk semangat wanita modern Indonesia yang tangguh, independen, dan berbudaya tinggi.",
     "material": {
@@ -199,10 +247,16 @@
       "texture": "Halus dan jatuh rapi",
       "comfort": "Tidak menerawang dan menyerap keringat"
     },
+    "stock": 6,
     "sizes": ["S", "M", "L", "XL", "XXL"],
     "colors": ["Coffee Gold", "Muted Olive"],
     "price": "Rp 1.150.000",
-    "images": ["/images/collections/ratna-dress-1.jpg"],
+    "images": [
+      "/images/collections/ratna-dress-1.jpg",
+      "/images/lookbook/lookbook-4.jpg",
+      "/images/hero/hero-main.jpg"
+    ],
+    "care": ["handwash", "no-bleach", "iron-low", "dry-natural"],
     "featured": false,
     "signature": false
   }
