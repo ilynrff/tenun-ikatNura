@@ -1,0 +1,107 @@
+// ============================================================
+// PRISMA SCHEMA — TENUN IKAT NURA
+// Phase 1: Product + Category Foundation
+// Designed to support Phase 2 (Order, Customer, Cart) additions
+// without requiring breaking schema changes.
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ============================================================
+// CATEGORY
+// ============================================================
+
+model Category {
+  id          String    @id @default(cuid())
+  slug        String    @unique
+  name        String
+  description String?
+  isActive    Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  // Relations (Phase 2: can add more)
+  products    Product[]
+
+  @@map("categories")
+}
+
+// ============================================================
+// PRODUCT
+// ============================================================
+
+model Product {
+  id           String   @id @default(cuid())
+
+  // Identifiers — must be unique
+  sku          String   @unique
+  slug         String   @unique
+
+  // Basic info
+  name         String
+  tagline      String?
+  description  String?
+  story        String?
+
+  // Material stored as JSON (matches existing structure: {type, composition, texture, comfort})
+  material     Json?
+
+  // Pricing
+  price        Int      @default(0)   // Stored as integer IDR (e.g., 1450000)
+
+  // Stock
+  stock        Int      @default(0)
+
+  // Images — ordered array of URL strings
+  images       String[] @default([])
+
+  // Sizes / Variants — ordered array of strings (e.g., ["S","M","L","XL","Custom Size"])
+  sizes        String[] @default([])
+
+  // Care instructions — array of strings
+  care         String[] @default([])
+
+  // Colors — array of strings
+  colors       String[] @default([])
+
+  // Flags
+  isActive     Boolean  @default(true)
+  isVisible    Boolean  @default(true)
+  featured     Boolean  @default(false)
+  signature    Boolean  @default(false)
+
+  // Homepage arch gallery position (0 = not placed, 1-5 = position)
+  archPosition Int      @default(0)
+
+  // Category relation
+  categorySlug String
+  category     Category @relation(fields: [categorySlug], references: [slug])
+
+  // Timestamps
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([categorySlug])
+  @@index([isActive, isVisible])
+  @@index([featured])
+  @@map("products")
+}
+
+// ============================================================
+// PHASE 2 PLACEHOLDER — DO NOT IMPLEMENT YET
+// These models will be added when Phase 2 (ecommerce) begins.
+//
+// model Customer { ... }
+// model Order { ... }
+// model OrderItem { ... }
+// model Cart { ... }
+// model CartItem { ... }
+// ============================================================
