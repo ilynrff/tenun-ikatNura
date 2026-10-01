@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -49,6 +49,12 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
   const [newSizeInput, setNewSizeInput] = useState('');
   const [newColorInput, setNewColorInput] = useState('');
 
+  // Image upload state
+  const [uploadPreviews, setUploadPreviews] = useState([]); // { src: string, status: 'local'|'uploaded'|'legacy', file?: File }
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+  const fileInputRef = useRef(null);
+
   // Fetch categories & populate initial data
   useEffect(() => {
     async function loadCategories() {
@@ -66,6 +72,10 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
     loadCategories();
 
     if (initialData) {
+      const existingImages = Array.isArray(initialData.images) && initialData.images.length > 0
+        ? initialData.images
+        : ['/images/hero/hero-main.jpg'];
+
       setFormData({
         name: initialData.name || '',
         sku: initialData.sku || '',
@@ -76,7 +86,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
         tagline: initialData.tagline || '',
         description: initialData.description || '',
         story: initialData.story || '',
-        images: Array.isArray(initialData.images) && initialData.images.length > 0 ? initialData.images : ['/images/hero/hero-main.jpg'],
+        images: existingImages,
         sizes: Array.isArray(initialData.sizes) ? initialData.sizes : ['S', 'M', 'L', 'XL'],
         colors: Array.isArray(initialData.colors) ? initialData.colors : [],
         material: typeof initialData.material === 'object' && initialData.material !== null ? initialData.material : {
@@ -91,7 +101,13 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
         signature: Boolean(initialData.signature),
         archPosition: typeof initialData.archPosition === 'number' ? initialData.archPosition : 0,
       });
+
+      // Populate previews from existing images (legacy/uploaded URLs)
+      setUploadPreviews(existingImages.map((url) => ({ src: url, status: 'legacy' })));
       setAutoSlug(false);
+    } else {
+      // New product: start with empty upload previews
+      setUploadPreviews([]);
     }
   }, [initialData, isEdit]);
 
@@ -123,24 +139,121 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
     }));
   };
 
-  // Images management
-  const handleImageChange = (index, value) => {
-    const updated = [...formData.images];
-    updated[index] = value;
-    setFormData((prev) => ({ ...prev, images: updated }));
+  // ----------------------------------------------------------------
+  // Image upload management
+  // ----------------------------------------------------------------
+
+  /** Sync formData.images from the current uploadPreviews list */
+  const syncImagesFromPreviews = (previews) => {
+    const urls = previews.map((p) => p.src).filter(Boolean);
+    setFormData((prev) => ({ ...prev, images: urls.length > 0 ? urls : ['/images/hero/hero-main.jpg'] }));
   };
 
-  const addImageField = () => {
-    setFormData((prev) => ({
-      ...prev,
-      images: [...prev.images, ''],
+  /** Handle file selection from <input type="file" /> */
+  const handleFileSelect = async (e) => {
+    const selectedFiles = Array.from(e.target.files || []);
+    if (selectedFiles.length === 0) return;
+
+    setUploadError(null);
+
+    // Validate each file before upload
+    const ALLOWED = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const MAX_MB = 5;
+    for (const f of selectedFiles) {
+      if (!ALLOWED.includes(f.type)) {
+        setUploadError(`File "${f.name}" tidak didukung. Gunakan JPG, PNG, atau WebP.`);
+        return;
+      }
+      if (f.size > MAX_MB * 1024 * 1024) {
+        setUploadError(`File "${f.name}" terlalu besar. Maksimal ${MAX_MB} MB.`);
+        return;
+      }
+    }
+
+    // Optimistic local preview
+    const localPreviews = selectedFiles.map((f) => ({
+      src: URL.createObjectURL(f),
+      status: 'uploading',
+      file: f,
     }));
+
+    setUploadPreviews((prev) => {
+      const next = [...prev, ...localPreviews];
+      return next;
+    });
+
+    setUploading(true);
+
+    try {
+      const formPayload = new FormData();
+      selectedFiles.forEach((f) => formPayload.append('file', f));
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formPayload,
+      });
+
+      const result = await res.json();
+
+      if (!res.ok) {
+        throw new Error(result.error || 'Upload gagal.');
+      }
+
+      // Replace local blob URLs with real uploaded URLs
+      setUploadPreviews((prev) => {
+        const updated = [...prev];
+        let urlIndex = 0;
+        for (let i = 0; i < updated.length; i++) {
+          if (updated[i].status === 'uploading') {
+            const realUrl = result.urls[urlIndex];
+            if (realUrl) {
+              // Revoke the blob URL to avoid memory leak
+              URL.revokeObjectURL(updated[i].src);
+              updated[i] = { src: realUrl, status: 'uploaded' };
+            } else {
+              // Upload failed for this file
+              URL.revokeObjectURL(updated[i].src);
+              updated[i] = { src: '', status: 'error' };
+            }
+            urlIndex++;
+          }
+        }
+        // Remove errored entries
+        const clean = updated.filter((p) => p.status !== 'error' && p.src);
+        syncImagesFromPreviews(clean);
+        return clean;
+      });
+
+      if (result.errors && result.errors.length > 0) {
+        setUploadError(result.errors.join('\n'));
+      }
+    } catch (err) {
+      // Remove optimistic previews on failure
+      setUploadPreviews((prev) => {
+        const clean = prev.filter((p) => p.status !== 'uploading');
+        clean.forEach((p) => { if (p.status === 'uploading') URL.revokeObjectURL(p.src); });
+        syncImagesFromPreviews(clean);
+        return clean;
+      });
+      setUploadError(err.message || 'Gagal mengupload foto.');
+    } finally {
+      setUploading(false);
+      // Reset file input so user can re-select same file
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
   };
 
-  const removeImageField = (index) => {
-    if (formData.images.length <= 1) return;
-    const updated = formData.images.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, images: updated }));
+  /** Remove an image from preview list */
+  const handleRemovePreview = (index) => {
+    setUploadPreviews((prev) => {
+      const p = prev[index];
+      if (p && (p.status === 'local' || p.status === 'uploading')) {
+        URL.revokeObjectURL(p.src);
+      }
+      const next = prev.filter((_, i) => i !== index);
+      syncImagesFromPreviews(next);
+      return next;
+    });
   };
 
   // Sizes management
@@ -446,53 +559,85 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
 
             {/* 3. Media & Images */}
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Foto Karya (Image URLs)</h2>
-              <div className={styles.imageList}>
-                {formData.images.map((imgUrl, index) => (
-                  <div key={index} className={styles.imageItem}>
-                    <div className={styles.imageThumb}>
-                      {imgUrl ? (
-                        <Image
-                          src={imgUrl}
-                          alt={`Preview ${index + 1}`}
-                          fill
-                          sizes="48px"
-                          style={{ objectFit: 'cover' }}
-                          onError={(e) => {
-                            e.currentTarget.style.display = 'none';
-                          }}
-                        />
-                      ) : null}
-                    </div>
-                    <input
-                      type="text"
-                      className={styles.imageInput}
-                      placeholder="/images/collections/sample.jpg atau URL gambar"
-                      value={imgUrl}
-                      onChange={(e) => handleImageChange(index, e.target.value)}
-                      disabled={submitting}
-                    />
-                    {formData.images.length > 1 && (
+              <h2 className={styles.cardTitle}>
+                Foto Karya
+                <span className={styles.primaryBadge}>Foto pertama = Foto Utama</span>
+              </h2>
+
+              {/* Upload Error Banner */}
+              {uploadError && (
+                <div className={styles.uploadErrorBox}>
+                  ⚠️ {uploadError}
+                  <button type="button" onClick={() => setUploadError(null)} className={styles.uploadErrorClose}>✕</button>
+                </div>
+              )}
+
+              {/* Preview Grid */}
+              {uploadPreviews.length > 0 && (
+                <div className={styles.uploadPreviewGrid}>
+                  {uploadPreviews.map((preview, index) => (
+                    <div
+                      key={index}
+                      className={`${styles.uploadPreviewItem} ${index === 0 ? styles.uploadPreviewPrimary : ''}`}
+                    >
+                      <div className={styles.uploadPreviewThumb}>
+                        {preview.status === 'uploading' ? (
+                          <div className={styles.uploadSpinner}>⏳</div>
+                        ) : (
+                          <Image
+                            src={preview.src}
+                            alt={`Foto ${index + 1}`}
+                            fill
+                            sizes="120px"
+                            style={{ objectFit: 'cover' }}
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                            unoptimized={preview.status === 'legacy'}
+                          />
+                        )}
+                        {index === 0 && (
+                          <span className={styles.primaryLabel}>Utama</span>
+                        )}
+                      </div>
                       <button
                         type="button"
-                        onClick={() => removeImageField(index)}
-                        className={styles.imageRemoveBtn}
-                        title="Hapus foto"
+                        onClick={() => handleRemovePreview(index)}
+                        className={styles.uploadRemoveBtn}
+                        title={`Hapus foto ${index + 1}`}
+                        disabled={submitting || uploading}
                       >
                         ✕
                       </button>
-                    )}
-                  </div>
-                ))}
-              </div>
-              <button
-                type="button"
-                onClick={addImageField}
-                className={styles.addImageBtn}
-                disabled={submitting}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Upload Drop Zone */}
+              <div
+                className={`${styles.uploadZone} ${uploading ? styles.uploadZoneLoading : ''}`}
+                onClick={() => !uploading && !submitting && fileInputRef.current?.click()}
               >
-                + Tambah Slot URL Foto
-              </button>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/jpg,image/png,image/webp"
+                  multiple
+                  style={{ display: 'none' }}
+                  onChange={handleFileSelect}
+                  disabled={submitting || uploading}
+                />
+                <div className={styles.uploadZoneIcon}>
+                  {uploading ? '⏳' : '📷'}
+                </div>
+                <div className={styles.uploadZoneText}>
+                  {uploading
+                    ? 'Sedang mengupload foto...'
+                    : 'Klik untuk pilih foto dari komputer'}
+                </div>
+                <div className={styles.uploadZoneHint}>
+                  JPG, PNG, WebP · Maks 5 MB per file · Bisa pilih banyak sekaligus
+                </div>
+              </div>
             </div>
 
             {/* 4. Material Details */}

@@ -390,3 +390,177 @@
   border: 1px solid rgba(239, 68, 68, 0.3);
   color: #f87171;
 }
+
+/* ============================================================
+   IMAGE UPLOAD UI
+   ============================================================ */
+
+/* Badge next to card title */
+.primaryBadge {
+  font-size: 0.7rem;
+  font-family: var(--font-inter, sans-serif);
+  font-weight: 500;
+  background: rgba(197, 160, 89, 0.15);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  color: #c5a059;
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+}
+
+/* Upload error banner */
+.uploadErrorBox {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #f87171;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  white-space: pre-line;
+}
+
+.uploadErrorClose {
+  background: none;
+  border: none;
+  color: #f87171;
+  cursor: pointer;
+  margin-left: auto;
+  font-size: 1rem;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+/* Preview grid */
+.uploadPreviewGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.uploadPreviewItem {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.uploadPreviewPrimary .uploadPreviewThumb {
+  border-color: #c5a059;
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.4);
+}
+
+.uploadPreviewThumb {
+  width: 100px;
+  height: 100px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+  background: #1f1b17;
+  border: 2px solid #383028;
+  transition: border-color 0.2s;
+}
+
+/* Primary label overlay */
+.primaryLabel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(197, 160, 89, 0.9);
+  color: #0f0e0d;
+  text-align: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 0.15rem 0;
+  text-transform: uppercase;
+}
+
+/* Spinner while uploading */
+.uploadSpinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 1.5rem;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Remove button below preview */
+.uploadRemoveBtn {
+  background: #2d2620;
+  border: 1px solid #383028;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  transition: all 0.2s;
+  width: 100px;
+  text-align: center;
+}
+
+.uploadRemoveBtn:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  color: #f87171;
+}
+
+.uploadRemoveBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Upload drop zone */
+.uploadZone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #0f0e0d;
+  border: 2px dashed #42382f;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+
+.uploadZone:hover {
+  border-color: #c5a059;
+  background: rgba(197, 160, 89, 0.04);
+}
+
+.uploadZoneLoading {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.uploadZoneIcon {
+  font-size: 2rem;
+  line-height: 1;
+}
+
+.uploadZoneText {
+  color: #d1d5db;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.uploadZoneHint {
+  color: #6b7280;
+  font-size: 0.78rem;
+}
