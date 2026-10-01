@@ -9,11 +9,10 @@ import ScrollReveal from '@/components/ui/ScrollReveal';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
 import siteData from '@/data/site.json';
-import collectionsData from '@/data/collections.json';
 import styles from './ProductDetailPage.module.css';
 
-export default function ProductDetailPage({ slug }) {
-  const piece = collectionsData.find((item) => item.slug === slug);
+export default function ProductDetailPage({ product, relatedProducts = [] }) {
+  const piece = product;
 
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
@@ -83,7 +82,7 @@ export default function ProductDetailPage({ slug }) {
   const maxStock = piece.stock !== undefined ? piece.stock : 5;
   const isOutOfStock = maxStock === 0;
 
-  const currentPrice = selectedVariant ? selectedVariant.price : piece.price;
+  const currentPrice = selectedVariant ? selectedVariant.price : (piece.formattedPrice || piece.price);
 
   // WhatsApp template message
   const waNumber = siteData.contact.whatsapp || '6281252783496';
@@ -140,9 +139,16 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
   };
 
   // Related pieces (same category first, excluding current)
-  const relatedPieces = collectionsData
-    .filter((item) => item.id !== piece.id)
-    .sort((a, b) => (a.category === piece.category ? -1 : 1))
+  const itemPieceCat = piece.categorySlug || piece.category;
+  const relatedPieces = (relatedProducts || [])
+    .filter((item) => String(item.id) !== String(piece.id) && item.slug !== piece.slug)
+    .sort((a, b) => {
+      const aCat = a.categorySlug || a.category;
+      const bCat = b.categorySlug || b.category;
+      if (aCat === itemPieceCat && bCat !== itemPieceCat) return -1;
+      if (bCat === itemPieceCat && aCat !== itemPieceCat) return 1;
+      return 0;
+    })
     .slice(0, 4);
 
   // Care instructions mappings
@@ -665,7 +671,7 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
                           {item.name}
                         </Link>
                       </h4>
-                      <span className={styles.relatedPrice}>{item.price}</span>
+                      <span className={styles.relatedPrice}>{item.formattedPrice || item.price}</span>
                     </div>
                   </article>
                 </ScrollReveal>

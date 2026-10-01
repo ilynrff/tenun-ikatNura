@@ -9,11 +9,9 @@ import CTABanner from '@/components/layout/CTABanner';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import ProductModal from './ProductModal';
 import { useWishlist } from '@/context/WishlistContext';
-import collectionsData from '@/data/collections.json';
-import categoriesData from '@/data/categories.json';
 import styles from './CollectionsPage.module.css';
 
-export default function CollectionsPage() {
+export default function CollectionsPage({ initialProducts = [], initialCategories = [] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeCategory = searchParams.get('category') || 'all';
@@ -39,10 +37,11 @@ export default function CollectionsPage() {
 
   // Filter products by category and search query
   const filteredPieces = useMemo(() => {
-    return collectionsData.filter((item) => {
-      // Category match
+    return (initialProducts || []).filter((item) => {
+      // Category match (supports categorySlug or category)
+      const itemCat = item.categorySlug || item.category;
       const matchesCategory =
-        activeCategory === 'all' || item.category === activeCategory;
+        activeCategory === 'all' || itemCat === activeCategory;
 
       // Search match
       if (!matchesCategory) return false;
@@ -53,11 +52,13 @@ export default function CollectionsPage() {
       const skuMatch = item.sku?.toLowerCase().includes(q);
       const catMatch = item.categoryLabel?.toLowerCase().includes(q);
       const descMatch = item.description?.toLowerCase().includes(q);
-      const matMatch = item.material?.type?.toLowerCase().includes(q);
+      const matMatch = typeof item.material === 'object'
+        ? item.material?.type?.toLowerCase().includes(q)
+        : String(item.material || '').toLowerCase().includes(q);
 
       return nameMatch || skuMatch || catMatch || descMatch || matMatch;
     });
-  }, [activeCategory, searchQuery]);
+  }, [initialProducts, activeCategory, searchQuery]);
 
   const visiblePieces = filteredPieces.slice(0, visibleCount);
 
@@ -124,11 +125,11 @@ export default function CollectionsPage() {
             {/* Horizontal Scrollable Category Chips */}
             <nav className={styles.categoryNav} aria-label="Kategori Produk">
               <div className={styles.categoryTrack}>
-                {categoriesData.map((cat) => {
+                {(initialCategories || []).map((cat) => {
                   const isActive = activeCategory === cat.slug;
                   return (
                     <button
-                      key={cat.id}
+                      key={cat.id || cat.slug}
                       type="button"
                       onClick={() => handleCategorySelect(cat.slug)}
                       className={`${styles.categoryChip} ${
@@ -262,7 +263,7 @@ export default function CollectionsPage() {
 
                             <div className={styles.card__footer}>
                               <span className={styles.card__price}>
-                                {item.price || 'Sesuai Pesanan'}
+                                {item.formattedPrice || item.price || 'Sesuai Pesanan'}
                               </span>
                             </div>
                           </div>
