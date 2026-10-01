@@ -1,12 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import styles from './login.module.css';
 
-export default function AdminLoginPage() {
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams.get('redirect') || '/admin';
@@ -52,62 +52,69 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <main className={styles.pageContainer}>
-      <div className={styles.ambientGlow} />
+    <div className={styles.loginCard}>
+      <div className={styles.header}>
+        <div className={styles.brandLabel}>TENUN IKAT NURA</div>
+        <h1 className={styles.title}>Panel Administrator</h1>
+        <p className={styles.subtitle}>
+          Masuk untuk mengelola produk, stok, dan etalase toko.
+        </p>
+      </div>
 
-      <div className={styles.loginCard}>
-        <div className={styles.header}>
-          <div className={styles.brandLabel}>TENUN IKAT NURA</div>
-          <h1 className={styles.title}>Panel Administrator</h1>
-          <p className={styles.subtitle}>
-            Masuk untuk mengelola produk, stok, dan etalase toko.
-          </p>
+      {error && <div className={styles.errorBanner}>{error}</div>}
+
+      <form onSubmit={handleSubmit} className={styles.form}>
+        <div className={styles.fieldGroup}>
+          <label htmlFor="admin-email" className={styles.label}>
+            Email Administrator
+          </label>
+          <input
+            id="admin-email"
+            type="email"
+            required
+            placeholder="admin@tenunikatnura.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={styles.input}
+            disabled={isLoading}
+          />
         </div>
 
-        {error && <div className={styles.errorBanner}>{error}</div>}
+        <div className={styles.fieldGroup}>
+          <label htmlFor="admin-password" className={styles.label}>
+            Kata Sandi
+          </label>
+          <input
+            id="admin-password"
+            type="password"
+            required
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={styles.input}
+            disabled={isLoading}
+          />
+        </div>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div className={styles.fieldGroup}>
-            <label htmlFor="admin-email" className={styles.label}>
-              Email Administrator
-            </label>
-            <input
-              id="admin-email"
-              type="email"
-              required
-              placeholder="admin@tenunikatnura.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={styles.input}
-              disabled={isLoading}
-            />
-          </div>
+        <button type="submit" className={styles.submitBtn} disabled={isLoading}>
+          {isLoading ? 'Memverifikasi...' : 'MASUK KE ADMIN'}
+        </button>
+      </form>
 
-          <div className={styles.fieldGroup}>
-            <label htmlFor="admin-password" className={styles.label}>
-              Kata Sandi
-            </label>
-            <input
-              id="admin-password"
-              type="password"
-              required
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className={styles.input}
-              disabled={isLoading}
-            />
-          </div>
+      <Link href="/" className={styles.backLink}>
+        &larr; Kembali ke Beranda Toko
+      </Link>
+    </div>
+  );
+}
 
-          <button type="submit" className={styles.submitBtn} disabled={isLoading}>
-            {isLoading ? 'Memverifikasi...' : 'MASUK KE ADMIN'}
-          </button>
-        </form>
-
-        <Link href="/" className={styles.backLink}>
-          &larr; Kembali ke Beranda Toko
-        </Link>
-      </div>
+export default function AdminLoginPage() {
+  return (
+    <main className={styles.pageContainer}>
+      <div className={styles.ambientGlow} />
+      <Suspense fallback={<div className={styles.loginCard} style={{ textAlign: 'center', color: '#888' }}>Memuat...</div>}>
+        <LoginForm />
+      </Suspense>
     </main>
   );
 }

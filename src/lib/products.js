@@ -35,7 +35,7 @@ export function normalizeProduct(item) {
     name: item.name || item.title || 'Karya Tenun Nura',
     category: categorySlug,
     categorySlug: categorySlug,
-    categoryLabel: item.category?.name || item.categoryLabel || getCategoryNameBySlug(categorySlug) || 'Koleksi Tenun',
+    categoryLabel: item.category?.name || item.categoryLabel || 'Koleksi Tenun',
     price: numPrice,
     formattedPrice: formatRupiah(numPrice),
     stock: stock,
@@ -301,7 +301,7 @@ export async function createProduct(inputData) {
       update: {},
       create: {
         slug: categorySlug,
-        name: getCategoryNameBySlug(categorySlug) || categorySlug,
+        name: (await getCategoryNameBySlug(categorySlug)) || categorySlug,
         isActive: true,
       },
     });
@@ -428,7 +428,7 @@ export async function updateProduct(id, inputData) {
         update: {},
         create: {
           slug: categorySlug,
-          name: getCategoryNameBySlug(categorySlug) || categorySlug,
+          name: (await getCategoryNameBySlug(categorySlug)) || categorySlug,
           isActive: true,
         },
       });

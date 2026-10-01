@@ -9,7 +9,7 @@ import { getAllCategories } from '@/lib/categories';
  */
 export async function GET() {
   try {
-    const categories = getAllCategories({ includeInactive: true, includeAllTab: false });
+    const categories = await getAllCategories({ includeInactive: true, includeAllTab: false });
     return NextResponse.json({ categories });
   } catch (error) {
     console.error('[Admin Categories API] Error fetching categories:', error);
