@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import siteData from '@/data/site.json';
 import { useCart } from '@/context/CartContext';
+import { formatRupiah } from '@/lib/format';
 import styles from './ProductModal.module.css';
 
 export default function ProductModal({ product, onClose }) {
@@ -13,6 +14,8 @@ export default function ProductModal({ product, onClose }) {
   );
 
   if (!product) return null;
+
+  const displayPrice = product.formattedPrice || formatRupiah(product.price);
 
   // Admin WhatsApp Number from site.json or default to 6281252783496
   const waNumber = siteData.contact.whatsapp || '6281252783496';
@@ -25,14 +28,16 @@ Saya tertarik dan ingin memesan / menanyakan produk berikut:
 🏷️ *Kode Produk*: ${product.sku || 'NURA-ITEM'}
 📏 *Ukuran Terpilih*: ${selectedSize}
 🧵 *Material*: ${product.material?.type || product.categoryLabel}
-💰 *Harga*: ${product.price || 'Custom Order'}
+💰 *Harga*: ${displayPrice || 'Custom Order'}
 
 Apakah produk ini masih tersedia atau bisa di-custom order? Terima kasih!`;
 
   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
 
   const handleAddToCart = () => {
-    addToCart(product, selectedSize, 1);
+    if (!product || product.stock === 0) return;
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) return;
+    addToCart(product, selectedSize || 'Free Size', 1);
     onClose();
   };
 
@@ -70,7 +75,7 @@ Apakah produk ini masih tersedia atau bisa di-custom order? Terima kasih!`;
             </div>
 
             <div className={styles.priceRow}>
-              <span className={styles.price}>{product.price || 'Sesuai Pesanan'}</span>
+              <span className={styles.price}>{displayPrice || 'Sesuai Pesanan'}</span>
             </div>
 
             <p className={styles.description}>{product.description}</p>

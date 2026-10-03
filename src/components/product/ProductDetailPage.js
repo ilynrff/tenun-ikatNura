@@ -101,12 +101,13 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
 
   // Cart actions
   const handleAddToCart = () => {
-    if (isOutOfStock) return;
+    if (isOutOfStock || !piece) return;
+    if (piece.sizes && piece.sizes.length > 0 && !selectedSize) return;
     const itemToAdd = {
       ...piece,
       price: currentPrice,
     };
-    addToCart(itemToAdd, selectedSize, quantity);
+    addToCart(itemToAdd, selectedSize || 'Free Size', quantity, selectedVariant);
   };
 
   const handleBuyNow = () => {

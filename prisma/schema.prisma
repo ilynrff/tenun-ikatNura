@@ -1,8 +1,6 @@
 // ============================================================
 // PRISMA SCHEMA — TENUN IKAT NURA
-// Phase 1: Product + Category Foundation
-// Designed to support Phase 2 (Order, Customer, Cart) additions
-// without requiring breaking schema changes.
+// Phase 3B: Order Database Foundation
 // ============================================================
 
 generator client {
@@ -13,6 +11,26 @@ datasource db {
   provider  = "postgresql"
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
+}
+
+// ============================================================
+// ENUMS
+// ============================================================
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  UNPAID
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
 }
 
 // ============================================================
@@ -28,7 +46,7 @@ model Category {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 
-  // Relations (Phase 2: can add more)
+  // Relations
   products    Product[]
 
   @@map("categories")
@@ -39,11 +57,11 @@ model Category {
 // ============================================================
 
 model Product {
-  id           String   @id @default(cuid())
+  id           String      @id @default(cuid())
 
   // Identifiers — must be unique
-  sku          String   @unique
-  slug         String   @unique
+  sku          String      @unique
+  slug         String      @unique
 
   // Basic info
   name         String
@@ -55,39 +73,42 @@ model Product {
   material     Json?
 
   // Pricing
-  price        Int      @default(0)   // Stored as integer IDR (e.g., 1450000)
+  price        Int         @default(0)   // Stored as integer IDR (e.g., 1450000)
 
   // Stock
-  stock        Int      @default(0)
+  stock        Int         @default(0)
 
   // Images — ordered array of URL strings
-  images       String[] @default([])
+  images       String[]    @default([])
 
   // Sizes / Variants — ordered array of strings (e.g., ["S","M","L","XL","Custom Size"])
-  sizes        String[] @default([])
+  sizes        String[]    @default([])
 
   // Care instructions — array of strings
-  care         String[] @default([])
+  care         String[]    @default([])
 
   // Colors — array of strings
-  colors       String[] @default([])
+  colors       String[]    @default([])
 
   // Flags
-  isActive     Boolean  @default(true)
-  isVisible    Boolean  @default(true)
-  featured     Boolean  @default(false)
-  signature    Boolean  @default(false)
+  isActive     Boolean     @default(true)
+  isVisible    Boolean     @default(true)
+  featured     Boolean     @default(false)
+  signature    Boolean     @default(false)
 
   // Homepage arch gallery position (0 = not placed, 1-5 = position)
-  archPosition Int      @default(0)
+  archPosition Int         @default(0)
 
   // Category relation
   categorySlug String
-  category     Category @relation(fields: [categorySlug], references: [slug])
+  category     Category    @relation(fields: [categorySlug], references: [slug])
+
+  // Order items relation
+  orderItems   OrderItem[]
 
   // Timestamps
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
   @@index([categorySlug])
   @@index([isActive, isVisible])
@@ -96,12 +117,67 @@ model Product {
 }
 
 // ============================================================
-// PHASE 2 PLACEHOLDER — DO NOT IMPLEMENT YET
-// These models will be added when Phase 2 (ecommerce) begins.
-//
-// model Customer { ... }
-// model Order { ... }
-// model OrderItem { ... }
-// model Cart { ... }
-// model CartItem { ... }
+// ORDER
 // ============================================================
+
+model Order {
+  id                 String        @id @default(cuid())
+  orderNumber        String        @unique
+
+  customerName       String
+  customerWhatsapp   String
+  customerEmail      String?
+
+  shippingAddress    String
+  shippingCity       String?
+  shippingPostalCode String?
+
+  note               String?
+
+  subtotal           Int
+  shippingCost       Int           @default(0)
+  total              Int
+
+  orderStatus        OrderStatus   @default(PENDING)
+  paymentStatus      PaymentStatus @default(UNPAID)
+
+  items              OrderItem[]
+
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@index([orderStatus])
+  @@index([paymentStatus])
+  @@index([createdAt])
+  @@map("orders")
+}
+
+// ============================================================
+// ORDER ITEM
+// ============================================================
+
+model OrderItem {
+  id          String   @id @default(cuid())
+
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  productId   String?
+  product     Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  sku         String
+  productName String
+
+  size        String?
+  variant     String?
+
+  unitPrice   Int
+  quantity    Int
+  subtotal    Int
+
+  createdAt   DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+  @@map("order_items")
+}

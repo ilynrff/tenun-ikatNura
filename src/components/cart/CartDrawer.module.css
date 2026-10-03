@@ -223,8 +223,23 @@
   transition: background-color 0.2s ease;
 }
 
-.qtyBtn:hover {
+.qtyBtn:hover:not(:disabled) {
   background-color: rgba(197, 154, 61, 0.2);
+}
+
+.qtyBtn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.itemNameLink {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s ease;
+}
+
+.itemNameLink:hover {
+  color: var(--heritage-gold, #A37928);
 }
 
 .qtyNum {

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
+import { formatRupiah } from '@/lib/format';
 import styles from './CartDrawer.module.css';
 
 export default function CartDrawer() {
@@ -20,7 +21,8 @@ export default function CartDrawer() {
       const adminWa = '6281252783496';
       let message = `Halo Admin Tenun Ikat Nura,\n\nSaya ingin memesan produk berikut dari Cart:\n`;
       cart.forEach((item, idx) => {
-        message += `\n${idx + 1}. *${item.name}* (Kode: ${item.sku}) - Size: ${item.size} x ${item.quantity} = ${item.price}`;
+        const itemPrice = item.formattedPrice || formatRupiah(item.price);
+        message += `\n${idx + 1}. *${item.name}* (Kode: ${item.sku}) - Size: ${item.size}${item.variant ? ` (${item.variant})` : ''} x ${item.quantity} = ${itemPrice}`;
       });
       message += `\n\n*Total Estimasi*: ${subtotal}\n\nMohon konfirmasi ketersediaan dan proses pemesanannya. Terima kasih!`;
       
@@ -85,51 +87,67 @@ export default function CartDrawer() {
             </div>
           ) : (
             <div className={styles.itemList}>
-              {cart.map((item) => (
-                <div key={item.key} className={styles.itemCard}>
-                  <div className={styles.itemImageWrapper}>
-                    <img src={item.image} alt={item.name} className={styles.itemImage} />
-                  </div>
-                  <div className={styles.itemDetails}>
-                    <div>
-                      <h4 className={styles.itemName}>{item.name}</h4>
-                      <div className={styles.itemMeta}>
-                        KODE: {item.sku} | Ukuran: {item.size}
-                      </div>
-                      <div className={styles.itemPrice}>{item.price}</div>
-                    </div>
+              {cart.map((item) => {
+                const productHref = item.slug ? `/collections/${item.slug}` : '/collections';
+                const isMaxStockReached = typeof item.stock === 'number' && item.quantity >= item.stock;
 
-                    <div className={styles.qtyRow}>
-                      <div className={styles.qtyControls}>
+                return (
+                  <div key={item.key} className={styles.itemCard}>
+                    <div className={styles.itemImageWrapper}>
+                      <Link href={productHref} onClick={closeCart}>
+                        <img src={item.image} alt={item.name} className={styles.itemImage} />
+                      </Link>
+                    </div>
+                    <div className={styles.itemDetails}>
+                      <div>
+                        <h4 className={styles.itemName}>
+                          <Link href={productHref} onClick={closeCart} className={styles.itemNameLink}>
+                            {item.name}
+                          </Link>
+                        </h4>
+                        <div className={styles.itemMeta}>
+                          KODE: {item.sku} | Ukuran: {item.size}
+                          {item.variant ? ` | Varian: ${item.variant}` : ''}
+                        </div>
+                        <div className={styles.itemPrice}>
+                          {item.formattedPrice || formatRupiah(item.price)}
+                        </div>
+                      </div>
+
+                      <div className={styles.qtyRow}>
+                        <div className={styles.qtyControls}>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.key, -1)}
+                            disabled={item.quantity <= 1}
+                            className={styles.qtyBtn}
+                            aria-label="Kurangi jumlah"
+                          >
+                            -
+                          </button>
+                          <span className={styles.qtyNum}>{item.quantity}</span>
+                          <button
+                            type="button"
+                            onClick={() => updateQuantity(item.key, 1)}
+                            disabled={isMaxStockReached}
+                            className={styles.qtyBtn}
+                            aria-label="Tambah jumlah"
+                          >
+                            +
+                          </button>
+                        </div>
                         <button
                           type="button"
-                          onClick={() => updateQuantity(item.key, -1)}
-                          className={styles.qtyBtn}
-                          aria-label="Kurangi jumlah"
+                          onClick={() => removeFromCart(item.key)}
+                          className={styles.removeBtn}
                         >
-                          -
-                        </button>
-                        <span className={styles.qtyNum}>{item.quantity}</span>
-                        <button
-                          type="button"
-                          onClick={() => updateQuantity(item.key, 1)}
-                          className={styles.qtyBtn}
-                          aria-label="Tambah jumlah"
-                        >
-                          +
+                          Hapus
                         </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => removeFromCart(item.key)}
-                        className={styles.removeBtn}
-                      >
-                        Hapus
-                      </button>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </div>
