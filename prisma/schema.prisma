@@ -117,12 +117,34 @@ model Product {
 }
 
 // ============================================================
+// USER (CUSTOMER)
+// ============================================================
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  phone        String?
+  role         String    @default("USER")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  orders       Order[]
+
+  @@map("users")
+}
+
+// ============================================================
 // ORDER
 // ============================================================
 
 model Order {
   id                 String        @id @default(cuid())
   orderNumber        String        @unique
+
+  userId             String
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   customerName       String
   customerWhatsapp   String
@@ -146,6 +168,7 @@ model Order {
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 
+  @@index([userId])
   @@index([orderStatus])
   @@index([paymentStatus])
   @@index([createdAt])

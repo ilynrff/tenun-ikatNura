@@ -22,13 +22,26 @@
 
 import { NextResponse } from 'next/server';
 import { createOrder } from '@/lib/orders';
+import { verifyServerCustomer } from '@/lib/customerAuth';
 
 /**
  * POST /api/orders
- * Create a new guest order from cart data.
+ * Create a new order for authenticated customer from cart data.
  */
 export async function POST(request) {
   try {
+    // ── 0. Enforce Server-Side Customer Authentication ──
+    const { authorized, user } = await verifyServerCustomer();
+    if (!authorized || !user?.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: 'Akses ditolak: Silakan masuk atau buat akun terlebih dahulu untuk membuat pesanan.',
+        },
+        { status: 401 }
+      );
+    }
+
     // ── 1. Parse request body ─────────────────────────────
     let body;
     try {
@@ -42,9 +55,10 @@ export async function POST(request) {
 
     // ── 2. Delegate to order service ──────────────────────
     const order = await createOrder({
+      userId: user.id, // Authenticated userId strictly sourced from verified server session
       customerName: body.customerName,
       customerWhatsapp: body.customerWhatsapp,
-      customerEmail: body.customerEmail,
+      customerEmail: body.customerEmail || user.email,
       shippingAddress: body.shippingAddress,
       shippingCity: body.shippingCity,
       shippingPostalCode: body.shippingPostalCode,

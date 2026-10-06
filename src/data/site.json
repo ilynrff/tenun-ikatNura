@@ -17,6 +17,11 @@
     "email": "hello@tenuniratnura.com",
     "address": "Jepara, Jawa Tengah, Indonesia"
   },
+  "payment": {
+    "bank": "BCA",
+    "accountNumber": "1234567890",
+    "accountName": "TENUN IKAT NURA"
+  },
   "social": [
     { "name": "Instagram", "url": "https://instagram.com/Tenun_ikat_nura", "handle": "@Tenun_ikat_nura" },
     { "name": "WhatsApp", "url": "https://wa.me/6281252783496", "label": "0812-5278-3496" },

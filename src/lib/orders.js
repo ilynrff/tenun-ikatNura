@@ -189,6 +189,7 @@ function normalizeItems(items) {
  */
 export async function createOrder(params) {
   const {
+    userId,
     customerName,
     customerWhatsapp,
     customerEmail,
@@ -204,6 +205,13 @@ export async function createOrder(params) {
   if (!prisma) {
     const err = new Error('Database tidak tersedia. Order tidak dapat diproses.');
     err.statusCode = 503;
+    throw err;
+  }
+
+  // ── 0b. Guard: User ID must be present (Guest cannot create order) ──
+  if (!userId || !String(userId).trim()) {
+    const err = new Error('Akses ditolak: Silakan login terlebih dahulu untuk membuat pesanan.');
+    err.statusCode = 401;
     throw err;
   }
 
@@ -336,6 +344,7 @@ export async function createOrder(params) {
     createdOrder = await prisma.order.create({
       data: {
         orderNumber,
+        userId: String(userId).trim(),
         customerName: customerName.trim(),
         customerWhatsapp: customerWhatsapp.trim(),
         customerEmail: customerEmail ? customerEmail.trim() : null,
@@ -407,6 +416,7 @@ export async function createOrder(params) {
   return {
     id: createdOrder.id,
     orderNumber: createdOrder.orderNumber,
+    userId: createdOrder.userId,
     subtotal: createdOrder.subtotal,
     shippingCost: createdOrder.shippingCost,
     total: createdOrder.total,

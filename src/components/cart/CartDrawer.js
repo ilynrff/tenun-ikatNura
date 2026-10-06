@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 import { useAuth } from '@/context/AuthContext';
@@ -9,27 +8,9 @@ import styles from './CartDrawer.module.css';
 
 export default function CartDrawer() {
   const { cart, isCartOpen, closeCart, removeFromCart, updateQuantity, totalItems, subtotal } = useCart();
-  const { isLoggedIn, openAuthModal } = useAuth();
-  const [showAuthWarning, setShowAuthWarning] = useState(false);
+  const { isLoggedIn } = useAuth();
 
-  const handleCheckoutClick = () => {
-    if (!isLoggedIn) {
-      setShowAuthWarning(true);
-    } else {
-      setShowAuthWarning(false);
-      // Construct WhatsApp Order for items in cart
-      const adminWa = '6281252783496';
-      let message = `Halo Admin Tenun Ikat Nura,\n\nSaya ingin memesan produk berikut dari Cart:\n`;
-      cart.forEach((item, idx) => {
-        const itemPrice = item.formattedPrice || formatRupiah(item.price);
-        message += `\n${idx + 1}. *${item.name}* (Kode: ${item.sku}) - Size: ${item.size}${item.variant ? ` (${item.variant})` : ''} x ${item.quantity} = ${itemPrice}`;
-      });
-      message += `\n\n*Total Estimasi*: ${subtotal}\n\nMohon konfirmasi ketersediaan dan proses pemesanannya. Terima kasih!`;
-      
-      const waUrl = `https://wa.me/${adminWa}?text=${encodeURIComponent(message)}`;
-      window.open(waUrl, '_blank');
-    }
-  };
+  const checkoutHref = isLoggedIn ? '/checkout' : '/login?callbackUrl=/checkout';
 
   return (
     <>
@@ -159,42 +140,13 @@ export default function CartDrawer() {
               <span className={styles.subtotalValue}>{subtotal}</span>
             </div>
 
-            {/* Auth Warning notice when Guest tries to Checkout */}
-            {showAuthWarning && !isLoggedIn && (
-              <div className={styles.authNotice}>
-                <p className={styles.authNoticeText}>
-                  Please log in or create an account to continue to checkout.
-                </p>
-                <div className={styles.authNoticeBtns}>
-                  <button
-                    onClick={() => {
-                      closeCart();
-                      openAuthModal('login');
-                    }}
-                    className={styles.authBtnLogin}
-                  >
-                    LOGIN
-                  </button>
-                  <button
-                    onClick={() => {
-                      closeCart();
-                      openAuthModal('register');
-                    }}
-                    className={styles.authBtnRegister}
-                  >
-                    CREATE ACCOUNT
-                  </button>
-                </div>
-              </div>
-            )}
-
             <div className={styles.actionBtns}>
               <Link href="/collections" onClick={closeCart} className={styles.viewCartBtn}>
                 DISCOVER MORE PIECES
               </Link>
-              <button onClick={handleCheckoutClick} className={styles.checkoutBtn}>
+              <Link href={checkoutHref} onClick={closeCart} className={styles.checkoutBtn}>
                 CHECKOUT
-              </button>
+              </Link>
             </div>
           </div>
         )}
