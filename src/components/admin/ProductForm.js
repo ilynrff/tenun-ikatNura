@@ -20,6 +20,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
     categorySlug: 'outer',
     price: '',
     stock: 5,
+    weight: 1000,
     tagline: '',
     description: '',
     story: '',
@@ -83,6 +84,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
         categorySlug: initialData.categorySlug || initialData.category || 'outer',
         price: initialData.price !== undefined ? String(initialData.price) : '',
         stock: initialData.stock !== undefined ? initialData.stock : 0,
+        weight: initialData.weight !== undefined ? initialData.weight : 1000,
         tagline: initialData.tagline || '',
         description: initialData.description || '',
         story: initialData.story || '',
@@ -307,6 +309,9 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
     if (formData.stock === '' || isNaN(Number(formData.stock)) || Number(formData.stock) < 0) {
       newErrors.stock = 'Stok produk harus berupa angka valid (minimal 0).';
     }
+    if (formData.weight === '' || isNaN(Number(formData.weight)) || Number(formData.weight) < 1 || !Number.isInteger(Number(formData.weight))) {
+      newErrors.weight = 'Berat produk harus berupa angka bulat minimal 1 gram.';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -329,6 +334,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
         ...formData,
         price: parseInt(formData.price, 10),
         stock: parseInt(formData.stock, 10),
+        weight: parseInt(formData.weight, 10) || 1000,
         images: formData.images.filter((img) => img && img.trim() !== ''),
         archPosition: parseInt(formData.archPosition, 10) || 0,
       };
@@ -554,6 +560,26 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                   />
                   {errors.stock && <span className={styles.errorText}>{errors.stock}</span>}
                 </div>
+              </div>
+
+              <div className={styles.formGroup} style={{ marginTop: '1.25rem' }}>
+                <label className={styles.label}>
+                  Berat Produk (gram) <span className={styles.required}>*</span>
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  step="1"
+                  className={`${styles.input} ${errors.weight ? styles.inputError : ''}`}
+                  placeholder="Contoh: 1000"
+                  value={formData.weight}
+                  onChange={(e) => handleChange('weight', e.target.value)}
+                  disabled={submitting}
+                />
+                <span className={styles.hint}>
+                  Gunakan satuan gram (misal: 500 = 500g, 1000 = 1 kg). Digunakan untuk perhitungan ongkir otomatis RajaOngkir.
+                </span>
+                {errors.weight && <span className={styles.errorText}>{errors.weight}</span>}
               </div>
             </div>
 

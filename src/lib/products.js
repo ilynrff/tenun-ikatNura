@@ -13,6 +13,7 @@ export function normalizeProduct(item) {
 
   const numPrice = typeof item.price === 'number' ? item.price : parsePriceToNumber(item.price);
   const stock = typeof item.stock === 'number' ? Math.max(0, Math.floor(item.stock)) : 5;
+  const weight = typeof item.weight === 'number' && item.weight > 0 ? Math.floor(item.weight) : 1000;
   const isOutOfStock = stock === 0;
 
   let images = [];
@@ -39,6 +40,7 @@ export function normalizeProduct(item) {
     price: numPrice,
     formattedPrice: formatRupiah(numPrice),
     stock: stock,
+    weight: weight,
     isOutOfStock: isOutOfStock,
     images: images,
     primaryImage: primaryImage,
@@ -231,6 +233,15 @@ export function validateProductData(data, isUpdate = false) {
     errors.stock = 'Stok produk harus berupa angka minimal 0.';
   }
 
+  const weightNum = typeof data.weight === 'number' ? data.weight : parseInt(data.weight, 10);
+  if (data.weight !== undefined && data.weight !== null && data.weight !== '') {
+    if (isNaN(weightNum) || !Number.isInteger(Number(data.weight)) || weightNum < 1) {
+      errors.weight = 'Berat produk harus berupa angka bulat minimal 1 gram.';
+    }
+  } else if (!isUpdate) {
+    errors.weight = 'Berat produk wajib diisi (minimal 1 gram).';
+  }
+
   return {
     isValid: Object.keys(errors).length === 0,
     errors,
@@ -267,6 +278,7 @@ export async function createProduct(inputData) {
   const categorySlug = inputData.categorySlug || inputData.category;
   const price = typeof inputData.price === 'number' ? inputData.price : parsePriceToNumber(inputData.price);
   const stock = typeof inputData.stock === 'number' ? inputData.stock : parseInt(inputData.stock, 10) || 0;
+  const weight = typeof inputData.weight === 'number' ? Math.max(1, Math.floor(inputData.weight)) : (parseInt(inputData.weight, 10) || 1000);
 
   const images = Array.isArray(inputData.images) && inputData.images.length > 0
     ? inputData.images.filter(Boolean)
@@ -317,6 +329,7 @@ export async function createProduct(inputData) {
         material: inputData.material || null,
         price,
         stock,
+        weight,
         images,
         sizes,
         colors,
@@ -345,6 +358,7 @@ export async function createProduct(inputData) {
       material: inputData.material,
       price,
       stock,
+      weight,
       images,
       sizes,
       colors,
@@ -446,6 +460,7 @@ export async function updateProduct(id, inputData) {
         material: inputData.material !== undefined ? inputData.material : target.material,
         price,
         stock,
+        weight: inputData.weight !== undefined ? Math.max(1, parseInt(inputData.weight, 10) || 1000) : target.weight,
         images,
         sizes,
         colors,
@@ -474,6 +489,7 @@ export async function updateProduct(id, inputData) {
       material: inputData.material,
       price,
       stock,
+      weight: inputData.weight !== undefined ? parseInt(inputData.weight, 10) || 1000 : 1000,
       images,
       sizes,
       colors,

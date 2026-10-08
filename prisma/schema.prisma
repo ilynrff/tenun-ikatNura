@@ -75,6 +75,9 @@ model Product {
   // Pricing
   price        Int         @default(0)   // Stored as integer IDR (e.g., 1450000)
 
+  // Weight in grams (e.g., 1000 = 1kg)
+  weight       Int         @default(1000)
+
   // Stock
   stock        Int         @default(0)
 
