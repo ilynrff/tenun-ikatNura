@@ -12,6 +12,8 @@
 // Guest Checkout: supported (no customer auth required)
 // ============================================================
 
+import { calculateShippingCost } from './rajaOngkir.js';
+
 // ──────────────────────────────────────────────────────────────
 // PRISMA — lazy getter to match the singleton pattern in prisma.js
 // ──────────────────────────────────────────────────────────────
@@ -172,8 +174,10 @@ function normalizeItems(items) {
 
 /**
  * Create an order from validated customer data + cart items.
+ * Shipping cost is calculated and verified server-side via Komerce API.
  *
  * @param {Object} params
+ * @param {string}  params.userId              - required
  * @param {string}  params.customerName        - required
  * @param {string}  params.customerWhatsapp    - required
  * @param {string}  [params.customerEmail]     - optional
@@ -181,6 +185,9 @@ function normalizeItems(items) {
  * @param {string}  [params.shippingCity]      - optional
  * @param {string}  [params.shippingPostalCode]- optional
  * @param {string}  [params.note]              - optional
+ * @param {string}  params.destinationId       - required Komerce destination ID
+ * @param {string}  params.courier             - required Courier code e.g. 'jne', 'jnt'
+ * @param {string}  params.shippingService     - required Service name e.g. 'REG', 'YES'
  * @param {Array}   params.items               - required, non-empty
  *   Each item: { productId, quantity, size?, variant? }
  *
@@ -197,6 +204,10 @@ export async function createOrder(params) {
     shippingCity,
     shippingPostalCode,
     note,
+    // Shipping (Komerce) — verified server-side
+    destinationId,
+    courier,
+    shippingService,
     items,
   } = params;
 
@@ -246,6 +257,7 @@ export async function createOrder(params) {
       price: true,
       stock: true,
       sizes: true,
+      weight: true,
       isActive: true,
       isVisible: true,
     },
@@ -316,12 +328,103 @@ export async function createOrder(params) {
     });
   }
 
-  // ── 6. Calculate totals ───────────────────────────────────
-  const orderSubtotal = resolvedItems.reduce((sum, i) => sum + i.subtotal, 0);
-  const shippingCost = 0; // No shipping API yet
-  const orderTotal = orderSubtotal + shippingCost;
+  // ── 6. Server-Side Shipping Calculation & Verification ────
+  // Client shippingCost is NEVER trusted. Server recalculates and verifies
+  // the exact rate via Komerce API using DB product weights.
 
-  // ── 7. Generate order number ──────────────────────────────
+  // 6a. Validate destination ID
+  const destIdStr = destinationId ? String(destinationId).trim() : '';
+  if (!destIdStr) {
+    const err = new Error('Tujuan pengiriman (destinationId) wajib dipilih.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // 6b. Validate courier
+  const supportedCouriers = ['jne', 'pos', 'tiki', 'sicepat', 'jnt', 'anteraja', 'ninja', 'idexpress', 'lion', 'wahana'];
+  const cleanCourier = (courier || '').toLowerCase().trim();
+  if (!cleanCourier || !supportedCouriers.includes(cleanCourier)) {
+    const err = new Error(
+      `Kurir pengiriman "${courier || ''}" tidak valid atau tidak didukung. Pilihan: ${supportedCouriers.join(', ')}.`
+    );
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // 6c. Validate shipping service
+  const serviceStr = shippingService ? String(shippingService).trim() : '';
+  if (!serviceStr) {
+    const err = new Error('Layanan pengiriman (shippingService) wajib dipilih.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // 6d. Calculate total weight from database products (minimum 1 gram)
+  const totalWeightGrams = resolvedItems.reduce((sum, item) => {
+    const prod = productMap.get(item.productId);
+    const itemWeight = (prod && typeof prod.weight === 'number' && prod.weight > 0)
+      ? prod.weight
+      : 1000;
+    return sum + (itemWeight * item.quantity);
+  }, 0);
+  const totalWeight = Math.max(1, totalWeightGrams);
+
+  // 6e. Call Komerce shipping calculation API
+  let availableServices = [];
+  try {
+    availableServices = await calculateShippingCost({
+      destinationId: destIdStr,
+      weight: totalWeight,
+      courier: cleanCourier,
+    });
+  } catch (shippingErr) {
+    console.error('[Orders] calculateShippingCost error:', shippingErr.message);
+    const err = new Error(shippingErr.message || 'Gagal menghitung ongkos kirim melalui layanan ekspedisi.');
+    err.statusCode = shippingErr.statusCode || 502;
+    throw err;
+  }
+
+  if (!Array.isArray(availableServices) || availableServices.length === 0) {
+    const err = new Error(
+      `Tidak ada layanan pengiriman yang tersedia untuk kurir ${cleanCourier.toUpperCase()} ke tujuan ini.`
+    );
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // 6f. Validate that the selected service is available in current rates
+  const targetService = serviceStr.toLowerCase();
+  const matchedService = availableServices.find(
+    (s) => s.service && s.service.trim().toLowerCase() === targetService
+  );
+
+  if (!matchedService) {
+    const availableNames = availableServices.map((s) => s.service).filter(Boolean).join(', ');
+    const err = new Error(
+      `Layanan pengiriman "${serviceStr}" tidak valid untuk kurir ${cleanCourier.toUpperCase()}. Pilihan tersedia: ${availableNames || '-'}.`
+    );
+    err.statusCode = 400;
+    throw err;
+  }
+
+  // 6g. Extract verified shipping cost from server result (IGNORING client value)
+  const rawCost = matchedService.cost;
+  const verifiedCost = typeof rawCost === 'string' && rawCost.trim() === ''
+    ? NaN
+    : Number(rawCost);
+
+  if (rawCost === null || rawCost === undefined || !Number.isFinite(verifiedCost) || verifiedCost < 0) {
+    const err = new Error('Tarif pengiriman dari layanan ekspedisi tidak valid.');
+    err.statusCode = 502;
+    throw err;
+  }
+  const shippingCost = verifiedCost;
+
+  // ── 7. Calculate totals ───────────────────────────────────
+  const orderSubtotal  = resolvedItems.reduce((sum, i) => sum + i.subtotal, 0);
+  const orderTotal     = orderSubtotal + shippingCost;
+
+  // ── 8. Generate order number ──────────────────────────────
   const orderNumber = generateOrderNumber();
 
   // ── 8. Create Order + OrderItems + decrement stock ───────

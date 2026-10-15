@@ -63,6 +63,11 @@ export async function POST(request) {
       shippingCity: body.shippingCity,
       shippingPostalCode: body.shippingPostalCode,
       note: body.note,
+      // Shipping (Komerce) — verified and calculated strictly server-side
+      destinationId:   body.destinationId,
+      courier:         body.courier,
+      shippingService: body.service || body.shippingService,
+      // Client-submitted shippingCost is deliberately NOT passed or trusted.
       items: body.items,
     });
 

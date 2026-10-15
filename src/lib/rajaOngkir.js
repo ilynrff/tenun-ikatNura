@@ -1,4 +1,4 @@
-import prisma from './prisma';
+import prisma from './prisma.js';
 
 /**
  * RajaOngkir Server-Side Client & Shipping Service Foundation
@@ -248,9 +248,10 @@ export async function calculateShippingCost({ destinationId, weight, courier = '
         const courierCode = (item.code || cleanCourier).toUpperCase();
         const courierName = item.name || courierCode;
         for (const costItem of item.costs) {
-          const costVal = Array.isArray(costItem.cost)
-            ? (costItem.cost[0]?.value || 0)
-            : (typeof costItem.cost === 'number' ? costItem.cost : parseInt(costItem.cost || costItem.price || 0, 10));
+          const rawC = Array.isArray(costItem.cost)
+            ? costItem.cost[0]?.value
+            : (costItem.cost !== undefined ? costItem.cost : costItem.price);
+          const costVal = rawC === null || (typeof rawC === 'string' && rawC.trim() === '') ? NaN : Number(rawC);
           const etdVal = Array.isArray(costItem.cost)
             ? (costItem.cost[0]?.etd || '')
             : (costItem.etd || costItem.estimated || '');
@@ -260,7 +261,7 @@ export async function calculateShippingCost({ destinationId, weight, courier = '
             courierName: courierName,
             service: costItem.service || costItem.service_code || 'Standard',
             description: costItem.description || costItem.service || 'Reguler',
-            cost: Number(costVal) || 0,
+            cost: costVal,
             etd: formatEtd(etdVal),
           });
         }
@@ -269,14 +270,15 @@ export async function calculateShippingCost({ destinationId, weight, courier = '
       else if (item.service || item.cost !== undefined || item.price !== undefined) {
         const courierCode = (item.code || item.courier || cleanCourier).toUpperCase();
         const courierName = item.name || item.courier_name || courierCode;
-        const costVal = typeof item.cost === 'number' ? item.cost : (item.price || 0);
+        const rawC = item.cost !== undefined ? item.cost : item.price;
+        const costVal = rawC === null || (typeof rawC === 'string' && rawC.trim() === '') ? NaN : Number(rawC);
 
         formattedServices.push({
           courier: courierCode,
           courierName: courierName,
           service: item.service || item.service_name || 'Standard',
           description: item.description || item.service || 'Reguler',
-          cost: Number(costVal) || 0,
+          cost: costVal,
           etd: formatEtd(item.etd),
         });
       }
@@ -299,6 +301,9 @@ function formatEtd(etd) {
   if (!etd || String(etd).trim() === '') return '1-3 hari';
   const str = String(etd).trim();
   if (str.toLowerCase().includes('hari')) return str;
+  if (/days?/i.test(str)) {
+    return str.replace(/days?/gi, 'hari').trim();
+  }
   return `${str} hari`;
 }
 
