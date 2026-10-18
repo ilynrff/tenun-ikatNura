@@ -427,92 +427,82 @@ export async function createOrder(params) {
   // ── 8. Generate order number ──────────────────────────────
   const orderNumber = generateOrderNumber();
 
-  // ── 8. Create Order + OrderItems + decrement stock ───────
-  //
-  // We use sequential Prisma calls rather than an interactive $transaction
-  // callback because Next.js 15 App Router RSC can cause Prisma 6's
-  // $transaction tx-proxy to lose model accessors.
-  //
-  // Atomicity is preserved via:
-  //   a) Stock is decremented with a conditional WHERE (stock >= qty)
-  //      so it can never go negative.
-  //   b) If any step fails after order creation, we delete the order
-  //      (CASCADE deletes its items automatically).
-  // ──────────────────────────────────────────────────────────
+  // ── 8. Create Order + OrderItems + decrement stock in an atomic database transaction ──
+  // Transaction is strictly mandatory. Never proceed without an atomic database transaction.
+  if (typeof prisma.$transaction !== 'function') {
+    const err = new Error('Layanan transaksi database tidak tersedia. Pembuatan pesanan dibatalkan.');
+    err.statusCode = 500;
+    throw err;
+  }
 
   let createdOrder = null;
 
   try {
-    // 8a. Create Order
-    createdOrder = await prisma.order.create({
-      data: {
-        orderNumber,
-        userId: String(userId).trim(),
-        customerName: customerName.trim(),
-        customerWhatsapp: customerWhatsapp.trim(),
-        customerEmail: customerEmail ? customerEmail.trim() : null,
-        shippingAddress: shippingAddress.trim(),
-        shippingCity: shippingCity ? shippingCity.trim() : null,
-        shippingPostalCode: shippingPostalCode ? shippingPostalCode.trim() : null,
-        note: note ? note.trim() : null,
-        subtotal: orderSubtotal,
-        shippingCost,
-        total: orderTotal,
-        orderStatus: 'PENDING',
-        paymentStatus: 'UNPAID',
-      },
-    });
-
-    // 8b. Create OrderItems
-    await prisma.orderItem.createMany({
-      data: resolvedItems.map((item) => ({
-        orderId: createdOrder.id,
-        productId: item.productId,
-        sku: item.sku,
-        productName: item.productName,
-        size: item.size,
-        variant: item.variant,
-        unitPrice: item.unitPrice,
-        quantity: item.quantity,
-        subtotal: item.subtotal,
-      })),
-    });
-
-    // 8c. Decrement stock atomically.
-    //     Use updateMany with WHERE stock >= quantity to prevent negative stock.
-    //     If stock was changed concurrently, count will be 0 and we compensate.
-    for (const item of resolvedItems) {
-      const result = await prisma.product.updateMany({
-        where: {
-          id: item.productId,
-          stock: { gte: item.quantity }, // atomic guard against negative stock
+    createdOrder = await prisma.$transaction(async (tx) => {
+      // 8a. Create Order
+      const order = await tx.order.create({
+        data: {
+          orderNumber,
+          userId: String(userId).trim(),
+          customerName: customerName.trim(),
+          customerWhatsapp: customerWhatsapp.trim(),
+          customerEmail: customerEmail ? customerEmail.trim() : null,
+          shippingAddress: shippingAddress.trim(),
+          shippingCity: shippingCity ? shippingCity.trim() : null,
+          shippingPostalCode: shippingPostalCode ? shippingPostalCode.trim() : null,
+          note: note ? note.trim() : null,
+          subtotal: orderSubtotal,
+          shippingCost,
+          total: orderTotal,
+          orderStatus: 'PENDING',
+          paymentStatus: 'UNPAID',
         },
-        data: { stock: { decrement: item.quantity } },
       });
 
-      if (result.count === 0) {
-        // Stock ran out between validation and update — compensate
-        throw new Error(
-          `Stok produk "${item.productName}" habis saat proses order. ` +
-            `Diminta: ${item.quantity}.`
-        );
-      }
-    }
-  } catch (compensationErr) {
-    // Compensation: delete the order if created (CASCADE removes order items)
-    if (createdOrder?.id) {
-      try {
-        await prisma.order.delete({ where: { id: createdOrder.id } });
-        console.warn('[Orders] Compensation rollback: deleted order', createdOrder.id);
-      } catch (deleteErr) {
-        // Log but don't re-throw: return the original error
-        console.error('[Orders] Compensation delete failed:', deleteErr.message);
-      }
-    }
+      // 8b. Create OrderItems
+      await tx.orderItem.createMany({
+        data: resolvedItems.map((item) => ({
+          orderId: order.id,
+          productId: item.productId,
+          sku: item.sku,
+          productName: item.productName,
+          size: item.size,
+          variant: item.variant,
+          unitPrice: item.unitPrice,
+          quantity: item.quantity,
+          subtotal: item.subtotal,
+        })),
+      });
 
+      // 8c. Decrement stock atomically within the same transaction.
+      //     Use updateMany with WHERE stock >= quantity to prevent negative stock.
+      //     If stock ran out concurrently, count will be 0 and we throw an error with 409 status,
+      //     triggering an immediate database ROLLBACK of the order, items, and any prior item stock updates.
+      for (const item of resolvedItems) {
+        const result = await tx.product.updateMany({
+          where: {
+            id: item.productId,
+            stock: { gte: item.quantity }, // atomic guard against negative stock
+          },
+          data: { stock: { decrement: item.quantity } },
+        });
+
+        if (result.count === 0) {
+          const err = new Error(
+            `Stok produk "${item.productName}" habis saat proses order. ` +
+              `Diminta: ${item.quantity}.`
+          );
+          err.statusCode = 409;
+          throw err;
+        }
+      }
+
+      return order;
+    });
+  } catch (txErr) {
     // Re-throw with appropriate status code
-    if (!compensationErr.statusCode) compensationErr.statusCode = 500;
-    throw compensationErr;
+    if (!txErr.statusCode) txErr.statusCode = 500;
+    throw txErr;
   }
 
   // ── 9. Return order summary ───────────────────────────────
