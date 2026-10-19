@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import ProductDetailPage from '@/components/product/ProductDetailPage';
 import { getProductBySlug, getProducts } from '@/lib/products';
 
@@ -7,7 +8,7 @@ export const dynamicParams = true;
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   const product = await getProductBySlug(slug);
-  if (!product) {
+  if (!product || !product.isActive || !product.isVisible) {
     return {
       title: 'Koleksi Tidak Ditemukan — Tenun Ikat Nura',
       description: 'Detail piece, cerita budaya, panduan ukuran, dan cara perawatan koleksi Tenun Ikat Nura.',
@@ -25,6 +26,10 @@ export default async function Page({ params }) {
     getProductBySlug(slug),
     getProducts({ includeInactive: false, includeHidden: false }),
   ]);
+
+  if (!product || !product.isActive || !product.isVisible) {
+    notFound();
+  }
 
   return <ProductDetailPage product={product} relatedProducts={allProducts} />;
 }
