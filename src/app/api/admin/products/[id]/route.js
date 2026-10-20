@@ -1,12 +1,22 @@
 import { NextResponse } from 'next/server';
 import { getProductById, updateProduct, deleteProduct } from '@/lib/products';
+import { verifyServerAdmin } from '@/lib/auth';
 
 /**
  * GET /api/admin/products/[id]
  * Fetch single product details by ID or Slug.
+ * Protected by verifyServerAdmin and middleware.
  */
 export async function GET(request, { params }) {
   try {
+    const { authorized } = await verifyServerAdmin();
+    if (!authorized) {
+      return NextResponse.json(
+        { error: 'Akses ditolak: Diperlukan autentikasi ADMIN.' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const product = await getProductById(id);
 
@@ -30,9 +40,18 @@ export async function GET(request, { params }) {
 /**
  * PUT /api/admin/products/[id]
  * Updates an existing product.
+ * Protected by verifyServerAdmin and middleware.
  */
 export async function PUT(request, { params }) {
   try {
+    const { authorized } = await verifyServerAdmin();
+    if (!authorized) {
+      return NextResponse.json(
+        { error: 'Akses ditolak: Diperlukan autentikasi ADMIN.' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
     const body = await request.json();
 
@@ -59,9 +78,18 @@ export async function PUT(request, { params }) {
 /**
  * DELETE /api/admin/products/[id]
  * Deletes a product.
+ * Protected by verifyServerAdmin and middleware.
  */
 export async function DELETE(request, { params }) {
   try {
+    const { authorized } = await verifyServerAdmin();
+    if (!authorized) {
+      return NextResponse.json(
+        { error: 'Akses ditolak: Diperlukan autentikasi ADMIN.' },
+        { status: 401 }
+      );
+    }
+
     const { id } = await params;
 
     const result = await deleteProduct(id);

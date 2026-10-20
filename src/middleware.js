@@ -17,8 +17,8 @@ export async function middleware(request) {
 
     const sessionCookie = request.cookies.get(ADMIN_COOKIE_NAME);
     if (!sessionCookie || !sessionCookie.value) {
-      // Redirect unauthenticated user to admin login
-      const loginUrl = new URL('/admin/login', request.url);
+      // Redirect unauthenticated user to unified login
+      const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -26,18 +26,21 @@ export async function middleware(request) {
     // Quick structural check of token
     const parts = sessionCookie.value.split('.');
     if (parts.length !== 2) {
-      const loginUrl = new URL('/admin/login', request.url);
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
     }
 
     try {
       const payload = JSON.parse(Buffer.from(parts[0], 'base64url').toString('utf-8'));
       if ((payload.exp && payload.exp < Date.now()) || payload.role !== 'ADMIN') {
-        const loginUrl = new URL('/admin/login', request.url);
+        const loginUrl = new URL('/login', request.url);
+        loginUrl.searchParams.set('redirect', pathname);
         return NextResponse.redirect(loginUrl);
       }
     } catch (e) {
-      const loginUrl = new URL('/admin/login', request.url);
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
     }
 
@@ -46,8 +49,8 @@ export async function middleware(request) {
 
   // Protect Admin API routes (/api/admin/...)
   if (pathname.startsWith('/api/admin')) {
-    // Whitelist login route
-    if (pathname === '/api/admin/auth/login') {
+    // Whitelist login and logout routes
+    if (pathname === '/api/admin/auth/login' || pathname === '/api/admin/auth/logout') {
       return NextResponse.next();
     }
 

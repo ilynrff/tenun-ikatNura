@@ -1,12 +1,22 @@
 import { NextResponse } from 'next/server';
 import { getProducts, createProduct } from '@/lib/products';
+import { verifyServerAdmin } from '@/lib/auth';
 
 /**
  * GET /api/admin/products
  * Returns all products for admin management.
+ * Protected by verifyServerAdmin and middleware.
  */
 export async function GET() {
   try {
+    const { authorized } = await verifyServerAdmin();
+    if (!authorized) {
+      return NextResponse.json(
+        { error: 'Akses ditolak: Diperlukan autentikasi ADMIN.' },
+        { status: 401 }
+      );
+    }
+
     const products = await getProducts({
       includeInactive: true,
       includeHidden: true,
@@ -25,9 +35,18 @@ export async function GET() {
 /**
  * POST /api/admin/products
  * Creates a new product with validation.
+ * Protected by verifyServerAdmin and middleware.
  */
 export async function POST(request) {
   try {
+    const { authorized } = await verifyServerAdmin();
+    if (!authorized) {
+      return NextResponse.json(
+        { error: 'Akses ditolak: Diperlukan autentikasi ADMIN.' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
 
     const created = await createProduct(body);

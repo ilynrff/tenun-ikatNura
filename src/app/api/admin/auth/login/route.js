@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { validateAdminCredentials, createAdminToken, ADMIN_COOKIE_NAME } from '@/lib/auth';
+import { CUSTOMER_COOKIE_NAME } from '@/lib/customerAuth';
 
 export async function POST(request) {
   try {
@@ -26,7 +27,7 @@ export async function POST(request) {
       },
     });
 
-    // Set secure HTTP-only cookie
+    // Set secure HTTP-only cookie for Admin
     response.cookies.set({
       name: ADMIN_COOKIE_NAME,
       value: token,
@@ -35,6 +36,17 @@ export async function POST(request) {
       sameSite: 'lax',
       path: '/',
       maxAge: 7 * 24 * 60 * 60, // 7 days in seconds
+    });
+
+    // Clear any existing customer session cookie
+    response.cookies.set({
+      name: CUSTOMER_COOKIE_NAME,
+      value: '',
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 0,
     });
 
     return response;

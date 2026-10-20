@@ -53,6 +53,14 @@ export async function POST(request) {
       );
     }
 
+    const configuredAdminEmail = (process.env.ADMIN_EMAIL || '').toLowerCase().trim();
+    if (configuredAdminEmail && cleanEmail === configuredAdminEmail) {
+      return NextResponse.json(
+        { success: false, message: 'Alamat email ini tidak dapat didaftarkan.' },
+        { status: 400 }
+      );
+    }
+
     if (!password || password.length < 6) {
       return NextResponse.json(
         { success: false, message: 'Kata sandi minimal harus 6 karakter.' },

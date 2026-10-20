@@ -55,7 +55,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
       await fetch('/api/admin/auth/logout', { method: 'POST' });
     } catch (e) {}
     logout();
-    router.push('/admin/login');
+    router.push('/login');
     router.refresh();
   };
 

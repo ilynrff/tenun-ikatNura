@@ -47,9 +47,9 @@ export default function AdminCategoriesPage() {
       setError(null);
       const res = await fetch('/api/admin/categories');
 
-      // If unauthorized, redirect directly to admin login
+      // If unauthorized, redirect directly to unified login
       if (res.status === 401) {
-        window.location.href = '/admin/login?redirect=/admin/categories';
+        window.location.href = '/login?redirect=/admin/categories';
         return;
       }
 

@@ -29,18 +29,11 @@ export function AuthProvider({ children }) {
           }
         }
 
-        // Check if cached admin or user in localStorage
-        const savedUser = localStorage.getItem('tenun_user');
-        if (savedUser && isMounted) {
-          const parsed = JSON.parse(savedUser);
-          if (parsed?.role === 'ADMIN') {
-            setUser(parsed);
-          } else {
-            // Unverified customer session without cookie
-            localStorage.removeItem('tenun_user');
-            setUser(null);
-          }
-        } else if (isMounted) {
+        // Unverified customer session without cookie
+        try {
+          localStorage.removeItem('tenun_user');
+        } catch (e) {}
+        if (isMounted) {
           setUser(null);
         }
       } catch (e) {
@@ -75,6 +68,20 @@ export function AuthProvider({ children }) {
         };
       }
 
+      // If response is ADMIN, do NOT pollute customer user state & purge customer cache
+      if (data.role === 'ADMIN') {
+        setUser(null);
+        try {
+          localStorage.removeItem('tenun_user');
+        } catch (e) {}
+        return {
+          success: true,
+          role: 'ADMIN',
+          redirectUrl: data.redirectUrl || '/admin',
+          user: data.user,
+        };
+      }
+
       const authUser = data.user;
       setUser(authUser);
       try {
@@ -83,7 +90,7 @@ export function AuthProvider({ children }) {
 
       setIsAuthModalOpen(false);
       setIsAccountDrawerOpen(false);
-      return { success: true, user: authUser };
+      return { success: true, role: 'USER', redirectUrl: data.redirectUrl || '/', user: authUser };
     } catch (err) {
       console.error('Login error:', err);
       return {

@@ -6,12 +6,14 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useAuth } from '@/context/AuthContext';
+import { sanitizeRedirect } from '@/lib/redirect';
 import styles from '@/components/auth/AuthModal.module.css';
 
 function RegisterForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const rawTarget = searchParams.get('callbackUrl') || searchParams.get('redirect') || '/';
+  const safeTarget = sanitizeRedirect(rawTarget, { fallback: '/', role: 'USER' });
 
   const { register } = useAuth();
   const [fullName, setFullName] = useState('');
@@ -31,14 +33,14 @@ function RegisterForm() {
     setIsSubmitting(false);
 
     if (result.success) {
-      router.push(callbackUrl);
+      router.push(safeTarget);
     } else {
       setErrorMessage(result.message || 'Pendaftaran gagal. Silakan coba lagi.');
     }
   };
 
-  const loginHref = callbackUrl && callbackUrl !== '/'
-    ? `/login?callbackUrl=${encodeURIComponent(callbackUrl)}`
+  const loginHref = safeTarget && safeTarget !== '/'
+    ? `/login?callbackUrl=${encodeURIComponent(safeTarget)}`
     : '/login';
 
   return (
@@ -47,7 +49,7 @@ function RegisterForm() {
         <div className={styles.brandLabel}>Tenun Ikat Nura</div>
         <h1 className={styles.title}>CREATE YOUR ACCOUNT</h1>
 
-        {callbackUrl.includes('checkout') && (
+        {safeTarget.includes('checkout') && (
           <div
             style={{
               backgroundColor: 'rgba(197, 154, 61, 0.12)',

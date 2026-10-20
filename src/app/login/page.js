@@ -1,23 +1,58 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import { useAuth } from '@/context/AuthContext';
+import { sanitizeRedirect } from '@/lib/redirect';
 import styles from '@/components/auth/AuthModal.module.css';
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get('callbackUrl') || '/';
+  const rawTarget = searchParams.get('redirect') || searchParams.get('callbackUrl') || '/';
 
-  const { login } = useAuth();
+  const { user, isLoadingAuth, login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // ── Existing Active Session Check ─────────────────────────────
+  useEffect(() => {
+    let isMounted = true;
+
+    // A. Customer session active
+    if (!isLoadingAuth && user && user.role !== 'ADMIN') {
+      const dest = sanitizeRedirect(rawTarget, { fallback: '/', role: 'USER' });
+      router.replace(dest);
+      return;
+    }
+
+    // B. Admin session active
+    async function checkAdminSession() {
+      try {
+        const res = await fetch('/api/admin/auth/me');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.authenticated && isMounted) {
+            const dest = sanitizeRedirect(rawTarget, { fallback: '/admin', role: 'ADMIN' });
+            router.replace(dest === '/' ? '/admin' : dest);
+          }
+        }
+      } catch (e) {
+        // Not admin or network error
+      }
+    }
+
+    checkAdminSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isLoadingAuth, user, rawTarget, router]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,14 +64,22 @@ function LoginForm() {
     setIsSubmitting(false);
 
     if (result.success) {
-      router.push(callbackUrl);
+      if (result.role === 'ADMIN') {
+        const adminDest = sanitizeRedirect(rawTarget, { fallback: '/admin', role: 'ADMIN' });
+        router.push(adminDest === '/' ? '/admin' : adminDest);
+        router.refresh();
+      } else {
+        const customerDest = sanitizeRedirect(rawTarget, { fallback: '/', role: 'USER' });
+        router.push(customerDest);
+      }
     } else {
       setErrorMessage(result.message || 'Email atau kata sandi tidak sesuai.');
     }
   };
 
-  const registerHref = callbackUrl && callbackUrl !== '/'
-    ? `/register?callbackUrl=${encodeURIComponent(callbackUrl)}`
+  const safeCustomerRegisterTarget = sanitizeRedirect(rawTarget, { fallback: '', role: 'USER' });
+  const registerHref = safeCustomerRegisterTarget && safeCustomerRegisterTarget !== '/'
+    ? `/register?callbackUrl=${encodeURIComponent(safeCustomerRegisterTarget)}`
     : '/register';
 
   return (
@@ -45,7 +88,7 @@ function LoginForm() {
         <div className={styles.brandLabel}>Tenun Ikat Nura</div>
         <h1 className={styles.title}>WELCOME BACK</h1>
 
-        {callbackUrl.includes('checkout') && (
+        {rawTarget.includes('checkout') && (
           <div
             style={{
               backgroundColor: 'rgba(197, 154, 61, 0.12)',
