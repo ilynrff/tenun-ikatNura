@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
@@ -8,6 +8,7 @@ import CTABanner from '@/components/layout/CTABanner';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import { useCart } from '@/context/CartContext';
 import { useWishlist } from '@/context/WishlistContext';
+import { sortSizes, isCustomSize } from '@/lib/sizes';
 import siteData from '@/data/site.json';
 import styles from './ProductDetailPage.module.css';
 
@@ -17,10 +18,16 @@ export default function ProductDetailPage({ product, relatedProducts = [] }) {
   const { addToCart } = useCart();
   const { isInWishlist, toggleWishlist } = useWishlist();
 
+  const sortedSizes = useMemo(() => {
+    return sortSizes(piece?.sizes || []);
+  }, [piece?.sizes]);
+
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(
-    piece && piece.sizes && piece.sizes.length > 0 ? piece.sizes[0] : 'S'
-  );
+  const [selectedSize, setSelectedSize] = useState(() => {
+    const list = sortSizes(piece?.sizes || []);
+    const firstStandard = list.find((s) => !isCustomSize(s));
+    return firstStandard || list[0] || 'S';
+  });
   const [selectedVariant, setSelectedVariant] = useState(
     piece && piece.variants && piece.variants.length > 0 ? piece.variants[0] : null
   );
@@ -86,14 +93,18 @@ export default function ProductDetailPage({ product, relatedProducts = [] }) {
 
   // WhatsApp template message
   const waNumber = siteData.contact.whatsapp || '6281252783496';
+  const isSelectedCustom = isCustomSize(selectedSize);
+  const waSizeText = isSelectedCustom ? `${selectedSize} (Konsultasi Ukuran Khusus)` : selectedSize;
+
   const waMessage = `Halo Admin Tenun Ikat Nura,
 
 Saya tertarik dengan karya busana tenun berikut:
 📌 *Nama Produk*: ${piece.name}
 🏷️ *Kode SKU*: ${piece.sku || 'NURA-ITEM'}
-📏 *Ukuran*: ${selectedSize}
+📏 *Ukuran*: ${waSizeText}
 ${selectedVariant ? `✨ *Varian*: ${selectedVariant.name}\n` : ''}💰 *Harga*: ${currentPrice || 'Sesuai Pesanan'}
 🔢 *Jumlah*: ${quantity}
+${isSelectedCustom ? '\n📐 *Catatan*: Saya memilih Custom Size dan ingin konsultasi ukuran badan.' : ''}
 
 Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
 
@@ -338,18 +349,31 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
                   )}
 
                   {/* Size Selector */}
-                  {piece.sizes && piece.sizes.length > 0 && (
+                  {sortedSizes.length > 0 && (
                     <div className={styles.optionSection}>
                       <div className={styles.sizeHeader}>
                         <label className={styles.optionLabel}>
                           Pilih Ukuran: <strong>{selectedSize}</strong>
+                          {isCustomSize(selectedSize) && (
+                            <span style={{
+                              marginLeft: '0.5rem',
+                              fontSize: '0.75rem',
+                              color: 'var(--gold-muted, #B89742)',
+                              fontWeight: 600,
+                              background: 'rgba(184, 151, 66, 0.12)',
+                              padding: '0.15rem 0.45rem',
+                              borderRadius: '4px',
+                            }}>
+                              Pesanan Khusus
+                            </span>
+                          )}
                         </label>
                         <a href="#panduan-ukuran" className={styles.sizeGuideLink}>
                           Panduan Ukuran &darr;
                         </a>
                       </div>
                       <div className={styles.sizeGrid}>
-                        {piece.sizes.map((s) => (
+                        {sortedSizes.map((s) => (
                           <button
                             key={s}
                             type="button"
@@ -362,6 +386,16 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
                           </button>
                         ))}
                       </div>
+                      {isCustomSize(selectedSize) && (
+                        <p style={{
+                          marginTop: '0.5rem',
+                          fontSize: '0.8rem',
+                          color: '#6E5E55',
+                          lineHeight: '1.4',
+                        }}>
+                          * <strong>Custom Size</strong>: Busana dijahit khusus sesuai ukuran badan Anda. Anda dapat mencantumkan ukuran pada catatan checkout atau konsultasi via WhatsApp.
+                        </p>
+                      )}
                     </div>
                   )}
 

@@ -101,6 +101,7 @@
   border-radius: 2px;
   cursor: pointer;
   margin-bottom: 24px;
+  text-decoration: none;
   transition: background-color 0.25s ease;
 }
 
@@ -133,6 +134,7 @@
   border-radius: 2px;
   padding: 10px 20px;
   cursor: pointer;
+  text-decoration: none;
   transition: all 0.25s ease;
 }
 

@@ -6,8 +6,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import styles from './ProductForm.module.css';
 import { slugify } from '@/lib/format';
-
-const DEFAULT_SIZES = ['S', 'M', 'L', 'XL', 'Custom Size'];
+import { STANDARD_SIZES, sortSizes, isCustomSize, normalizeSizeLabel } from '@/lib/sizes';
 
 export default function ProductForm({ initialData = null, isEdit = false }) {
   const router = useRouter();
@@ -54,7 +53,29 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
   const [uploadPreviews, setUploadPreviews] = useState([]); // { src: string, status: 'local'|'uploaded'|'legacy', file?: File }
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState(null);
+  const [previewLightboxUrl, setPreviewLightboxUrl] = useState(null);
+  const [lightboxImageError, setLightboxImageError] = useState(false);
   const fileInputRef = useRef(null);
+
+  // Close Lightbox on Escape
+  useEffect(() => {
+    if (!previewLightboxUrl) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        setPreviewLightboxUrl(null);
+        setLightboxImageError(false);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [previewLightboxUrl]);
+
+  const closeLightbox = () => {
+    setPreviewLightboxUrl(null);
+    setLightboxImageError(false);
+  };
 
   // Fetch categories & populate initial data
   useEffect(() => {
@@ -89,7 +110,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
         description: initialData.description || '',
         story: initialData.story || '',
         images: existingImages,
-        sizes: Array.isArray(initialData.sizes) ? initialData.sizes : ['S', 'M', 'L', 'XL'],
+        sizes: sortSizes(Array.isArray(initialData.sizes) ? initialData.sizes : ['S', 'M', 'L', 'XL']),
         colors: Array.isArray(initialData.colors) ? initialData.colors : [],
         material: typeof initialData.material === 'object' && initialData.material !== null ? initialData.material : {
           type: 'Tenun Ikat Tradisional',
@@ -198,7 +219,10 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
       const result = await res.json();
 
       if (!res.ok) {
-        throw new Error(result.error || 'Upload gagal.');
+        const detailMsg = Array.isArray(result.details) && result.details.length > 0
+          ? result.details.join('\n')
+          : (result.error || 'Upload gagal.');
+        throw new Error(detailMsg);
       }
 
       // Replace local blob URLs with real uploaded URLs
@@ -245,12 +269,28 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
     }
   };
 
+  /** Set selected image as primary (move to index 0) */
+  const handleSetPrimary = (index) => {
+    if (index === 0) return;
+    setUploadPreviews((prev) => {
+      const selected = prev[index];
+      if (!selected) return prev;
+      const remaining = prev.filter((_, i) => i !== index);
+      const reordered = [selected, ...remaining];
+      syncImagesFromPreviews(reordered);
+      return reordered;
+    });
+  };
+
   /** Remove an image from preview list */
   const handleRemovePreview = (index) => {
     setUploadPreviews((prev) => {
       const p = prev[index];
       if (p && (p.status === 'local' || p.status === 'uploading')) {
         URL.revokeObjectURL(p.src);
+      }
+      if (p && p.src === previewLightboxUrl) {
+        setPreviewLightboxUrl(null);
       }
       const next = prev.filter((_, i) => i !== index);
       syncImagesFromPreviews(next);
@@ -260,21 +300,22 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
 
   // Sizes management
   const toggleSize = (size) => {
+    const normalized = normalizeSizeLabel(size);
     setFormData((prev) => {
-      const exists = prev.sizes.includes(size);
+      const exists = prev.sizes.some((s) => s.toLowerCase() === normalized.toLowerCase());
       const nextSizes = exists
-        ? prev.sizes.filter((s) => s !== size)
-        : [...prev.sizes, size];
-      return { ...prev, sizes: nextSizes };
+        ? prev.sizes.filter((s) => s.toLowerCase() !== normalized.toLowerCase())
+        : [...prev.sizes, normalized];
+      return { ...prev, sizes: sortSizes(nextSizes) };
     });
   };
 
   const addCustomSize = (e) => {
     e.preventDefault();
     if (!newSizeInput.trim()) return;
-    const size = newSizeInput.trim();
-    if (!formData.sizes.includes(size)) {
-      setFormData((prev) => ({ ...prev, sizes: [...prev.sizes, size] }));
+    const normalized = normalizeSizeLabel(newSizeInput.trim());
+    if (!formData.sizes.some((s) => s.toLowerCase() === normalized.toLowerCase())) {
+      setFormData((prev) => ({ ...prev, sizes: sortSizes([...prev.sizes, normalized]) }));
     }
     setNewSizeInput('');
   };
@@ -332,6 +373,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
     try {
       const payload = {
         ...formData,
+        sizes: sortSizes(formData.sizes),
         price: parseInt(formData.price, 10),
         stock: parseInt(formData.stock, 10),
         weight: parseInt(formData.weight, 10) || 1000,
@@ -606,7 +648,27 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                       key={index}
                       className={`${styles.uploadPreviewItem} ${index === 0 ? styles.uploadPreviewPrimary : ''}`}
                     >
-                      <div className={styles.uploadPreviewThumb}>
+                      <div
+                        className={styles.uploadPreviewThumb}
+                        onClick={() => {
+                          if (preview.status !== 'uploading' && preview.src) {
+                            setLightboxImageError(false);
+                            setPreviewLightboxUrl(preview.src);
+                          }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                        title="Klik untuk membuka pratinjau besar"
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            if (preview.status !== 'uploading' && preview.src) {
+                              setLightboxImageError(false);
+                              setPreviewLightboxUrl(preview.src);
+                            }
+                          }
+                        }}
+                      >
                         {preview.status === 'uploading' ? (
                           <div className={styles.uploadSpinner}>⏳</div>
                         ) : (
@@ -617,22 +679,45 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                             sizes="120px"
                             style={{ objectFit: 'cover' }}
                             onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            unoptimized={preview.status === 'legacy'}
+                            unoptimized={preview.status === 'legacy' || preview.status === 'uploaded'}
                           />
                         )}
-                        {index === 0 && (
-                          <span className={styles.primaryLabel}>Utama</span>
+                        {index === 0 ? (
+                          <span className={styles.primaryLabel}>★ Utama</span>
+                        ) : (
+                          <span className={styles.thumbOrderBadge}>#{index + 1}</span>
                         )}
+                        <div className={styles.thumbZoomHint}>🔍</div>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemovePreview(index)}
-                        className={styles.uploadRemoveBtn}
-                        title={`Hapus foto ${index + 1}`}
-                        disabled={submitting || uploading}
-                      >
-                        ✕
-                      </button>
+
+                      <div className={styles.previewActions}>
+                        {index !== 0 && (
+                          <button
+                            type="button"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleSetPrimary(index);
+                            }}
+                            className={styles.setPrimaryBtn}
+                            title="Jadikan Foto Utama"
+                            disabled={submitting || uploading}
+                          >
+                            ★ Jadikan Utama
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleRemovePreview(index);
+                          }}
+                          className={styles.uploadRemoveBtn}
+                          title={`Hapus foto ${index + 1}`}
+                          disabled={submitting || uploading}
+                        >
+                          ✕ Hapus
+                        </button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -820,8 +905,11 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
             <div className={styles.card}>
               <h2 className={styles.cardTitle}>Ukuran (Sizes)</h2>
               <div className={styles.tagContainer}>
-                {DEFAULT_SIZES.map((size) => {
-                  const isSelected = formData.sizes.includes(size);
+                {sortSizes(
+                  Array.from(new Set([...STANDARD_SIZES, ...(Array.isArray(formData.sizes) ? formData.sizes : [])]))
+                ).map((size) => {
+                  const isSelected = formData.sizes.some((s) => s.toLowerCase() === size.toLowerCase());
+                  const isCustom = isCustomSize(size);
                   return (
                     <button
                       type="button"
@@ -829,6 +917,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                       className={`${styles.tag} ${isSelected ? styles.tagActive : ''}`}
                       onClick={() => toggleSize(size)}
                       disabled={submitting}
+                      title={isCustom ? 'Ukuran pesanan khusus sesuai postur tubuh' : undefined}
                     >
                       {size} {isSelected ? '✓' : '+'}
                     </button>
@@ -841,7 +930,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                 <input
                   type="text"
                   className={styles.input}
-                  placeholder="Tambah ukuran lain (cth: XXL)"
+                  placeholder="Tambah ukuran lain (cth: 30, XXL, Jumbo)"
                   value={newSizeInput}
                   onChange={(e) => setNewSizeInput(e.target.value)}
                   disabled={submitting}
@@ -852,10 +941,14 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                   className={styles.addImageBtn}
                   style={{ marginTop: 0 }}
                   disabled={submitting}
+                  title="Tambahkan ukuran"
                 >
                   +
                 </button>
               </div>
+              <span className={styles.hint} style={{ marginTop: '0.5rem' }}>
+                Ukuran standar dan tambahan akan otomatis terurut rapi. Custom Size dapat dipilih jika melayani pesanan jahit khusus.
+              </span>
             </div>
 
             {/* 7. Color Palette */}
@@ -918,6 +1011,71 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
           </button>
         </div>
       </form>
+
+      {/* Lightbox / Pratinjau Foto Besar */}
+      {previewLightboxUrl && (
+        <div
+          className={styles.lightboxBackdrop}
+          onClick={closeLightbox}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Pratinjau Foto Produk"
+        >
+          <div
+            className={styles.lightboxContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.lightboxHeader}>
+              <span className={styles.lightboxTitle}>Pratinjau Foto Karya</span>
+              <button
+                type="button"
+                className={styles.lightboxCloseBtn}
+                onClick={closeLightbox}
+                aria-label="Tutup pratinjau"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className={styles.lightboxImageContainer}>
+              {lightboxImageError ? (
+                <div className={styles.lightboxErrorFallback}>
+                  <span style={{ fontSize: '2.5rem' }}>⚠️</span>
+                  <p>Gambar tidak dapat dimuat atau berkas rusak.</p>
+                  <a
+                    href={previewLightboxUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.lightboxDirectLink}
+                  >
+                    Buka URL Gambar di Tab Baru
+                  </a>
+                </div>
+              ) : (
+                <img
+                  src={previewLightboxUrl}
+                  alt="Pratinjau Foto Produk"
+                  className={styles.lightboxImage}
+                  onError={() => setLightboxImageError(true)}
+                />
+              )}
+            </div>
+
+            <div className={styles.lightboxFooter}>
+              <span className={styles.lightboxUrlText}>
+                {previewLightboxUrl.startsWith('blob:') ? 'Foto Lokal (Siap Disimpan)' : previewLightboxUrl}
+              </span>
+              <button
+                type="button"
+                className={styles.lightboxDoneBtn}
+                onClick={closeLightbox}
+              >
+                Tutup
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

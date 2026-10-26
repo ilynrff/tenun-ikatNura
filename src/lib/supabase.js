@@ -38,33 +38,52 @@ export function getSupabaseAdmin() {
 
 /**
  * Upload a file buffer to Supabase Storage.
+ * Supports primary bucket name with fallback if manual bucket name variations exist.
  * @param {string} bucket - Bucket name, e.g. 'product-images'
  * @param {string} path   - Storage path, e.g. 'products/abc123.jpg'
  * @param {Buffer} buffer - File content
  * @param {string} contentType - MIME type, e.g. 'image/jpeg'
- * @returns {Promise<{ publicUrl: string }>}
+ * @returns {Promise<{ publicUrl: string, bucket: string }>}
  */
 export async function uploadToStorage(bucket, path, buffer, contentType) {
   const supabase = getSupabaseAdmin();
+  let targetBucket = bucket || 'product-images';
 
-  const { error } = await supabase.storage
-    .from(bucket)
+  let { error } = await supabase.storage
+    .from(targetBucket)
     .upload(path, buffer, {
       contentType,
       upsert: true,
     });
 
-  if (error) {
-    throw new Error(`[Storage Upload] Gagal upload file "${path}": ${error.message}`);
+  // If bucket not found, check alternate singular/plural bucket name without altering Supabase settings
+  if (error && (error.message?.toLowerCase().includes('not found') || error.statusCode === '404' || error.status === 400)) {
+    const alternateBucket = targetBucket === 'product-images' ? 'product-image' : (targetBucket === 'product-image' ? 'product-images' : null);
+    if (alternateBucket) {
+      const altResult = await supabase.storage
+        .from(alternateBucket)
+        .upload(path, buffer, {
+          contentType,
+          upsert: true,
+        });
+      if (!altResult.error) {
+        targetBucket = alternateBucket;
+        error = null;
+      }
+    }
   }
 
-  const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+  if (error) {
+    throw new Error(`[Storage Upload] Gagal upload file "${path}" ke bucket "${targetBucket}": ${error.message}`);
+  }
+
+  const { data } = supabase.storage.from(targetBucket).getPublicUrl(path);
 
   if (!data?.publicUrl) {
-    throw new Error(`[Storage] Gagal mendapatkan public URL untuk "${path}".`);
+    throw new Error(`[Storage] Gagal mendapatkan public URL untuk "${path}" di bucket "${targetBucket}".`);
   }
 
-  return { publicUrl: data.publicUrl };
+  return { publicUrl: data.publicUrl, bucket: targetBucket };
 }
 
 /**
@@ -74,9 +93,13 @@ export async function uploadToStorage(bucket, path, buffer, contentType) {
  */
 export async function deleteFromStorage(bucket, path) {
   const supabase = getSupabaseAdmin();
+  let targetBucket = bucket || 'product-images';
 
-  const { error } = await supabase.storage.from(bucket).remove([path]);
-  if (error) {
-    console.warn(`[Storage Delete] Gagal menghapus "${path}":`, error.message);
+  let { error } = await supabase.storage.from(targetBucket).remove([path]);
+  if (error && (error.message?.toLowerCase().includes('not found') || error.statusCode === '404')) {
+    const alternateBucket = targetBucket === 'product-images' ? 'product-image' : (targetBucket === 'product-image' ? 'product-images' : null);
+    if (alternateBucket) {
+      await supabase.storage.from(alternateBucket).remove([path]);
+    }
   }
 }

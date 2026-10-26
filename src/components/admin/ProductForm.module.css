@@ -463,7 +463,53 @@
   position: relative;
   background: #1f1b17;
   border: 2px solid #383028;
-  transition: border-color 0.2s;
+  transition: all 0.2s ease;
+  cursor: zoom-in;
+}
+
+.uploadPreviewThumb:hover {
+  border-color: #c5a059;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.uploadPreviewThumb:hover .thumbZoomHint {
+  opacity: 1;
+}
+
+/* Zoom hint icon overlay */
+.thumbZoomHint {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(15, 14, 13, 0.75);
+  color: #c5a059;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+/* Order badge */
+.thumbOrderBadge {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: rgba(15, 14, 13, 0.75);
+  color: #9ca3af;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: none;
 }
 
 /* Primary label overlay */
@@ -472,14 +518,15 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(197, 160, 89, 0.9);
+  background: #c5a059;
   color: #0f0e0d;
   text-align: center;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  padding: 0.15rem 0;
+  padding: 0.2rem 0;
   text-transform: uppercase;
+  pointer-events: none;
 }
 
 /* Spinner while uploading */
@@ -498,6 +545,39 @@
   to { transform: rotate(360deg); }
 }
 
+/* Action buttons wrapper below preview */
+.previewActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  width: 100px;
+}
+
+/* Set as Primary button */
+.setPrimaryBtn {
+  background: rgba(197, 160, 89, 0.12);
+  border: 1px solid rgba(197, 160, 89, 0.4);
+  color: #c5a059;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  transition: all 0.2s;
+  width: 100%;
+  text-align: center;
+}
+
+.setPrimaryBtn:hover:not(:disabled) {
+  background: #c5a059;
+  color: #0f0e0d;
+}
+
+.setPrimaryBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 /* Remove button below preview */
 .uploadRemoveBtn {
   background: #2d2620;
@@ -506,9 +586,9 @@
   cursor: pointer;
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   transition: all 0.2s;
-  width: 100px;
+  width: 100%;
   text-align: center;
 }
 
@@ -521,6 +601,162 @@
 .uploadRemoveBtn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* ============================================================
+   LIGHTBOX / PREVIEW MODAL
+   ============================================================ */
+
+.lightboxBackdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(10, 8, 7, 0.85);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.lightboxContent {
+  background: #181411;
+  border: 1px solid rgba(197, 160, 89, 0.35);
+  border-radius: 12px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  animation: scaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.lightboxHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid rgba(197, 160, 89, 0.2);
+  background: #120f0d;
+}
+
+.lightboxTitle {
+  font-family: var(--font-heading, serif);
+  font-size: 1rem;
+  color: #ECE6DA;
+  letter-spacing: 0.05em;
+}
+
+.lightboxCloseBtn {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  line-height: 1;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.lightboxCloseBtn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lightboxImageContainer {
+  position: relative;
+  width: 100%;
+  max-height: 70vh;
+  min-height: 250px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0a0908;
+  overflow: auto;
+  padding: 1rem;
+}
+
+.lightboxImage {
+  max-width: 100%;
+  max-height: 68vh;
+  object-fit: contain;
+  border-radius: 6px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.lightboxErrorFallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  color: #f87171;
+}
+
+.lightboxErrorFallback p {
+  color: #d1d5db;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.lightboxDirectLink {
+  color: #c5a059;
+  text-decoration: underline;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}
+
+.lightboxFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid rgba(197, 160, 89, 0.2);
+  background: #120f0d;
+  font-size: 0.8rem;
+}
+
+.lightboxUrlText {
+  color: #8b7d72;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 75%;
+}
+
+.lightboxDoneBtn {
+  background: #c5a059;
+  border: 1px solid #c5a059;
+  color: #0f0e0d;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.lightboxDoneBtn:hover {
+  background: #d4af65;
 }
 
 /* Upload drop zone */

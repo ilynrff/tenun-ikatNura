@@ -4,14 +4,19 @@ import { useState } from 'react';
 import siteData from '@/data/site.json';
 import { useCart } from '@/context/CartContext';
 import { formatRupiah } from '@/lib/format';
+import { sortSizes, isCustomSize } from '@/lib/sizes';
 import styles from './ProductModal.module.css';
 
 export default function ProductModal({ product, onClose }) {
   const { addToCart } = useCart();
 
-  const [selectedSize, setSelectedSize] = useState(
-    product && product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'Free Size'
-  );
+  const sortedSizes = sortSizes(product?.sizes || []);
+
+  const [selectedSize, setSelectedSize] = useState(() => {
+    const list = sortSizes(product?.sizes || []);
+    const firstStandard = list.find((s) => !isCustomSize(s));
+    return firstStandard || list[0] || 'Free Size';
+  });
 
   if (!product) return null;
 
@@ -97,11 +102,11 @@ Apakah produk ini masih tersedia atau bisa di-custom order? Terima kasih!`;
             )}
 
             {/* Size Selector */}
-            {product.sizes && product.sizes.length > 0 && (
+            {sortedSizes.length > 0 && (
               <div className={styles.sizeSection}>
                 <label className={styles.sizeLabel}>Pilih Ukuran:</label>
                 <div className={styles.sizeGrid}>
-                  {product.sizes.map((size) => (
+                  {sortedSizes.map((size) => (
                     <button
                       key={size}
                       type="button"

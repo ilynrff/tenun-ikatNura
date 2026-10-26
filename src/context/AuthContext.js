@@ -143,7 +143,6 @@ export function AuthProvider({ children }) {
 
   // 4. Logout (Customer & Admin)
   const logout = async () => {
-    const wasAdmin = user?.role === 'ADMIN';
     setUser(null);
     try {
       localStorage.removeItem('tenun_user');
@@ -153,11 +152,9 @@ export function AuthProvider({ children }) {
       await fetch('/api/auth/logout', { method: 'POST' });
     } catch (e) {}
 
-    if (wasAdmin) {
-      try {
-        await fetch('/api/admin/auth/logout', { method: 'POST' });
-      } catch (e) {}
-    }
+    try {
+      await fetch('/api/admin/auth/logout', { method: 'POST' });
+    } catch (e) {}
 
     setIsAccountDrawerOpen(false);
   };

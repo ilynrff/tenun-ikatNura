@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { verifyServerAdmin } from '@/lib/auth';
 import { uploadToStorage } from '@/lib/supabase';
 
-const BUCKET = 'product-images';
+const BUCKET = process.env.SUPABASE_STORAGE_BUCKET || 'product-images';
 const ALLOWED_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
 

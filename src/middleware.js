@@ -49,8 +49,12 @@ export async function middleware(request) {
 
   // Protect Admin API routes (/api/admin/...)
   if (pathname.startsWith('/api/admin')) {
-    // Whitelist login and logout routes
-    if (pathname === '/api/admin/auth/login' || pathname === '/api/admin/auth/logout') {
+    // Whitelist login, logout, and session check routes
+    if (
+      pathname === '/api/admin/auth/login' ||
+      pathname === '/api/admin/auth/logout' ||
+      pathname === '/api/admin/auth/me'
+    ) {
       return NextResponse.next();
     }
 

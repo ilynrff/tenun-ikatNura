@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import styles from './AccountDrawer.module.css';
 
@@ -10,7 +11,6 @@ export default function AccountDrawer() {
     logout,
     isAccountDrawerOpen,
     closeAccountDrawer,
-    openAuthModal,
   } = useAuth();
 
   return (
@@ -44,27 +44,23 @@ export default function AccountDrawer() {
             <div>
               <p className={styles.subtitle}>Welcome to Tenun Ikat Nura</p>
               
-              <button
-                onClick={() => {
-                  closeAccountDrawer();
-                  openAuthModal('login');
-                }}
+              <Link
+                href="/login"
+                onClick={closeAccountDrawer}
                 className={styles.loginBtn}
               >
                 LOGIN
-              </button>
+              </Link>
 
               <div className={styles.registerBox}>
                 <p className={styles.registerPrompt}>Don&apos;t have an account?</p>
-                <button
-                  onClick={() => {
-                    closeAccountDrawer();
-                    openAuthModal('register');
-                  }}
+                <Link
+                  href="/register"
+                  onClick={closeAccountDrawer}
                   className={styles.registerBtn}
                 >
                   Create an Account
-                </button>
+                </Link>
               </div>
             </div>
           ) : (

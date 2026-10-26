@@ -83,9 +83,19 @@ export function sanitizeRedirect(targetUrl, { fallback = '/', role = 'USER' } = 
         return safeFallback === '/admin' || safeFallback.toLowerCase().startsWith('/admin') ? '/' : safeFallback;
       }
     } else {
-      // If role is ADMIN, prevent loop to /admin/login
-      if (normalizedPath === '/admin/login' || normalizedPath.startsWith('/admin/login/')) {
-        return '/admin';
+      // If role is ADMIN, prevent loop to /login or /admin/login
+      if (
+        normalizedPath === '/login' ||
+        normalizedPath.startsWith('/login/') ||
+        normalizedPath === '/admin/login' ||
+        normalizedPath.startsWith('/admin/login/')
+      ) {
+        return safeFallback === '/' ? '/admin' : safeFallback;
+      }
+
+      // If target is root '/', default admin destination is fallback or '/admin'
+      if (normalizedPath === '/') {
+        return safeFallback === '/' ? '/admin' : safeFallback;
       }
     }
 

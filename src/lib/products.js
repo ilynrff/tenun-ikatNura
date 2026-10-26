@@ -1,6 +1,7 @@
 import collectionsData from '@/data/collections.json';
 import { formatRupiah, parsePriceToNumber } from './format';
 import { getCategoryNameBySlug } from './categories';
+import { sortSizes } from './sizes';
 import prisma from './prisma';
 
 /**
@@ -25,7 +26,9 @@ export function normalizeProduct(item) {
     images = ['/images/hero/hero-main.jpg'];
   }
 
-  const primaryImage = item.primaryImage || images[0] || '/images/hero/hero-main.jpg';
+  // Primary image is strictly the first element of images array (images[0]).
+  // Never let a stale item.primaryImage override the newly ordered images[0].
+  const primaryImage = (images && images.length > 0 && images[0]) || item.primaryImage || '/images/hero/hero-main.jpg';
   const categorySlug = item.categorySlug || item.category || 'outer';
 
   return {
@@ -44,7 +47,7 @@ export function normalizeProduct(item) {
     isOutOfStock: isOutOfStock,
     images: images,
     primaryImage: primaryImage,
-    sizes: Array.isArray(item.sizes) && item.sizes.length > 0 ? item.sizes : ['S', 'M', 'L', 'XL'],
+    sizes: sortSizes(Array.isArray(item.sizes) && item.sizes.length > 0 ? item.sizes : ['S', 'M', 'L', 'XL']),
     colors: Array.isArray(item.colors) ? item.colors : [],
     care: Array.isArray(item.care) ? item.care : [],
     material: typeof item.material === 'object' && item.material !== null ? item.material : {
@@ -284,9 +287,11 @@ export async function createProduct(inputData) {
     ? inputData.images.filter(Boolean)
     : (inputData.image ? [inputData.image] : ['/images/hero/hero-main.jpg']);
 
-  const sizes = Array.isArray(inputData.sizes) && inputData.sizes.length > 0
-    ? inputData.sizes
-    : ['S', 'M', 'L', 'XL'];
+  const sizes = sortSizes(
+    Array.isArray(inputData.sizes) && inputData.sizes.length > 0
+      ? inputData.sizes
+      : ['S', 'M', 'L', 'XL']
+  );
 
   const colors = Array.isArray(inputData.colors) ? inputData.colors : [];
   const care = Array.isArray(inputData.care) ? inputData.care : [];
@@ -394,9 +399,11 @@ export async function updateProduct(id, inputData) {
     ? inputData.images.filter(Boolean)
     : (inputData.image ? [inputData.image] : ['/images/hero/hero-main.jpg']);
 
-  const sizes = Array.isArray(inputData.sizes) && inputData.sizes.length > 0
-    ? inputData.sizes
-    : ['S', 'M', 'L', 'XL'];
+  const sizes = sortSizes(
+    Array.isArray(inputData.sizes) && inputData.sizes.length > 0
+      ? inputData.sizes
+      : ['S', 'M', 'L', 'XL']
+  );
 
   const colors = Array.isArray(inputData.colors) ? inputData.colors : [];
   const care = Array.isArray(inputData.care) ? inputData.care : [];

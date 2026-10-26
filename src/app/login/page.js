@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Navbar from '@/components/layout/Navbar';
@@ -19,7 +19,7 @@ function LoginForm() {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const isSubmittingRef = useRef(false);
   // ── Existing Active Session Check ─────────────────────────────
   useEffect(() => {
     let isMounted = true;
@@ -33,17 +33,19 @@ function LoginForm() {
 
     // B. Admin session active
     async function checkAdminSession() {
+      if (isSubmittingRef.current) return;
+
       try {
         const res = await fetch('/api/admin/auth/me');
         if (res.ok) {
           const data = await res.json();
-          if (data.authenticated && isMounted) {
+          if (data.authenticated && isMounted && !isSubmittingRef.current) {
             const dest = sanitizeRedirect(rawTarget, { fallback: '/admin', role: 'ADMIN' });
-            router.replace(dest === '/' ? '/admin' : dest);
+            router.replace(dest);
           }
         }
       } catch (e) {
-        // Not admin or network error
+        // Ignore session check errors on unauthenticated mounts
       }
     }
 
@@ -56,24 +58,40 @@ function LoginForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isSubmittingRef.current) return;
     setErrorMessage('');
     if (!email || !password) return;
 
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
-    const result = await login(email, password);
-    setIsSubmitting(false);
 
-    if (result.success) {
-      if (result.role === 'ADMIN') {
-        const adminDest = sanitizeRedirect(rawTarget, { fallback: '/admin', role: 'ADMIN' });
-        router.push(adminDest === '/' ? '/admin' : adminDest);
-        router.refresh();
+    let shouldUnlock = true;
+    try {
+      const result = await login(email, password);
+
+      if (result.success) {
+        if (result.role === 'ADMIN') {
+          shouldUnlock = false;
+          const candidate = (rawTarget && rawTarget !== '/' && rawTarget !== '/login')
+            ? rawTarget
+            : (result.redirectUrl || '/admin');
+          const safeTarget = sanitizeRedirect(candidate, { fallback: '/admin', role: 'ADMIN' });
+          window.location.assign(safeTarget);
+          return;
+        } else {
+          const customerDest = sanitizeRedirect(rawTarget, { fallback: '/', role: 'USER' });
+          router.push(customerDest);
+        }
       } else {
-        const customerDest = sanitizeRedirect(rawTarget, { fallback: '/', role: 'USER' });
-        router.push(customerDest);
+        setErrorMessage(result.message || 'Email atau kata sandi tidak sesuai.');
       }
-    } else {
-      setErrorMessage(result.message || 'Email atau kata sandi tidak sesuai.');
+    } catch (err) {
+      setErrorMessage('Terjadi kesalahan jaringan saat login.');
+    } finally {
+      if (shouldUnlock) {
+        isSubmittingRef.current = false;
+        setIsSubmitting(false);
+      }
     }
   };
 

@@ -1,7 +1,8 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import styles from './AdminLayout.module.css';
 
@@ -47,16 +48,30 @@ const navItems = [
 
 export default function AdminSidebar({ isOpen, onClose }) {
   const pathname = usePathname();
-  const router = useRouter();
-  const { user, logout } = useAuth();
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const { user } = useAuth();
 
   const handleLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+
     try {
-      await fetch('/api/admin/auth/logout', { method: 'POST' });
-    } catch (e) {}
-    logout();
-    router.push('/login');
-    router.refresh();
+      const res = await fetch('/api/admin/auth/logout', { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || data.success === false) {
+        throw new Error(data.message || 'Gagal logout dari sesi admin.');
+      }
+
+      try {
+        localStorage.removeItem('tenun_user');
+      } catch (e) {}
+
+      window.location.assign('/login');
+    } catch (err) {
+      setIsLoggingOut(false);
+      alert(err.message || 'Terjadi kesalahan saat logout.');
+    }
   };
 
   const isActiveRoute = (href) => {
@@ -121,6 +136,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
           <button
             type="button"
             onClick={handleLogout}
+            disabled={isLoggingOut}
             className={styles.logoutBtn}
             aria-label="Keluar dari panel admin"
           >
@@ -129,7 +145,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-            <span>Keluar (Logout)</span>
+            <span>{isLoggingOut ? 'Sedang Keluar...' : 'Keluar (Logout)'}</span>
           </button>
         </div>
       </aside>

@@ -7,8 +7,8 @@ export async function GET() {
 
     if (!authorized || !user) {
       return NextResponse.json(
-        { success: false, user: null, message: 'Tidak terautentikasi' },
-        { status: 401 }
+        { success: false, authenticated: false, user: null, message: 'Tidak terautentikasi' },
+        { status: 200 }
       );
     }
 
