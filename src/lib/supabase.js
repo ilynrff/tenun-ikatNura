@@ -38,8 +38,8 @@ export function getSupabaseAdmin() {
 
 /**
  * Upload a file buffer to Supabase Storage.
- * Supports primary bucket name with fallback if manual bucket name variations exist.
- * @param {string} bucket - Bucket name, e.g. 'product-images'
+ * Uses canonical bucket 'product-image' (or configured SUPABASE_STORAGE_BUCKET).
+ * @param {string} bucket - Bucket name, defaults to 'product-image'
  * @param {string} path   - Storage path, e.g. 'products/abc123.jpg'
  * @param {Buffer} buffer - File content
  * @param {string} contentType - MIME type, e.g. 'image/jpeg'
@@ -47,31 +47,14 @@ export function getSupabaseAdmin() {
  */
 export async function uploadToStorage(bucket, path, buffer, contentType) {
   const supabase = getSupabaseAdmin();
-  let targetBucket = bucket || 'product-images';
+  const targetBucket = bucket || process.env.SUPABASE_STORAGE_BUCKET || 'product-image';
 
-  let { error } = await supabase.storage
+  const { error } = await supabase.storage
     .from(targetBucket)
     .upload(path, buffer, {
       contentType,
       upsert: true,
     });
-
-  // If bucket not found, check alternate singular/plural bucket name without altering Supabase settings
-  if (error && (error.message?.toLowerCase().includes('not found') || error.statusCode === '404' || error.status === 400)) {
-    const alternateBucket = targetBucket === 'product-images' ? 'product-image' : (targetBucket === 'product-image' ? 'product-images' : null);
-    if (alternateBucket) {
-      const altResult = await supabase.storage
-        .from(alternateBucket)
-        .upload(path, buffer, {
-          contentType,
-          upsert: true,
-        });
-      if (!altResult.error) {
-        targetBucket = alternateBucket;
-        error = null;
-      }
-    }
-  }
 
   if (error) {
     throw new Error(`[Storage Upload] Gagal upload file "${path}" ke bucket "${targetBucket}": ${error.message}`);
@@ -88,18 +71,15 @@ export async function uploadToStorage(bucket, path, buffer, contentType) {
 
 /**
  * Delete a file from Supabase Storage.
- * @param {string} bucket
- * @param {string} path
+ * @param {string} bucket - Bucket name, defaults to 'product-image'
+ * @param {string} path   - Storage path, e.g. 'products/abc123.jpg'
  */
 export async function deleteFromStorage(bucket, path) {
   const supabase = getSupabaseAdmin();
-  let targetBucket = bucket || 'product-images';
+  const targetBucket = bucket || process.env.SUPABASE_STORAGE_BUCKET || 'product-image';
 
-  let { error } = await supabase.storage.from(targetBucket).remove([path]);
-  if (error && (error.message?.toLowerCase().includes('not found') || error.statusCode === '404')) {
-    const alternateBucket = targetBucket === 'product-images' ? 'product-image' : (targetBucket === 'product-image' ? 'product-images' : null);
-    if (alternateBucket) {
-      await supabase.storage.from(alternateBucket).remove([path]);
-    }
+  const { error } = await supabase.storage.from(targetBucket).remove([path]);
+  if (error) {
+    console.warn(`[Storage Delete] Gagal menghapus "${path}" dari bucket "${targetBucket}":`, error.message);
   }
 }
