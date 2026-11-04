@@ -49,7 +49,7 @@ const collections = [
   },
 ];
 
-export default function FeaturedCollection() {
+export default function FeaturedCollection({ featuredProducts = [] }) {
   const trackRef = useRef(null);
   const [offset, setOffset] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
@@ -59,8 +59,37 @@ export default function FeaturedCollection() {
   const lastX = useRef(0);
   const singleSetWidthRef = useRef(0);
 
+  // Map products from database if available, otherwise fallback to static lookbook
+  const displayItems = (Array.isArray(featuredProducts) && featuredProducts.length > 0)
+    ? featuredProducts.map((p) => {
+        const materialStr = typeof p.material === 'object' && p.material?.type
+          ? p.material.type
+          : (typeof p.material === 'string' && p.material.trim()
+            ? p.material
+            : (p.tagline || p.description || 'Tenun Ikat Asli'));
+
+        const imageSrc = p.primaryImage ||
+          (Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : null) ||
+          '/images/hero/hero-main.jpg';
+
+        return {
+          slug: p.slug,
+          title: p.name,
+          category: p.categoryLabel || p.categorySlug || 'Koleksi Pilihan',
+          material: materialStr,
+          image: imageSrc,
+        };
+      })
+    : collections;
+
+  // Ensure base set has at least 5 items before tripling so the carousel rail spans wide viewports seamlessly
+  let baseSet = displayItems;
+  while (baseSet.length > 0 && baseSet.length < 5) {
+    baseSet = [...baseSet, ...displayItems];
+  }
+
   // Triple set for seamless infinite loop buffer
-  const visibleItems = [...collections, ...collections, ...collections];
+  const visibleItems = [...baseSet, ...baseSet, ...baseSet];
 
   // Calculate single set width dynamically
   const updateMetrics = useCallback(() => {

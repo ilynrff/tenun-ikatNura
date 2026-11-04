@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 import { formatRupiah, parsePriceToNumber } from '@/lib/format';
+import { isCustomSize } from '@/lib/sizes';
 
 const CartContext = createContext();
 
@@ -70,6 +71,12 @@ export function CartProvider({ children }) {
 
   const addToCart = (product, size = 'Free Size', quantity = 1, variant = null) => {
     if (!product) return;
+
+    // Block Custom Size from being added to cart
+    if (isCustomSize(size)) {
+      console.warn('[Cart] Custom Size tidak dapat ditambahkan ke keranjang. Silakan konsultasi via WhatsApp.');
+      return false;
+    }
 
     const maxStock = typeof product.stock === 'number' ? Math.max(0, Math.floor(product.stock)) : 5;
     if (maxStock <= 0) return; // Do not allow out of stock items

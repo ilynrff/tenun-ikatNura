@@ -13,6 +13,7 @@
 // ============================================================
 
 import { calculateShippingCost } from './rajaOngkir.js';
+import { isCustomSize } from './sizes.js';
 
 // ──────────────────────────────────────────────────────────────
 // PRISMA — lazy getter to match the singleton pattern in prisma.js
@@ -119,6 +120,15 @@ function validateItemsInput(items) {
 
   for (let i = 0; i < items.length; i++) {
     const item = items[i];
+
+    // Block Custom Size items from order creation — must consult via WhatsApp first
+    if (item.size && isCustomSize(item.size)) {
+      return {
+        valid: false,
+        message: 'Produk dengan Custom Size memerlukan konsultasi dan konfirmasi WhatsApp Admin terlebih dahulu sebelum pesanan diproses.',
+        status: 400,
+      };
+    }
 
     if (!item.productId || !String(item.productId).trim()) {
       return { valid: false, message: `Item ke-${i + 1}: productId wajib diisi.`, status: 400 };

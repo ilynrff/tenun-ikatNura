@@ -41,10 +41,13 @@ Apakah produk ini masih tersedia atau bisa di-custom order? Terima kasih!`;
 
   const handleAddToCart = () => {
     if (!product || product.stock === 0) return;
+    if (isCustomSize(selectedSize)) return; // Custom Size cannot be added to cart
     if (product.sizes && product.sizes.length > 0 && !selectedSize) return;
     addToCart(product, selectedSize || 'Free Size', 1);
     onClose();
   };
+
+  const isSelectedCustom = isCustomSize(selectedSize);
 
   return (
     <div className={styles.backdrop} onClick={onClose} role="dialog" aria-modal="true">
@@ -64,6 +67,9 @@ Apakah produk ini masih tersedia atau bisa di-custom order? Terima kasih!`;
                 className={styles.image}
               />
               <span className={styles.skuBadge}>KODE: {product.sku || 'NURA-ITEM'}</span>
+              {product.signature && (
+                <span className={styles.signatureBadge}>SIGNATURE</span>
+              )}
             </div>
           </div>
 
@@ -104,51 +110,96 @@ Apakah produk ini masih tersedia atau bisa di-custom order? Terima kasih!`;
             {/* Size Selector */}
             {sortedSizes.length > 0 && (
               <div className={styles.sizeSection}>
-                <label className={styles.sizeLabel}>Pilih Ukuran:</label>
-                <div className={styles.sizeGrid}>
-                  {sortedSizes.map((size) => (
-                    <button
-                      key={size}
-                      type="button"
-                      className={`${styles.sizeChip} ${selectedSize === size ? styles.sizeChipActive : ''}`}
-                      onClick={() => setSelectedSize(size)}
-                    >
-                      {size}
-                    </button>
-                  ))}
+                <div className={styles.sizeHeader}>
+                  <label className={styles.sizeLabel}>Pilih Ukuran:</label>
+                  <strong className={styles.selectedSizeIndicator}>{selectedSize}</strong>
                 </div>
+                <div className={styles.sizeGrid}>
+                  {sortedSizes
+                    .filter((size) => !isCustomSize(size))
+                    .map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        className={`${styles.sizeChip} ${selectedSize === size ? styles.sizeChipActive : ''}`}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        {size}
+                      </button>
+                    ))}
+                  {sortedSizes
+                    .filter((size) => isCustomSize(size))
+                    .map((size) => (
+                      <button
+                        key={size}
+                        type="button"
+                        className={`${styles.sizeChip} ${styles.sizeChipCustom} ${selectedSize === size ? styles.sizeChipActive : ''}`}
+                        onClick={() => setSelectedSize(size)}
+                      >
+                        Custom Size
+                      </button>
+                    ))}
+                </div>
+
+                {/* Panel Informasi saat Custom Size dipilih */}
+                {isSelectedCustom && (
+                  <div className={styles.customSizePanel}>
+                    <h4 className={styles.customSizePanelTitle}>Pesanan Ukuran Khusus</h4>
+                    <p className={styles.customSizePanelText}>
+                      Produk akan dibuat menyesuaikan ukuran badan Anda. Silakan konsultasikan ukuran dan detail pesanan terlebih dahulu dengan admin kami.
+                    </p>
+                  </div>
+                )}
               </div>
             )}
 
             {/* Action Buttons: Add to Cart & Direct WhatsApp Order */}
             <div className={styles.actionArea}>
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                className={styles.addToCartBtn}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                  <line x1="3" y1="6" x2="21" y2="6"></line>
-                  <path d="M16 10a4 4 0 0 1-8 0"></path>
-                </svg>
-                <span>TAMBAH KE KERANJANG</span>
-              </button>
+              {isSelectedCustom ? (
+                /* Custom Size: ONE primary WhatsApp CTA only */
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.waCustomBtn}
+                >
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.999 1.59-1.048 3.834 3.792-.996z"/>
+                  </svg>
+                  <span>Konsultasi via WhatsApp</span>
+                </a>
+              ) : (
+                /* Standard Size: normal cart button + WhatsApp */
+                <>
+                  <button
+                    type="button"
+                    onClick={handleAddToCart}
+                    className={styles.addToCartBtn}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                      <line x1="3" y1="6" x2="21" y2="6"></line>
+                      <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    </svg>
+                    <span>TAMBAH KE KERANJANG</span>
+                  </button>
 
-              <a
-                href={waLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.waBtn}
-              >
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.999 1.59-1.048 3.834 3.792-.996z"/>
-                </svg>
-                <span>Pesan via WhatsApp Admin</span>
-              </a>
-              <p className={styles.waHint}>
-                *Terhubung langsung ke Admin WA (<strong>0812-5278-3496</strong>) dengan Kode <strong>({product.sku})</strong>.
-              </p>
+                  <a
+                    href={waLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={styles.waBtn}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.999 1.59-1.048 3.834 3.792-.996z"/>
+                    </svg>
+                    <span>Pesan via WhatsApp Admin</span>
+                  </a>
+                  <p className={styles.waHint}>
+                    *Terhubung langsung ke Admin WA (<strong>0812-5278-3496</strong>) dengan Kode <strong>({product.sku})</strong>.
+                  </p>
+                </>
+              )}
             </div>
           </div>
         </div>

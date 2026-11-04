@@ -112,6 +112,7 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
 
   // Cart actions
   const handleAddToCart = () => {
+    if (isSelectedCustom) return; // Custom Size cannot be added to cart
     if (isOutOfStock || !piece) return;
     if (piece.sizes && piece.sizes.length > 0 && !selectedSize) return;
     const itemToAdd = {
@@ -122,6 +123,7 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
   };
 
   const handleBuyNow = () => {
+    if (isSelectedCustom) return; // Custom Size cannot use Buy Now
     if (isOutOfStock) return;
     handleAddToCart();
   };
@@ -299,7 +301,12 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
                 <div className={styles.info}>
                   {/* Category & Title */}
                   <div className={styles.info__header}>
-                    <span className={styles.info__category}>{piece.categoryLabel}</span>
+                    <div className={styles.info__categoryRow}>
+                      <span className={styles.info__category}>{piece.categoryLabel}</span>
+                      {piece.signature && (
+                        <span className={styles.info__signatureBadge}>SIGNATURE</span>
+                      )}
+                    </div>
                     <h1 className={styles.info__name}>{piece.name}</h1>
                     <p className={styles.info__tagline}>{piece.tagline}</p>
                     
@@ -352,55 +359,82 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
                   {sortedSizes.length > 0 && (
                     <div className={styles.optionSection}>
                       <div className={styles.sizeHeader}>
-                        <label className={styles.optionLabel}>
-                          Pilih Ukuran: <strong>{selectedSize}</strong>
-                          {isCustomSize(selectedSize) && (
-                            <span style={{
-                              marginLeft: '0.5rem',
-                              fontSize: '0.75rem',
-                              color: 'var(--gold-muted, #B89742)',
-                              fontWeight: 600,
-                              background: 'rgba(184, 151, 66, 0.12)',
-                              padding: '0.15rem 0.45rem',
-                              borderRadius: '4px',
-                            }}>
-                              Pesanan Khusus
-                            </span>
-                          )}
-                        </label>
+                        <div className={styles.sizeTitleGroup}>
+                          <span className={styles.optionLabel}>Pilih Ukuran:</span>
+                          <strong className={styles.selectedSizeIndicator}>
+                            {selectedSize}
+                          </strong>
+                        </div>
                         <a href="#panduan-ukuran" className={styles.sizeGuideLink}>
                           Panduan Ukuran &darr;
                         </a>
                       </div>
+
                       <div className={styles.sizeGrid}>
-                        {sortedSizes.map((s) => (
-                          <button
-                            key={s}
-                            type="button"
-                            className={`${styles.sizeBtn} ${
-                              selectedSize === s ? styles['sizeBtn--active'] : ''
-                            }`}
-                            onClick={() => setSelectedSize(s)}
-                          >
-                            {s}
-                          </button>
-                        ))}
+                        {/* Standard Sizes */}
+                        {sortedSizes
+                          .filter((s) => !isCustomSize(s))
+                          .map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              className={`${styles.sizeBtn} ${
+                                selectedSize === s ? styles['sizeBtn--active'] : ''
+                              }`}
+                              onClick={() => setSelectedSize(s)}
+                            >
+                              {s}
+                            </button>
+                          ))}
+
+                        {/* Custom Size Option */}
+                        {sortedSizes
+                          .filter((s) => isCustomSize(s))
+                          .map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              className={`${styles.sizeBtn} ${styles.sizeBtnCustom} ${
+                                selectedSize === s ? styles['sizeBtn--active'] : ''
+                              }`}
+                              onClick={() => setSelectedSize(s)}
+                            >
+                              Custom Size
+                            </button>
+                          ))}
                       </div>
-                      {isCustomSize(selectedSize) && (
-                        <p style={{
-                          marginTop: '0.5rem',
-                          fontSize: '0.8rem',
-                          color: '#6E5E55',
-                          lineHeight: '1.4',
-                        }}>
-                          * <strong>Custom Size</strong>: Busana dijahit khusus sesuai ukuran badan Anda. Anda dapat mencantumkan ukuran pada catatan checkout atau konsultasi via WhatsApp.
-                        </p>
+
+                      {/* Panel Informasi saat Custom Size dipilih */}
+                      {isSelectedCustom && (
+                        <div className={styles.customSizePanel}>
+                          <div className={styles.customSizePanelHeader}>
+                            <svg
+                              className={styles.customSizePanelIcon}
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <circle cx="12" cy="12" r="10" />
+                              <line x1="12" y1="16" x2="12" y2="12" />
+                              <line x1="12" y1="8" x2="12.01" y2="8" />
+                            </svg>
+                            <h4 className={styles.customSizePanelTitle}>Pesanan Ukuran Khusus</h4>
+                          </div>
+                          <p className={styles.customSizePanelText}>
+                            Produk akan dibuat menyesuaikan ukuran badan Anda. Silakan konsultasikan ukuran dan detail pesanan terlebih dahulu dengan admin kami.
+                          </p>
+                        </div>
                       )}
                     </div>
                   )}
 
-                  {/* Quantity Selector */}
-                  {!isOutOfStock && (
+                  {/* Quantity Selector — hidden when Custom Size is selected */}
+                  {!isOutOfStock && !isSelectedCustom && (
                     <div className={styles.quantitySection}>
                       <label className={styles.optionLabel}>Jumlah:</label>
                       <div className={styles.quantityBox}>
@@ -430,56 +464,74 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
 
                   {/* Primary & Secondary Action Buttons */}
                   <div className={styles.actionBlock} ref={mainCtaRef}>
-                    <div className={styles.mainButtonsRow}>
-                      <button
-                        type="button"
-                        onClick={handleAddToCart}
-                        disabled={isOutOfStock}
-                        className={`${styles.addToCartBtn} ${
-                          isOutOfStock ? styles['btn--disabled'] : ''
-                        }`}
+                    {isSelectedCustom ? (
+                      /* Custom Size: ONE primary WhatsApp CTA only */
+                      <a
+                        href={waLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.waCustomBtn}
                       >
-                        <svg
-                          width="18"
-                          height="18"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-                          <line x1="3" y1="6" x2="21" y2="6" />
-                          <path d="M16 10a4 4 0 0 1-8 0" />
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.999 1.59-1.048 3.834 3.792-.996z" />
                         </svg>
-                        <span>{isOutOfStock ? 'Produk Habis' : 'Tambah ke Keranjang'}</span>
-                      </button>
+                        <span>Konsultasi via WhatsApp</span>
+                      </a>
+                    ) : (
+                      /* Standard Size: normal cart + buy buttons, followed by chat */
+                      <>
+                        <div className={styles.mainButtonsRow}>
+                          <button
+                            type="button"
+                            onClick={handleAddToCart}
+                            disabled={isOutOfStock}
+                            className={`${styles.addToCartBtn} ${
+                              isOutOfStock ? styles['btn--disabled'] : ''
+                            }`}
+                          >
+                            <svg
+                              width="18"
+                              height="18"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            >
+                              <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+                              <line x1="3" y1="6" x2="21" y2="6" />
+                              <path d="M16 10a4 4 0 0 1-8 0" />
+                            </svg>
+                            <span>{isOutOfStock ? 'Produk Habis' : 'Tambah ke Keranjang'}</span>
+                          </button>
 
-                      <button
-                        type="button"
-                        onClick={handleBuyNow}
-                        disabled={isOutOfStock}
-                        className={`${styles.buyNowBtn} ${
-                          isOutOfStock ? styles['btn--disabled'] : ''
-                        }`}
-                      >
-                        Beli Sekarang
-                      </button>
-                    </div>
+                          <button
+                            type="button"
+                            onClick={handleBuyNow}
+                            disabled={isOutOfStock}
+                            className={`${styles.buyNowBtn} ${
+                              isOutOfStock ? styles['btn--disabled'] : ''
+                            }`}
+                          >
+                            Beli Sekarang
+                          </button>
+                        </div>
 
-                    {/* WhatsApp Direct Chat Button */}
-                    <a
-                      href={waLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={styles.whatsappBtn}
-                    >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.999 1.59-1.048 3.834 3.792-.996z" />
-                      </svg>
-                      <span>Chat via WhatsApp Admin</span>
-                    </a>
+                        {/* WhatsApp Direct Chat Button — standard size only */}
+                        <a
+                          href={waLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={styles.whatsappBtn}
+                        >
+                          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.999 1.59-1.048 3.834 3.792-.996z" />
+                          </svg>
+                          <span>Chat via WhatsApp Admin</span>
+                        </a>
+                      </>
+                    )}
                   </div>
 
                   {/* Information Accordion / Tabs: Pengiriman, Pembayaran, Keaslian */}
@@ -729,14 +781,28 @@ Apakah produk ini masih tersedia untuk dipesan? Terima kasih!`;
                 <span className={styles.stickyBarName}>{piece.name}</span>
                 <span className={styles.stickyBarPrice}>{currentPrice}</span>
               </div>
-              <button
-                type="button"
-                onClick={handleAddToCart}
-                disabled={isOutOfStock}
-                className={styles.stickyBarBtn}
-              >
-                {isOutOfStock ? 'Habis' : 'Tambah ke Keranjang'}
-              </button>
+              {isSelectedCustom ? (
+                <a
+                  href={waLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.stickyBarBtnCustom}
+                >
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l.999 1.59-1.048 3.834 3.792-.996z" />
+                  </svg>
+                  <span>Konsultasi via WhatsApp</span>
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  onClick={handleAddToCart}
+                  disabled={isOutOfStock}
+                  className={styles.stickyBarBtn}
+                >
+                  {isOutOfStock ? 'Habis' : 'Tambah ke Keranjang'}
+                </button>
+              )}
             </div>
           </div>
         )}

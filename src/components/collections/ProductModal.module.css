@@ -94,6 +94,22 @@
   backdrop-filter: blur(4px);
 }
 
+.signatureBadge {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  background-color: rgba(26, 18, 12, 0.85);
+  color: #D4AF37;
+  font-family: var(--font-accent);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 6px 14px;
+  border-radius: 2px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  backdrop-filter: blur(4px);
+}
+
 .infoCol {
   padding: 44px 40px;
   display: flex;
@@ -200,6 +216,13 @@
   margin-bottom: 28px;
 }
 
+.sizeHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
 .sizeLabel {
   display: block;
   font-family: var(--font-accent);
@@ -207,8 +230,15 @@
   letter-spacing: 2px;
   text-transform: uppercase;
   color: #4A3525;
-  margin-bottom: 10px;
   font-weight: 600;
+}
+
+.selectedSizeIndicator {
+  font-family: var(--font-accent);
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #8C6418;
+  font-weight: 700;
 }
 
 .sizeGrid {
@@ -240,6 +270,35 @@
   background-color: #4A3525;
   border-color: #4A3525;
   color: #FFFFFF;
+}
+
+.sizeChipCustom {
+  font-weight: 600;
+}
+
+/* Panel Informasi saat Custom Size dipilih */
+.customSizePanel {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: #FAF8F5;
+  border: 1px solid rgba(163, 121, 40, 0.3);
+  border-left: 3px solid #A37928;
+  border-radius: 4px;
+}
+
+.customSizePanelTitle {
+  margin: 0 0 4px 0;
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #4A3525;
+}
+
+.customSizePanelText {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #6E5E55;
+  line-height: 1.45;
 }
 
 .actionArea {
@@ -296,6 +355,32 @@
 }
 
 .waBtn:hover {
+  background-color: #1DA851;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);
+}
+
+.waCustomBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  height: 52px;
+  background-color: #25D366;
+  color: #FFFFFF;
+  font-family: var(--font-accent);
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.25);
+  transition: all 0.25s ease;
+}
+
+.waCustomBtn:hover {
   background-color: #1DA851;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(37, 211, 102, 0.35);

@@ -262,11 +262,31 @@
   transform: scale(1.04);
 }
 
-/* Badges */
-.card__stockBadgeOut {
+/* Badge Group */
+.card__badgeGroup {
   position: absolute;
   top: 8px;
   left: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 2;
+}
+
+.card__signatureBadge {
+  background: rgba(42, 29, 23, 0.88);
+  color: #D4AF37;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Badges */
+.card__stockBadgeOut {
   background-color: rgba(42, 29, 23, 0.88);
   color: #FFFFFF;
   font-family: var(--font-body, sans-serif);
@@ -276,13 +296,9 @@
   border-radius: 4px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  z-index: 2;
 }
 
 .card__stockBadgeLow {
-  position: absolute;
-  top: 8px;
-  left: 8px;
   background-color: rgba(184, 151, 66, 0.9);
   color: #FFFFFF;
   font-family: var(--font-body, sans-serif);
@@ -291,7 +307,6 @@
   padding: 3px 8px;
   border-radius: 4px;
   letter-spacing: 0.04em;
-  z-index: 2;
 }
 
 /* Wishlist Heart Button */

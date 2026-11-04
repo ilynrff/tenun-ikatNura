@@ -199,12 +199,17 @@ export default function CollectionsPage({ initialProducts = [], initialCategorie
                               />
                             </Link>
 
-                            {/* Stock / Out of Stock Badge */}
-                            {isOutOfStock ? (
-                              <span className={styles.card__stockBadgeOut}>Habis</span>
-                            ) : item.stock && item.stock <= 3 ? (
-                              <span className={styles.card__stockBadgeLow}>Sisa {item.stock}</span>
-                            ) : null}
+                            {/* Badge Group (Signature & Stock) */}
+                            <div className={styles.card__badgeGroup}>
+                              {item.signature && (
+                                <span className={styles.card__signatureBadge}>SIGNATURE</span>
+                              )}
+                              {isOutOfStock ? (
+                                <span className={styles.card__stockBadgeOut}>Habis</span>
+                              ) : item.stock && item.stock <= 3 ? (
+                                <span className={styles.card__stockBadgeLow}>Sisa {item.stock}</span>
+                              ) : null}
+                            </div>
 
                             {/* Wishlist Heart Button */}
                             <button

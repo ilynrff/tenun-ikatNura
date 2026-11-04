@@ -96,7 +96,7 @@ export async function getProducts({
       if (!includeHidden) where.isVisible = true;
       if (category && category !== 'all') where.categorySlug = category;
       if (featured !== null) where.featured = Boolean(featured);
-      if (archOnly) where.archPosition = { gt: 0 };
+      if (archOnly) where.archPosition = { in: [1, 2, 3, 4, 5] };
 
       if (search && search.trim()) {
         const q = search.trim();
@@ -113,9 +113,7 @@ export async function getProducts({
         orderBy: archOnly ? { archPosition: 'asc' } : { createdAt: 'desc' },
       });
 
-      if (rows && rows.length > 0) {
-        return rows.map(normalizeProduct);
-      }
+      return (rows || []).map(normalizeProduct);
     } catch (err) {
       console.warn('[Products Service] Prisma query fallback to collections.json:', err.message);
     }
@@ -252,6 +250,19 @@ export function validateProductData(data, isUpdate = false) {
 }
 
 /**
+ * Safely trigger cache revalidation for Next.js App Router
+ */
+async function triggerRevalidate() {
+  try {
+    const { revalidatePath } = await import('next/cache');
+    revalidatePath('/');
+    revalidatePath('/collections');
+  } catch (e) {
+    // Silently ignore if running outside Next.js request runtime (e.g. CLI scripts)
+  }
+}
+
+/**
  * Helper to generate slug from name
  */
 export function generateSlug(name) {
@@ -283,6 +294,21 @@ export async function createProduct(inputData) {
   const stock = typeof inputData.stock === 'number' ? inputData.stock : parseInt(inputData.stock, 10) || 0;
   const weight = typeof inputData.weight === 'number' ? Math.max(1, Math.floor(inputData.weight)) : (parseInt(inputData.weight, 10) || 1000);
 
+  const archPosition =
+    inputData.archPosition !== undefined && inputData.archPosition !== null && inputData.archPosition !== ''
+      ? parseInt(inputData.archPosition, 10) || 0
+      : 0;
+
+  if (archPosition < 0 || archPosition > 5) {
+    const err = new Error('Posisi Galeri Arch harus bernilai 0 (tidak tampil) atau antara 1 sampai 5.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const isPublished = inputData.isPublished !== undefined
+    ? Boolean(inputData.isPublished)
+    : (inputData.isActive !== false && inputData.isVisible !== false);
+
   const images = Array.isArray(inputData.images) && inputData.images.length > 0
     ? inputData.images.filter(Boolean)
     : (inputData.image ? [inputData.image] : ['/images/hero/hero-main.jpg']);
@@ -297,6 +323,21 @@ export async function createProduct(inputData) {
   const care = Array.isArray(inputData.care) ? inputData.care : [];
 
   if (isDbConfigured()) {
+    // Check Arch position uniqueness (slots 1 to 5)
+    if (archPosition >= 1 && archPosition <= 5) {
+      const existingArch = await prisma.product.findFirst({
+        where: { archPosition },
+        select: { id: true, name: true, sku: true, archPosition: true },
+      });
+      if (existingArch) {
+        const err = new Error(
+          `Posisi Galeri Arch ${archPosition} sudah digunakan oleh produk "${existingArch.name}" (${existingArch.sku}). Pilih posisi lain atau kosongkan (0).`
+        );
+        err.statusCode = 409;
+        throw err;
+      }
+    }
+
     // Check SKU & Slug uniqueness
     const existingSku = await prisma.product.findUnique({ where: { sku } });
     if (existingSku) {
@@ -339,16 +380,17 @@ export async function createProduct(inputData) {
         sizes,
         colors,
         care,
-        isActive: inputData.isActive !== false,
-        isVisible: inputData.isVisible !== false,
+        isActive: isPublished,
+        isVisible: isPublished,
         featured: Boolean(inputData.featured),
         signature: Boolean(inputData.signature),
-        archPosition: parseInt(inputData.archPosition, 10) || 0,
+        archPosition,
         categorySlug,
       },
       include: { category: true },
     });
 
+    await triggerRevalidate();
     return normalizeProduct(created);
   } else {
     // Simulation / local fallback response
@@ -368,8 +410,8 @@ export async function createProduct(inputData) {
       sizes,
       colors,
       care,
-      isActive: inputData.isActive !== false,
-      isVisible: inputData.isVisible !== false,
+      isActive: isPublished,
+      isVisible: isPublished,
       featured: Boolean(inputData.featured),
       signature: Boolean(inputData.signature),
       archPosition: parseInt(inputData.archPosition, 10) || 0,
@@ -443,6 +485,35 @@ export async function updateProduct(id, inputData) {
       }
     }
 
+    // Check Arch position collision with other products
+    let archPosition = target.archPosition;
+    if (inputData.archPosition !== undefined && inputData.archPosition !== null && inputData.archPosition !== '') {
+      archPosition = parseInt(inputData.archPosition, 10) || 0;
+    }
+
+    if (archPosition < 0 || archPosition > 5) {
+      const err = new Error('Posisi Galeri Arch harus bernilai 0 (tidak tampil) atau antara 1 sampai 5.');
+      err.statusCode = 400;
+      throw err;
+    }
+
+    if (archPosition >= 1 && archPosition <= 5) {
+      const existingArch = await prisma.product.findFirst({
+        where: {
+          archPosition,
+          id: { not: target.id },
+        },
+        select: { id: true, name: true, sku: true, archPosition: true },
+      });
+      if (existingArch) {
+        const err = new Error(
+          `Posisi Galeri Arch ${archPosition} sudah digunakan oleh produk "${existingArch.name}" (${existingArch.sku}). Pilih posisi lain atau kosongkan (0).`
+        );
+        err.statusCode = 409;
+        throw err;
+      }
+    }
+
     if (categorySlug) {
       await prisma.category.upsert({
         where: { slug: categorySlug },
@@ -453,6 +524,15 @@ export async function updateProduct(id, inputData) {
           isActive: true,
         },
       });
+    }
+
+    let isPublished = undefined;
+    if (inputData.isPublished !== undefined) {
+      isPublished = Boolean(inputData.isPublished);
+    } else if (inputData.isActive !== undefined || inputData.isVisible !== undefined) {
+      const act = inputData.isActive !== undefined ? Boolean(inputData.isActive) : target.isActive;
+      const vis = inputData.isVisible !== undefined ? Boolean(inputData.isVisible) : target.isVisible;
+      isPublished = act && vis;
     }
 
     const updated = await prisma.product.update({
@@ -472,19 +552,27 @@ export async function updateProduct(id, inputData) {
         sizes,
         colors,
         care,
-        isActive: inputData.isActive !== undefined ? Boolean(inputData.isActive) : target.isActive,
-        isVisible: inputData.isVisible !== undefined ? Boolean(inputData.isVisible) : target.isVisible,
+        isActive: isPublished !== undefined ? isPublished : target.isActive,
+        isVisible: isPublished !== undefined ? isPublished : target.isVisible,
         featured: inputData.featured !== undefined ? Boolean(inputData.featured) : target.featured,
         signature: inputData.signature !== undefined ? Boolean(inputData.signature) : target.signature,
-        archPosition: inputData.archPosition !== undefined ? parseInt(inputData.archPosition, 10) || 0 : target.archPosition,
+        archPosition,
         categorySlug: categorySlug || target.categorySlug,
       },
       include: { category: true },
     });
 
+    await triggerRevalidate();
     return normalizeProduct(updated);
   } else {
     // Simulated update for offline/fallback mode
+    let isPublished = undefined;
+    if (inputData.isPublished !== undefined) {
+      isPublished = Boolean(inputData.isPublished);
+    } else if (inputData.isActive !== undefined || inputData.isVisible !== undefined) {
+      isPublished = Boolean(inputData.isActive !== undefined ? inputData.isActive : inputData.isVisible);
+    }
+
     return normalizeProduct({
       id,
       sku: inputData.sku,
@@ -501,8 +589,8 @@ export async function updateProduct(id, inputData) {
       sizes,
       colors,
       care,
-      isActive: inputData.isActive !== false,
-      isVisible: inputData.isVisible !== false,
+      isActive: isPublished !== undefined ? isPublished : true,
+      isVisible: isPublished !== undefined ? isPublished : true,
       featured: Boolean(inputData.featured),
       signature: Boolean(inputData.signature),
       archPosition: parseInt(inputData.archPosition, 10) || 0,
@@ -530,8 +618,83 @@ export async function deleteProduct(id) {
       where: { id: target.id },
     });
 
+    await triggerRevalidate();
     return { success: true, deletedId: target.id };
   }
 
   return { success: true, deletedId: id };
 }
+
+/**
+ * Retrieve admin dashboard statistics directly from Supabase via Prisma.
+ * Strictly avoids falling back to local JSON so statistics reflect actual DB state.
+ *
+ * @returns {Promise<{
+ *   success: boolean,
+ *   data: {
+ *     totalActive: number,
+ *     lowStock: number,
+ *     outOfStock: number,
+ *     featured: number
+ *   } | null,
+ *   error: string | null
+ * }>}
+ */
+export async function getDashboardStats() {
+  if (!isDbConfigured() || !prisma) {
+    return {
+      success: false,
+      data: null,
+      error: 'Koneksi database belum dikonfigurasi (DATABASE_URL tidak ditemukan).',
+    };
+  }
+
+  try {
+    const [totalActive, lowStock, outOfStock, featured] = await Promise.all([
+      // 1. Total Produk Aktif (isActive = true)
+      prisma.product.count({
+        where: { isActive: true },
+      }),
+      // 2. Stok Menipis: stok > 0 dan stok <= 3 untuk produk aktif
+      prisma.product.count({
+        where: {
+          isActive: true,
+          stock: { gt: 0, lte: 3 },
+        },
+      }),
+      // 3. Stok Habis: stok = 0 untuk produk aktif
+      prisma.product.count({
+        where: {
+          isActive: true,
+          stock: 0,
+        },
+      }),
+      // 4. Featured Products: produk aktif yang ditandai sebagai featured
+      prisma.product.count({
+        where: {
+          isActive: true,
+          featured: true,
+        },
+      }),
+    ]);
+
+    return {
+      success: true,
+      data: {
+        totalActive: Number(totalActive) || 0,
+        lowStock: Number(lowStock) || 0,
+        outOfStock: Number(outOfStock) || 0,
+        featured: Number(featured) || 0,
+      },
+      error: null,
+    };
+  } catch (err) {
+    console.error('[Dashboard Stats Error] Prisma query failed:', err.message);
+    return {
+      success: false,
+      data: null,
+      error: 'Gagal memuat data statistik dari database. Pastikan koneksi Supabase aktif.',
+    };
+  }
+}
+

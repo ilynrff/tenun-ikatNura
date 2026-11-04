@@ -48,6 +48,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
   const [autoSlug, setAutoSlug] = useState(!isEdit);
   const [newSizeInput, setNewSizeInput] = useState('');
   const [newColorInput, setNewColorInput] = useState('');
+  const [isAdditionalOpen, setIsAdditionalOpen] = useState(false);
 
   // Image upload state
   const [uploadPreviews, setUploadPreviews] = useState([]); // { src: string, status: 'local'|'uploaded'|'legacy', file?: File }
@@ -118,8 +119,8 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
           texture: 'Halus bertekstur',
           comfort: 'Nyaman dan adem',
         },
-        isActive: initialData.isActive !== false,
-        isVisible: initialData.isVisible !== false,
+        isActive: initialData.isActive !== false && initialData.isVisible !== false,
+        isVisible: initialData.isActive !== false && initialData.isVisible !== false,
         featured: Boolean(initialData.featured),
         signature: Boolean(initialData.signature),
         archPosition: typeof initialData.archPosition === 'number' ? initialData.archPosition : 0,
@@ -128,9 +129,26 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
       // Populate previews from existing images (legacy/uploaded URLs)
       setUploadPreviews(existingImages.map((url) => ({ src: url, status: 'legacy' })));
       setAutoSlug(false);
+
+      // Auto-open accordion if any additional info has content in edit mode
+      const hasAdditionalContent = Boolean(
+        (initialData.tagline && String(initialData.tagline).trim()) ||
+        (initialData.description && String(initialData.description).trim()) ||
+        (initialData.story && String(initialData.story).trim()) ||
+        (initialData.material && typeof initialData.material === 'object' && (
+          (initialData.material.type && String(initialData.material.type).trim()) ||
+          (initialData.material.composition && String(initialData.material.composition).trim()) ||
+          (initialData.material.texture && String(initialData.material.texture).trim()) ||
+          (initialData.material.comfort && String(initialData.material.comfort).trim())
+        ))
+      );
+      if (hasAdditionalContent) {
+        setIsAdditionalOpen(true);
+      }
     } else {
-      // New product: start with empty upload previews
+      // New product: start with empty upload previews and closed accordion
       setUploadPreviews([]);
+      setIsAdditionalOpen(false);
     }
   }, [initialData, isEdit]);
 
@@ -449,102 +467,512 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
       )}
 
       <form onSubmit={handleSubmit}>
-        <div className={styles.grid}>
-          {/* Main Column */}
-          <div>
-            {/* 1. Basic Info */}
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Informasi Utama</h2>
+        {/* =========================================================
+            SECTION 1: INFORMASI PRODUK
+            ========================================================= */}
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>1. Informasi Produk</h2>
 
+          {/* Nama Produk */}
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              Nama Produk <span className={styles.required}>*</span>
+            </label>
+            <input
+              type="text"
+              className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
+              placeholder="Contoh: Nusa Indah Outer"
+              value={formData.name}
+              onChange={handleNameChange}
+              disabled={submitting}
+            />
+            {errors.name && <span className={styles.errorText}>{errors.name}</span>}
+          </div>
+
+          {/* SKU, Slug, Kategori */}
+          <div className={styles.rowThree}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                SKU (Kode Unik) <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="text"
+                className={`${styles.input} ${errors.sku ? styles.inputError : ''}`}
+                placeholder="Contoh: NURA-OUT-001"
+                value={formData.sku}
+                onChange={(e) => handleChange('sku', e.target.value.toUpperCase())}
+                disabled={submitting}
+              />
+              {errors.sku && <span className={styles.errorText}>{errors.sku}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Slug (URL Key) <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="text"
+                className={styles.input}
+                placeholder="contoh: nusa-indah-outer"
+                value={formData.slug}
+                onChange={(e) => {
+                  setAutoSlug(false);
+                  handleChange('slug', slugify(e.target.value));
+                }}
+                disabled={submitting}
+              />
+              <span className={styles.hint}>
+                {autoSlug ? '(Auto dari nama produk)' : '(Manual edit)'}
+              </span>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Kategori <span className={styles.required}>*</span>
+              </label>
+              <select
+                className={`${styles.select} ${errors.categorySlug ? styles.inputError : ''}`}
+                value={formData.categorySlug}
+                onChange={(e) => handleChange('categorySlug', e.target.value)}
+                disabled={submitting}
+              >
+                {categories.map((cat) => (
+                  <option key={cat.slug} value={cat.slug}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+              {errors.categorySlug && (
+                <span className={styles.errorText}>{errors.categorySlug}</span>
+              )}
+            </div>
+          </div>
+
+          {/* Harga, Stok, Berat */}
+          <div className={styles.rowThree}>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Harga (IDR) <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="number"
+                className={`${styles.input} ${errors.price ? styles.inputError : ''}`}
+                placeholder="Contoh: 1450000"
+                value={formData.price}
+                onChange={(e) => handleChange('price', e.target.value)}
+                disabled={submitting}
+              />
+              {errors.price && <span className={styles.errorText}>{errors.price}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Jumlah Stok Unit <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="number"
+                min="0"
+                className={`${styles.input} ${errors.stock ? styles.inputError : ''}`}
+                placeholder="Contoh: 6"
+                value={formData.stock}
+                onChange={(e) => handleChange('stock', e.target.value)}
+                disabled={submitting}
+              />
+              {errors.stock && <span className={styles.errorText}>{errors.stock}</span>}
+            </div>
+
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Berat Produk (gram) <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="number"
+                min="1"
+                step="1"
+                className={`${styles.input} ${errors.weight ? styles.inputError : ''}`}
+                placeholder="Contoh: 1000"
+                value={formData.weight}
+                onChange={(e) => handleChange('weight', e.target.value)}
+                disabled={submitting}
+              />
+              {errors.weight && <span className={styles.errorText}>{errors.weight}</span>}
+            </div>
+          </div>
+          <span className={styles.hint} style={{ marginTop: '-0.5rem', marginBottom: '1.25rem' }}>
+            Gunakan satuan gram (misal: 500 = 500g, 1000 = 1 kg). Digunakan untuk perhitungan ongkir otomatis RajaOngkir.
+          </span>
+
+          <div className={styles.sectionDivider} />
+
+          {/* Foto Produk */}
+          <div className={styles.subSectionHeader}>
+            <h3 className={styles.subSectionTitle}>Foto Produk</h3>
+            <span className={styles.primaryBadge}>Foto pertama = Foto Utama</span>
+          </div>
+
+          {/* Upload Error Banner */}
+          {uploadError && (
+            <div className={styles.uploadErrorBox}>
+              ⚠️ {uploadError}
+              <button type="button" onClick={() => setUploadError(null)} className={styles.uploadErrorClose}>✕</button>
+            </div>
+          )}
+
+          {/* Preview Grid */}
+          {uploadPreviews.length > 0 && (
+            <div className={styles.uploadPreviewGrid}>
+              {uploadPreviews.map((preview, index) => (
+                <div
+                  key={index}
+                  className={`${styles.uploadPreviewItem} ${index === 0 ? styles.uploadPreviewPrimary : ''}`}
+                >
+                  <div
+                    className={styles.uploadPreviewThumb}
+                    onClick={() => {
+                      if (preview.status !== 'uploading' && preview.src) {
+                        setLightboxImageError(false);
+                        setPreviewLightboxUrl(preview.src);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    title="Klik untuk membuka pratinjau besar"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (preview.status !== 'uploading' && preview.src) {
+                          setLightboxImageError(false);
+                          setPreviewLightboxUrl(preview.src);
+                        }
+                      }
+                    }}
+                  >
+                    {preview.status === 'uploading' ? (
+                      <div className={styles.uploadSpinner}>⏳</div>
+                    ) : (
+                      <Image
+                        src={preview.src}
+                        alt={`Foto ${index + 1}`}
+                        fill
+                        sizes="120px"
+                        style={{ objectFit: 'cover' }}
+                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                        unoptimized={preview.status === 'legacy' || preview.status === 'uploaded'}
+                      />
+                    )}
+                    {index === 0 ? (
+                      <span className={styles.primaryLabel}>★ Utama</span>
+                    ) : (
+                      <span className={styles.thumbOrderBadge}>#{index + 1}</span>
+                    )}
+                    <div className={styles.thumbZoomHint}>🔍</div>
+                  </div>
+
+                  <div className={styles.previewActions}>
+                    {index !== 0 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSetPrimary(index);
+                        }}
+                        className={styles.setPrimaryBtn}
+                        title="Jadikan Foto Utama"
+                        disabled={submitting || uploading}
+                      >
+                        ★ Jadikan Utama
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleRemovePreview(index);
+                      }}
+                      className={styles.uploadRemoveBtn}
+                      title={`Hapus foto ${index + 1}`}
+                      disabled={submitting || uploading}
+                    >
+                      ✕ Hapus
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Upload Drop Zone */}
+          <div
+            className={`${styles.uploadZone} ${uploading ? styles.uploadZoneLoading : ''}`}
+            onClick={() => !uploading && !submitting && fileInputRef.current?.click()}
+          >
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/jpg,image/png,image/webp"
+              multiple
+              style={{ display: 'none' }}
+              onChange={handleFileSelect}
+              disabled={submitting || uploading}
+            />
+            <div className={styles.uploadZoneIcon}>
+              {uploading ? '⏳' : '📷'}
+            </div>
+            <div className={styles.uploadZoneText}>
+              {uploading
+                ? 'Sedang mengupload foto...'
+                : 'Klik untuk pilih foto dari komputer'}
+            </div>
+            <div className={styles.uploadZoneHint}>
+              JPG, PNG, WebP · Maks 5 MB per file · Bisa pilih banyak sekaligus
+            </div>
+          </div>
+        </div>
+
+        {/* =========================================================
+            SECTION 2: VARIASI PRODUK
+            ========================================================= */}
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>2. Variasi Produk</h2>
+
+          <div className={styles.rowTwo}>
+            {/* Ukuran (Sizes) */}
+            <div>
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  Nama Produk <span className={styles.required}>*</span>
+                  Ukuran (Sizes) <span className={styles.required}>*</span>
+                </label>
+                <div className={styles.tagContainer}>
+                  {sortSizes(
+                    Array.from(new Set([...STANDARD_SIZES, ...(Array.isArray(formData.sizes) ? formData.sizes : [])]))
+                  ).map((size) => {
+                    const isSelected = formData.sizes.some((s) => s.toLowerCase() === size.toLowerCase());
+                    const isCustom = isCustomSize(size);
+                    return (
+                      <button
+                        type="button"
+                        key={size}
+                        className={`${styles.tag} ${isSelected ? styles.tagActive : ''}`}
+                        onClick={() => toggleSize(size)}
+                        disabled={submitting}
+                        title={isCustom ? 'Ukuran pesanan khusus sesuai postur tubuh' : undefined}
+                      >
+                        {size} {isSelected ? '✓' : '+'}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Custom Size add */}
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    placeholder="Tambah ukuran lain (cth: 30, XXL, Jumbo)"
+                    value={newSizeInput}
+                    onChange={(e) => setNewSizeInput(e.target.value)}
+                    disabled={submitting}
+                  />
+                  <button
+                    type="button"
+                    onClick={addCustomSize}
+                    className={styles.addImageBtn}
+                    style={{ marginTop: 0 }}
+                    disabled={submitting}
+                    title="Tambahkan ukuran"
+                  >
+                    +
+                  </button>
+                </div>
+                <span className={styles.hint} style={{ marginTop: '0.5rem' }}>
+                  Ukuran standar dan tambahan otomatis terurut rapi. Custom Size dapat dipilih jika melayani pesanan jahit khusus.
+                </span>
+              </div>
+            </div>
+
+            {/* Varian Warna */}
+            <div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>
+                  Varian Warna <span className={styles.optionalText}>(Opsional)</span>
+                </label>
+                <div className={styles.tagContainer}>
+                  {formData.colors.map((color) => (
+                    <span key={color} className={`${styles.tag} ${styles.tagActive}`}>
+                      {color}
+                      <button
+                        type="button"
+                        onClick={() => removeColor(color)}
+                        style={{
+                          background: 'none',
+                          border: 'none',
+                          marginLeft: '0.4rem',
+                          cursor: 'pointer',
+                          color: '#0f0e0d',
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </span>
+                  ))}
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    placeholder="Cth: Terracotta Gold"
+                    value={newColorInput}
+                    onChange={(e) => setNewColorInput(e.target.value)}
+                    disabled={submitting}
+                  />
+                  <button
+                    type="button"
+                    onClick={addColor}
+                    className={styles.addImageBtn}
+                    style={{ marginTop: 0 }}
+                    disabled={submitting}
+                  >
+                    +
+                  </button>
+                </div>
+                <span className={styles.hint} style={{ marginTop: '0.5rem' }}>
+                  Tambah pilihan warna yang tersedia untuk karya tenun ini.
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* =========================================================
+            SECTION 3: PENGATURAN TAMPILAN
+            ========================================================= */}
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>3. Pengaturan Tampilan</h2>
+
+          <div className={styles.switchGrid}>
+            {/* Status Publikasi */}
+            <div className={styles.switchItem} style={{ gridColumn: '1 / -1' }}>
+              <div>
+                <div className={styles.switchLabel}>Status Publikasi</div>
+                <div className={styles.switchDesc}>Publikasikan produk agar dapat dilihat dan dibeli pelanggan di website.</div>
+              </div>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  checked={Boolean(formData.isActive && formData.isVisible)}
+                  onChange={(e) => {
+                    const isPub = e.target.checked;
+                    setFormData((prev) => ({
+                      ...prev,
+                      isActive: isPub,
+                      isVisible: isPub,
+                    }));
+                  }}
+                  disabled={submitting}
+                />
+                <span className={styles.slider}></span>
+              </label>
+            </div>
+
+            {/* Featured */}
+            <div className={styles.switchItem}>
+              <div>
+                <div className={styles.switchLabel}>Featured Collection</div>
+                <div className={styles.switchDesc}>Tampil di sorotan koleksi utama homepage & metrik dashboard</div>
+              </div>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  checked={formData.featured}
+                  onChange={(e) => handleChange('featured', e.target.checked)}
+                  disabled={submitting}
+                />
+                <span className={styles.slider}></span>
+              </label>
+            </div>
+
+            {/* Signature */}
+            <div className={styles.switchItem}>
+              <div>
+                <div className={styles.switchLabel}>Karya Signature</div>
+                <div className={styles.switchDesc}>Tampilkan badge SIGNATURE di kartu katalog dan detail produk</div>
+              </div>
+              <label className={styles.switch}>
+                <input
+                  type="checkbox"
+                  checked={formData.signature}
+                  onChange={(e) => handleChange('signature', e.target.checked)}
+                  disabled={submitting}
+                />
+                <span className={styles.slider}></span>
+              </label>
+            </div>
+          </div>
+
+          {/* Home Arch Gallery Position */}
+          <div className={styles.formGroup} style={{ marginTop: '1.25rem' }}>
+            <label className={styles.label}>
+              Posisi Galeri Arch Beranda <span className={styles.optionalText}>(Opsional)</span>
+            </label>
+            <select
+              className={styles.select}
+              value={formData.archPosition}
+              onChange={(e) => handleChange('archPosition', Number(e.target.value))}
+              disabled={submitting}
+            >
+              <option value={0}>0 — Tidak ditampilkan di Arch</option>
+              <option value={1}>Posisi 1 (Arch Utama Kiri)</option>
+              <option value={2}>Posisi 2 (Arch Tengah Kiri)</option>
+              <option value={3}>Posisi 3 (Arch Centerpiece)</option>
+              <option value={4}>Posisi 4 (Arch Tengah Kanan)</option>
+              <option value={5}>Posisi 5 (Arch Kanan)</option>
+            </select>
+            <span className={styles.hint}>
+              Menentukan kurasi visual lengkungan arch di homepage. Posisi 0 berarti tidak ditampilkan di Arch.
+            </span>
+          </div>
+        </div>
+
+        {/* =========================================================
+            SECTION 4: INFORMASI TAMBAHAN (OPSIONAL - ACCORDION)
+            ========================================================= */}
+        <div className={`${styles.card} ${styles.accordionCard}`}>
+          <button
+            type="button"
+            className={styles.accordionToggle}
+            onClick={() => setIsAdditionalOpen((prev) => !prev)}
+            aria-expanded={isAdditionalOpen}
+            aria-controls="additional-info-panel"
+          >
+            <div className={styles.accordionToggleLeft}>
+              <h2 className={styles.accordionTitle}>4. Informasi Tambahan</h2>
+              <span className={styles.optionalBadge}>(Opsional)</span>
+            </div>
+            <span className={`${styles.accordionChevron} ${isAdditionalOpen ? styles.chevronOpen : ''}`}>
+              ▼
+            </span>
+          </button>
+
+          {isAdditionalOpen && (
+            <div id="additional-info-panel" className={styles.accordionBody}>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>
+                  Tagline Singkat <span className={styles.optionalText}>(Opsional)</span>
                 </label>
                 <input
                   type="text"
-                  className={`${styles.input} ${errors.name ? styles.inputError : ''}`}
-                  placeholder="Contoh: Nusa Indah Outer"
-                  value={formData.name}
-                  onChange={handleNameChange}
+                  className={styles.input}
+                  placeholder="Contoh: Elegansi Berakar dari Warisan Nusantara"
+                  value={formData.tagline}
+                  onChange={(e) => handleChange('tagline', e.target.value)}
                   disabled={submitting}
                 />
-                {errors.name && <span className={styles.errorText}>{errors.name}</span>}
-              </div>
-
-              <div className={styles.rowTwo}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    SKU (Kode Unik) <span className={styles.required}>*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={`${styles.input} ${errors.sku ? styles.inputError : ''}`}
-                    placeholder="Contoh: NURA-OUT-001"
-                    value={formData.sku}
-                    onChange={(e) => handleChange('sku', e.target.value.toUpperCase())}
-                    disabled={submitting}
-                  />
-                  {errors.sku && <span className={styles.errorText}>{errors.sku}</span>}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    Slug (URL Key) <span className={styles.required}>*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    placeholder="contoh: nusa-indah-outer"
-                    value={formData.slug}
-                    onChange={(e) => {
-                      setAutoSlug(false);
-                      handleChange('slug', slugify(e.target.value));
-                    }}
-                    disabled={submitting}
-                  />
-                  <span className={styles.hint}>
-                    {autoSlug ? '(Auto dari nama produk)' : '(Manual edit)'}
-                  </span>
-                </div>
-              </div>
-
-              <div className={styles.rowTwo}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    Kategori <span className={styles.required}>*</span>
-                  </label>
-                  <select
-                    className={`${styles.select} ${errors.categorySlug ? styles.inputError : ''}`}
-                    value={formData.categorySlug}
-                    onChange={(e) => handleChange('categorySlug', e.target.value)}
-                    disabled={submitting}
-                  >
-                    {categories.map((cat) => (
-                      <option key={cat.slug} value={cat.slug}>
-                        {cat.name}
-                      </option>
-                    ))}
-                  </select>
-                  {errors.categorySlug && (
-                    <span className={styles.errorText}>{errors.categorySlug}</span>
-                  )}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Tagline Singkat</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    placeholder="Contoh: Elegansi Berakar dari Warisan Nusantara"
-                    value={formData.tagline}
-                    onChange={(e) => handleChange('tagline', e.target.value)}
-                    disabled={submitting}
-                  />
-                </div>
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>Deskripsi Produk</label>
+                <label className={styles.label}>
+                  Deskripsi Produk <span className={styles.optionalText}>(Opsional)</span>
+                </label>
                 <textarea
                   rows="3"
                   className={styles.textarea}
@@ -556,7 +984,9 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>Cerita Warisan / Narasi Tenun (Story)</label>
+                <label className={styles.label}>
+                  Cerita Warisan / Narasi Tenun (Story) <span className={styles.optionalText}>(Opsional)</span>
+                </label>
                 <textarea
                   rows="3"
                   className={styles.textarea}
@@ -566,197 +996,20 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                   disabled={submitting}
                 />
               </div>
-            </div>
 
-            {/* 2. Pricing & Inventory */}
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Harga & Inventori</h2>
+              <div className={styles.sectionDivider} />
+
+              <div className={styles.subSectionHeader}>
+                <h3 className={styles.subSectionTitle}>
+                  Spesifikasi Material <span className={styles.optionalText}>(Opsional)</span>
+                </h3>
+              </div>
+
               <div className={styles.rowTwo}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
-                    Harga (IDR) <span className={styles.required}>*</span>
+                    Jenis Tenun & Serat <span className={styles.optionalText}>(Opsional)</span>
                   </label>
-                  <input
-                    type="number"
-                    className={`${styles.input} ${errors.price ? styles.inputError : ''}`}
-                    placeholder="Contoh: 1450000"
-                    value={formData.price}
-                    onChange={(e) => handleChange('price', e.target.value)}
-                    disabled={submitting}
-                  />
-                  {errors.price && <span className={styles.errorText}>{errors.price}</span>}
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    Jumlah Stok Unit <span className={styles.required}>*</span>
-                  </label>
-                  <input
-                    type="number"
-                    min="0"
-                    className={`${styles.input} ${errors.stock ? styles.inputError : ''}`}
-                    placeholder="Contoh: 6"
-                    value={formData.stock}
-                    onChange={(e) => handleChange('stock', e.target.value)}
-                    disabled={submitting}
-                  />
-                  {errors.stock && <span className={styles.errorText}>{errors.stock}</span>}
-                </div>
-              </div>
-
-              <div className={styles.formGroup} style={{ marginTop: '1.25rem' }}>
-                <label className={styles.label}>
-                  Berat Produk (gram) <span className={styles.required}>*</span>
-                </label>
-                <input
-                  type="number"
-                  min="1"
-                  step="1"
-                  className={`${styles.input} ${errors.weight ? styles.inputError : ''}`}
-                  placeholder="Contoh: 1000"
-                  value={formData.weight}
-                  onChange={(e) => handleChange('weight', e.target.value)}
-                  disabled={submitting}
-                />
-                <span className={styles.hint}>
-                  Gunakan satuan gram (misal: 500 = 500g, 1000 = 1 kg). Digunakan untuk perhitungan ongkir otomatis RajaOngkir.
-                </span>
-                {errors.weight && <span className={styles.errorText}>{errors.weight}</span>}
-              </div>
-            </div>
-
-            {/* 3. Media & Images */}
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>
-                Foto Karya
-                <span className={styles.primaryBadge}>Foto pertama = Foto Utama</span>
-              </h2>
-
-              {/* Upload Error Banner */}
-              {uploadError && (
-                <div className={styles.uploadErrorBox}>
-                  ⚠️ {uploadError}
-                  <button type="button" onClick={() => setUploadError(null)} className={styles.uploadErrorClose}>✕</button>
-                </div>
-              )}
-
-              {/* Preview Grid */}
-              {uploadPreviews.length > 0 && (
-                <div className={styles.uploadPreviewGrid}>
-                  {uploadPreviews.map((preview, index) => (
-                    <div
-                      key={index}
-                      className={`${styles.uploadPreviewItem} ${index === 0 ? styles.uploadPreviewPrimary : ''}`}
-                    >
-                      <div
-                        className={styles.uploadPreviewThumb}
-                        onClick={() => {
-                          if (preview.status !== 'uploading' && preview.src) {
-                            setLightboxImageError(false);
-                            setPreviewLightboxUrl(preview.src);
-                          }
-                        }}
-                        role="button"
-                        tabIndex={0}
-                        title="Klik untuk membuka pratinjau besar"
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter' || e.key === ' ') {
-                            e.preventDefault();
-                            if (preview.status !== 'uploading' && preview.src) {
-                              setLightboxImageError(false);
-                              setPreviewLightboxUrl(preview.src);
-                            }
-                          }
-                        }}
-                      >
-                        {preview.status === 'uploading' ? (
-                          <div className={styles.uploadSpinner}>⏳</div>
-                        ) : (
-                          <Image
-                            src={preview.src}
-                            alt={`Foto ${index + 1}`}
-                            fill
-                            sizes="120px"
-                            style={{ objectFit: 'cover' }}
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            unoptimized={preview.status === 'legacy' || preview.status === 'uploaded'}
-                          />
-                        )}
-                        {index === 0 ? (
-                          <span className={styles.primaryLabel}>★ Utama</span>
-                        ) : (
-                          <span className={styles.thumbOrderBadge}>#{index + 1}</span>
-                        )}
-                        <div className={styles.thumbZoomHint}>🔍</div>
-                      </div>
-
-                      <div className={styles.previewActions}>
-                        {index !== 0 && (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleSetPrimary(index);
-                            }}
-                            className={styles.setPrimaryBtn}
-                            title="Jadikan Foto Utama"
-                            disabled={submitting || uploading}
-                          >
-                            ★ Jadikan Utama
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemovePreview(index);
-                          }}
-                          className={styles.uploadRemoveBtn}
-                          title={`Hapus foto ${index + 1}`}
-                          disabled={submitting || uploading}
-                        >
-                          ✕ Hapus
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-
-              {/* Upload Drop Zone */}
-              <div
-                className={`${styles.uploadZone} ${uploading ? styles.uploadZoneLoading : ''}`}
-                onClick={() => !uploading && !submitting && fileInputRef.current?.click()}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/jpeg,image/jpg,image/png,image/webp"
-                  multiple
-                  style={{ display: 'none' }}
-                  onChange={handleFileSelect}
-                  disabled={submitting || uploading}
-                />
-                <div className={styles.uploadZoneIcon}>
-                  {uploading ? '⏳' : '📷'}
-                </div>
-                <div className={styles.uploadZoneText}>
-                  {uploading
-                    ? 'Sedang mengupload foto...'
-                    : 'Klik untuk pilih foto dari komputer'}
-                </div>
-                <div className={styles.uploadZoneHint}>
-                  JPG, PNG, WebP · Maks 5 MB per file · Bisa pilih banyak sekaligus
-                </div>
-              </div>
-            </div>
-
-            {/* 4. Material Details */}
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Spesifikasi Material</h2>
-              <div className={styles.rowTwo}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>Jenis Tenun & Serat</label>
                   <input
                     type="text"
                     className={styles.input}
@@ -767,7 +1020,9 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Komposisi Benang</label>
+                  <label className={styles.label}>
+                    Komposisi Benang <span className={styles.optionalText}>(Opsional)</span>
+                  </label>
                   <input
                     type="text"
                     className={styles.input}
@@ -778,9 +1033,12 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                   />
                 </div>
               </div>
+
               <div className={styles.rowTwo}>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Karakter Tekstur</label>
+                  <label className={styles.label}>
+                    Karakter Tekstur <span className={styles.optionalText}>(Opsional)</span>
+                  </label>
                   <input
                     type="text"
                     className={styles.input}
@@ -791,7 +1049,9 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Kenyamanan</label>
+                  <label className={styles.label}>
+                    Kenyamanan <span className={styles.optionalText}>(Opsional)</span>
+                  </label>
                   <input
                     type="text"
                     className={styles.input}
@@ -803,198 +1063,7 @@ export default function ProductForm({ initialData = null, isEdit = false }) {
                 </div>
               </div>
             </div>
-          </div>
-
-          {/* Sidebar Column */}
-          <div>
-            {/* 5. Placement & Visibility */}
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Visibilitas & Penempatan</h2>
-
-              {/* Status Aktif */}
-              <div className={styles.switchGroup}>
-                <div>
-                  <div className={styles.switchLabel}>Status Aktif</div>
-                  <div className={styles.switchDesc}>Produk aktif di katalog internal</div>
-                </div>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={formData.isActive}
-                    onChange={(e) => handleChange('isActive', e.target.checked)}
-                    disabled={submitting}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </div>
-
-              {/* Visible to Customer */}
-              <div className={styles.switchGroup}>
-                <div>
-                  <div className={styles.switchLabel}>Tampilkan ke Publik</div>
-                  <div className={styles.switchDesc}>Dapat dilihat oleh pelanggan di website</div>
-                </div>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={formData.isVisible}
-                    onChange={(e) => handleChange('isVisible', e.target.checked)}
-                    disabled={submitting}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </div>
-
-              {/* Featured */}
-              <div className={styles.switchGroup}>
-                <div>
-                  <div className={styles.switchLabel}>Featured Collection</div>
-                  <div className={styles.switchDesc}>Tampil di sorotan koleksi utama</div>
-                </div>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={formData.featured}
-                    onChange={(e) => handleChange('featured', e.target.checked)}
-                    disabled={submitting}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </div>
-
-              {/* Signature */}
-              <div className={styles.switchGroup}>
-                <div>
-                  <div className={styles.switchLabel}>Karya Signature</div>
-                  <div className={styles.switchDesc}>Tandai sebagai mahakarya eksklusif</div>
-                </div>
-                <label className={styles.switch}>
-                  <input
-                    type="checkbox"
-                    checked={formData.signature}
-                    onChange={(e) => handleChange('signature', e.target.checked)}
-                    disabled={submitting}
-                  />
-                  <span className={styles.slider}></span>
-                </label>
-              </div>
-
-              {/* Home Arch Gallery Position */}
-              <div className={styles.formGroup} style={{ marginTop: '1.25rem' }}>
-                <label className={styles.label}>Posisi Galeri Arch Beranda</label>
-                <select
-                  className={styles.select}
-                  value={formData.archPosition}
-                  onChange={(e) => handleChange('archPosition', Number(e.target.value))}
-                  disabled={submitting}
-                >
-                  <option value={0}>0 — Tidak ditampilkan di Arch</option>
-                  <option value={1}>Posisi 1 (Arch Utama Kiri)</option>
-                  <option value={2}>Posisi 2 (Arch Tengah Kiri)</option>
-                  <option value={3}>Posisi 3 (Arch Centerpiece)</option>
-                  <option value={4}>Posisi 4 (Arch Tengah Kanan)</option>
-                  <option value={5}>Posisi 5 (Arch Kanan)</option>
-                </select>
-                <span className={styles.hint}>
-                  Menentukan kurasi visual lengkungan arch di homepage.
-                </span>
-              </div>
-            </div>
-
-            {/* 6. Variants & Sizes */}
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Ukuran (Sizes)</h2>
-              <div className={styles.tagContainer}>
-                {sortSizes(
-                  Array.from(new Set([...STANDARD_SIZES, ...(Array.isArray(formData.sizes) ? formData.sizes : [])]))
-                ).map((size) => {
-                  const isSelected = formData.sizes.some((s) => s.toLowerCase() === size.toLowerCase());
-                  const isCustom = isCustomSize(size);
-                  return (
-                    <button
-                      type="button"
-                      key={size}
-                      className={`${styles.tag} ${isSelected ? styles.tagActive : ''}`}
-                      onClick={() => toggleSize(size)}
-                      disabled={submitting}
-                      title={isCustom ? 'Ukuran pesanan khusus sesuai postur tubuh' : undefined}
-                    >
-                      {size} {isSelected ? '✓' : '+'}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Custom Size add */}
-              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
-                <input
-                  type="text"
-                  className={styles.input}
-                  placeholder="Tambah ukuran lain (cth: 30, XXL, Jumbo)"
-                  value={newSizeInput}
-                  onChange={(e) => setNewSizeInput(e.target.value)}
-                  disabled={submitting}
-                />
-                <button
-                  type="button"
-                  onClick={addCustomSize}
-                  className={styles.addImageBtn}
-                  style={{ marginTop: 0 }}
-                  disabled={submitting}
-                  title="Tambahkan ukuran"
-                >
-                  +
-                </button>
-              </div>
-              <span className={styles.hint} style={{ marginTop: '0.5rem' }}>
-                Ukuran standar dan tambahan akan otomatis terurut rapi. Custom Size dapat dipilih jika melayani pesanan jahit khusus.
-              </span>
-            </div>
-
-            {/* 7. Color Palette */}
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Varian Warna</h2>
-              <div className={styles.tagContainer}>
-                {formData.colors.map((color) => (
-                  <span key={color} className={`${styles.tag} ${styles.tagActive}`}>
-                    {color}
-                    <button
-                      type="button"
-                      onClick={() => removeColor(color)}
-                      style={{
-                        background: 'none',
-                        border: 'none',
-                        marginLeft: '0.4rem',
-                        cursor: 'pointer',
-                        color: '#0f0e0d',
-                      }}
-                    >
-                      ✕
-                    </button>
-                  </span>
-                ))}
-              </div>
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <input
-                  type="text"
-                  className={styles.input}
-                  placeholder="Cth: Terracotta Gold"
-                  value={newColorInput}
-                  onChange={(e) => setNewColorInput(e.target.value)}
-                  disabled={submitting}
-                />
-                <button
-                  type="button"
-                  onClick={addColor}
-                  className={styles.addImageBtn}
-                  style={{ marginTop: 0 }}
-                  disabled={submitting}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-          </div>
+          )}
         </div>
 
         {/* Submit Actions */}

@@ -83,10 +83,91 @@
   line-height: 1;
 }
 
+.statValueFailed {
+  font-family: var(--font-heading, serif);
+  font-size: 2.1rem;
+  font-weight: 600;
+  color: #B91C1C;
+  line-height: 1;
+}
+
 .statFootnote {
   font-size: 0.75rem;
   color: #8C7A6D;
 }
+
+/* Error Banner */
+.errorBanner {
+  background-color: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  border-left: 4px solid #DC2626;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.errorIcon {
+  font-size: 1.25rem;
+  line-height: 1.2;
+  flex-shrink: 0;
+}
+
+.errorContent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.errorTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #991B1B;
+}
+
+.errorDesc {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #7F1D1D;
+  line-height: 1.45;
+}
+
+/* Skeleton Loading */
+.skeletonStatValue {
+  height: 2.1rem;
+  width: 70px;
+  border-radius: 4px;
+  background-color: rgba(92, 74, 61, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.skeletonShimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.6) 50%,
+    transparent 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 
 /* Quick Actions Section */
 .quickActionsSection {

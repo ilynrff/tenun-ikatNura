@@ -47,9 +47,51 @@ const archLookbook = [
   },
 ];
 
-export default function Hero() {
+export default function Hero({ archProducts = [] }) {
   const [activePreview, setActivePreview] = useState(null);
   const archGalleryRef = useRef(null);
+
+  // Map 5 Arch slots (positions 1 through 5)
+  // If database product is assigned to position `pos`, use it; otherwise fallback to archLookbook[pos - 1]
+  const displayArchItems = [1, 2, 3, 4, 5].map((pos) => {
+    const dbProd = Array.isArray(archProducts)
+      ? archProducts.find((p) => Number(p.archPosition) === pos)
+      : null;
+
+    if (dbProd) {
+      const imageSrc =
+        dbProd.primaryImage ||
+        (Array.isArray(dbProd.images) && dbProd.images.length > 0 ? dbProd.images[0] : null) ||
+        (typeof dbProd.image === 'string' ? dbProd.image : null) ||
+        archLookbook[pos - 1]?.image ||
+        '/images/hero/hero-main.jpg';
+
+      return {
+        id: `db-${dbProd.id || dbProd.sku || pos}`,
+        position: pos,
+        title: dbProd.name || `Koleksi Tenun Slot ${pos}`,
+        category: dbProd.categoryLabel || dbProd.categorySlug || 'Koleksi Tenun',
+        image: imageSrc,
+        featured: pos === 3,
+        description:
+          dbProd.tagline ||
+          dbProd.description ||
+          archLookbook[pos - 1]?.description ||
+          'Karya tenun eksklusif dengan keindahan motif wastra nusantara.',
+        slug: dbProd.slug,
+        isDbProduct: true,
+      };
+    }
+
+    const fallback = archLookbook[pos - 1] || archLookbook[0];
+    return {
+      ...fallback,
+      id: `fallback-${fallback.id || pos}`,
+      position: pos,
+      featured: pos === 3,
+      isDbProduct: false,
+    };
+  });
 
   const closePreview = useCallback(() => {
     setActivePreview(null);
@@ -135,7 +177,7 @@ export default function Hero() {
           role="region"
           aria-label="Galeri busana tenun"
         >
-          {archLookbook.map((item, index) => (
+          {displayArchItems.map((item, index) => (
             <button
               key={item.id}
               type="button"
@@ -208,11 +250,11 @@ export default function Hero() {
               <p className={styles.lightboxDesc}>{activePreview.description}</p>
               
               <Link
-                href="/collections"
+                href={activePreview.slug ? `/collections/${activePreview.slug}` : '/collections'}
                 className={styles.lightboxCta}
                 onClick={closePreview}
               >
-                <span>Lihat Koleksi Lengkap</span>
+                <span>{activePreview.slug ? 'Lihat Detail Produk' : 'Lihat Koleksi Lengkap'}</span>
                 <span aria-hidden="true">→</span>
               </Link>
             </div>

@@ -151,6 +151,150 @@
   }
 }
 
+.rowThree {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .rowThree {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sectionDivider {
+  height: 1px;
+  background: #26211c;
+  margin: 1.75rem 0 1.25rem 0;
+}
+
+.subSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.subSectionTitle {
+  font-family: var(--font-cormorant, serif);
+  font-size: 1.15rem;
+  color: #f3f4f6;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.switchGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 700px) {
+  .switchGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.switchItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1rem;
+  background: #0f0e0d;
+  border: 1px solid #2d2620;
+  border-radius: 8px;
+  gap: 1rem;
+  transition: border-color 0.2s;
+}
+
+.switchItem:hover {
+  border-color: #42382f;
+}
+
+/* Accordion Collapsible Styles */
+.accordionCard {
+  padding: 0 !important;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.accordionCard:focus-within {
+  border-color: #42382f;
+}
+
+.accordionToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  background: #181614;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.2s;
+  color: inherit;
+}
+
+.accordionToggle:hover {
+  background: #1f1b17;
+}
+
+.accordionToggleLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.accordionTitle {
+  font-family: var(--font-cormorant, serif);
+  font-size: 1.35rem;
+  color: #f3f4f6;
+  font-weight: 600;
+  margin: 0;
+}
+
+.accordionChevron {
+  color: #c5a059;
+  font-size: 0.85rem;
+  transition: transform 0.25s ease;
+  display: inline-block;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.optionalBadge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #c5a059;
+  background: rgba(197, 160, 89, 0.12);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+  padding: 0.15rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.optionalText {
+  color: #9ca3af;
+  font-weight: 400;
+  font-size: 0.8rem;
+  margin-left: 0.25rem;
+}
+
+.accordionBody {
+  padding: 1.25rem 1.5rem 1.5rem 1.5rem;
+  border-top: 1px solid #26211c;
+  background: #181614;
+}
+
 /* Image preview section */
 .imageList {
   display: flex;
