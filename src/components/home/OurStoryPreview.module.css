@@ -17,6 +17,7 @@
   position: relative;
   aspect-ratio: 3/4;
   overflow: hidden;
+  border-radius: 4px;
 }
 
 .story__image {
@@ -44,7 +45,7 @@
   font-size: clamp(2.2rem, 1.8rem + 2vw, 3.5rem);
   font-weight: 300;
   color: var(--dark-brown);
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .story__quote {
@@ -59,7 +60,7 @@
 
 .story__text {
   font-size: 16px;
-  color: var(--charcoal);
+  color: var(--charcoal, #332B25);
   line-height: 1.85;
 }
 
@@ -67,13 +68,99 @@
   margin-top: 16px;
 }
 
+/* Tablet Breakpoint (768px - 1023px) */
 @media (max-width: 1023px) {
+  .story {
+    padding: 72px 0;
+  }
+
   .story__inner {
     grid-template-columns: 1fr;
     gap: 40px;
     padding: 0 40px;
   }
+
   .story__image-wrapper {
     order: -1;
+  }
+
+  .story__content {
+    gap: 20px;
+  }
+}
+
+/* Mobile Breakpoint (<= 767px) */
+@media (max-width: 767px) {
+  .story {
+    padding: 48px 0;
+  }
+
+  .story__inner {
+    padding: 0 20px;
+    gap: 28px;
+  }
+
+  .story__label {
+    font-size: 11.5px;
+    letter-spacing: 3px;
+  }
+
+  .story__title {
+    font-size: clamp(1.85rem, 1.45rem + 2vw, 2.5rem);
+  }
+
+  .story__quote {
+    font-size: 18px;
+    line-height: 1.5;
+    padding-left: 16px;
+  }
+
+  .story__text {
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .story__content {
+    gap: 16px;
+  }
+
+  .story__cta {
+    margin-top: 10px;
+  }
+
+  .story__cta :global(.btn) {
+    max-width: 340px;
+    width: 100%;
+  }
+}
+
+/* Small Mobile Breakpoint (<= 480px, including 320px, 375px, 430px) */
+@media (max-width: 480px) {
+  .story {
+    padding: 44px 0;
+  }
+
+  .story__inner {
+    padding: 0 16px;
+    gap: 22px;
+  }
+
+  .story__title {
+    font-size: clamp(1.65rem, 1.3rem + 2vw, 2.1rem);
+  }
+
+  .story__quote {
+    font-size: 16px;
+    padding-left: 14px;
+  }
+
+  .story__text {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .story__cta :global(.btn) {
+    max-width: 100%;
+    width: 100%;
   }
 }

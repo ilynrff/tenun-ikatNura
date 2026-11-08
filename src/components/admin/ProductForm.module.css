@@ -34,7 +34,7 @@
 
 .title {
   font-family: var(--font-cormorant, serif);
-  font-size: 2rem;
+  font-size: clamp(1.4rem, 4vw, 2rem);
   color: #ffffff;
   margin: 0.25rem 0 0 0;
 }
@@ -66,9 +66,29 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
+@media (max-width: 768px) {
+  .card {
+    padding: 1.25rem 1rem;
+    margin-bottom: 1.25rem;
+    border-radius: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .card {
+    padding: 0.85rem 0.65rem;
+  }
+}
+
 .cardTitle {
   font-family: var(--font-cormorant, serif);
-  font-size: 1.35rem;
+  font-size: clamp(1.15rem, 3.5vw, 1.35rem);
   color: #f3f4f6;
   margin: 0 0 1.25rem 0;
   padding-bottom: 0.75rem;
@@ -943,4 +963,111 @@
 .uploadZoneHint {
   color: #6b7280;
   font-size: 0.78rem;
+}
+
+/* ============================================================
+   RESPONSIVENESS & TOUCH TARGETS (TABLET & MOBILE)
+   ============================================================ */
+@media (max-width: 768px) {
+  .input,
+  .select,
+  .textarea {
+    font-size: 16px; /* Prevents iOS Safari auto-zoom on focus */
+    min-height: 44px;
+    padding: 0.65rem 0.85rem;
+  }
+
+  .textarea {
+    min-height: 90px;
+  }
+
+  .uploadZone {
+    padding: 1.5rem 1rem;
+  }
+
+  .uploadPreviewThumb {
+    width: 90px;
+    height: 90px;
+  }
+
+  .previewActions {
+    width: 90px;
+  }
+
+  .tag {
+    min-height: 38px;
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .formContainer {
+    padding-bottom: 2.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .actionsBar {
+    flex-direction: column-reverse;
+    gap: 0.75rem;
+    width: 100%;
+    margin-top: 1.5rem;
+  }
+
+  .cancelBtn,
+  .saveBtn {
+    width: 100%;
+    min-height: 48px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .lightboxBackdrop {
+    padding: 0.75rem;
+  }
+
+  .lightboxHeader {
+    padding: 0.75rem 1rem;
+  }
+
+  .lightboxFooter {
+    padding: 0.75rem 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .lightboxUrlText {
+    max-width: 100%;
+    text-align: center;
+  }
+
+  .lightboxDoneBtn {
+    width: 100%;
+    min-height: 42px;
+    text-align: center;
+  }
+}
+
+@media (max-width: 360px) {
+  .header {
+    margin-bottom: 1.25rem;
+  }
+
+  .title {
+    font-size: 1.35rem;
+  }
+
+  .uploadPreviewThumb {
+    width: 80px;
+    height: 80px;
+  }
+
+  .previewActions {
+    width: 80px;
+  }
+
+  .uploadZone {
+    padding: 1.25rem 0.75rem;
+  }
 }

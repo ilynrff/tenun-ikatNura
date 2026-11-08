@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+import { verifyServerAdmin } from '@/lib/auth';
 import { getProductById } from '@/lib/products';
 import ProductForm from '@/components/admin/ProductForm';
 import Link from 'next/link';
@@ -8,6 +10,13 @@ export const metadata = {
 
 export default async function EditProductPage({ params }) {
   const { id } = await params;
+
+  // Defense in depth: verifikasi sesi admin sebelum mengambil/menampilkan data produk
+  const { authorized } = await verifyServerAdmin();
+  if (!authorized) {
+    redirect(`/login?redirect=/admin/products/${id}/edit`);
+  }
+
   const product = await getProductById(id);
 
   if (!product) {

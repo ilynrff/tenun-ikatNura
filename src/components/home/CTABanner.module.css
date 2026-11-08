@@ -1,5 +1,5 @@
 .cta {
-  padding: 96px 0; /* Reduced vertical padding */
+  padding: 96px 0;
   background-color: var(--dark-brown);
   color: var(--ivory);
   text-align: center;
@@ -25,16 +25,17 @@
 
 .cta__title {
   font-family: var(--font-heading);
-  font-size: clamp(2.4rem, 2rem + 2.5vw, 3.8rem);
+  font-size: clamp(2.2rem, 1.8rem + 2.5vw, 3.8rem);
   font-weight: 300;
   color: var(--ivory);
-  line-height: 1.2;
+  line-height: 1.15;
 }
 
 .cta__text {
   font-size: 17px;
   color: #DDD2C2;
   line-height: 1.8;
+  max-width: 640px;
 }
 
 .cta__actions {
@@ -43,9 +44,79 @@
   margin-top: 12px;
 }
 
+.cta__actions :global(.btn--secondary):hover {
+  background-color: rgba(247, 243, 236, 0.12);
+  border-color: var(--heritage-gold, #C59A3D) !important;
+  color: #FFFFFF !important;
+}
+
+/* Tablet Breakpoint (768px - 1023px) */
+@media (max-width: 1023px) {
+  .cta {
+    padding: 72px 0;
+  }
+
+  .cta__inner {
+    padding: 0 28px;
+    gap: 18px;
+  }
+}
+
+/* Mobile Breakpoint (<= 767px) */
 @media (max-width: 767px) {
+  .cta {
+    padding: 48px 0;
+  }
+
+  .cta__inner {
+    padding: 0 20px;
+    gap: 16px;
+  }
+
+  .cta__label {
+    font-size: 11.5px;
+    letter-spacing: 3px;
+  }
+
+  .cta__title {
+    font-size: clamp(1.85rem, 1.4rem + 2vw, 2.4rem);
+  }
+
+  .cta__text {
+    font-size: 15px;
+    line-height: 1.65;
+  }
+
   .cta__actions {
     flex-direction: column;
     width: 100%;
+    gap: 12px;
+    align-items: stretch;
+  }
+
+  .cta__actions :global(.btn) {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+/* Small Mobile Breakpoint (<= 480px, including 320px, 375px, 430px) */
+@media (max-width: 480px) {
+  .cta {
+    padding: 44px 0;
+  }
+
+  .cta__inner {
+    padding: 0 16px;
+    gap: 14px;
+  }
+
+  .cta__title {
+    font-size: clamp(1.65rem, 1.25rem + 2vw, 2rem);
+  }
+
+  .cta__text {
+    font-size: 14px;
+    line-height: 1.6;
   }
 }

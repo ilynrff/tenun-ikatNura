@@ -144,3 +144,4 @@ export async function verifyServerAdmin() {
 }
 
 export { ADMIN_COOKIE_NAME };
+export { verifyAdminTokenEdge } from './edgeAuth';

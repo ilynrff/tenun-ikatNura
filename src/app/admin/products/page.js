@@ -229,7 +229,7 @@ function ProductCard({ product, onDelete }) {
           <FeaturedBadge featured={product.featured} />
         </div>
       </div>
-      <div style={{ marginTop: '0.75rem', display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+      <div className={styles.cardActions}>
         <Link href={editUrl} className={styles.editBtn}>
           Edit Produk
         </Link>

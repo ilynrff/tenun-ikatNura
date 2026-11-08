@@ -70,3 +70,80 @@ button {
   background: none;
   font-family: inherit;
 }
+
+/* ==========================================================================
+   GLOBAL BUTTON SYSTEM - LUXURY EDITORIAL (TENUN IKAT NURA)
+   ========================================================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  font-family: var(--font-accent, 'DM Sans', sans-serif);
+  font-size: 0.8125rem; /* ~13px */
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding: 0.875rem 2rem;
+  min-height: 48px; /* Accessible mobile touch target (>= 44px) */
+  border-radius: 2px;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+  box-sizing: border-box;
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+
+/* Primary Button: Heritage Gold Background */
+.btn--primary {
+  background-color: var(--heritage-gold, #C59A3D);
+  color: var(--dark-brown, #1A120C);
+  border: 1px solid var(--heritage-gold, #C59A3D);
+  box-shadow: 0 4px 16px rgba(197, 154, 61, 0.22);
+}
+
+.btn--primary:hover {
+  background-color: #B58A2E;
+  border-color: #B58A2E;
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(181, 138, 46, 0.32);
+}
+
+.btn--primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(197, 154, 61, 0.2);
+}
+
+/* Secondary Button: Outlined Heritage Dark/Light Border */
+.btn--secondary {
+  background-color: transparent;
+  color: var(--dark-brown, #1A120C);
+  border: 1px solid var(--dark-brown, #1A120C);
+}
+
+.btn--secondary:hover {
+  background-color: var(--dark-brown, #1A120C);
+  color: var(--ivory, #ECE6DA);
+  border-color: var(--dark-brown, #1A120C);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 18, 12, 0.15);
+}
+
+.btn--secondary:active {
+  transform: translateY(0);
+}
+
+/* Mobile Responsive Optimization for Buttons */
+@media (max-width: 767px) {
+  .btn {
+    padding: 0.8125rem 1.5rem;
+    font-size: 0.75rem; /* ~12px */
+    letter-spacing: 2px;
+    min-height: 48px;
+    width: 100%;
+    max-width: 100%;
+  }
+}

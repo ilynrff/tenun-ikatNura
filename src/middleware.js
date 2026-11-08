@@ -1,44 +1,30 @@
 import { NextResponse } from 'next/server';
-
-const ADMIN_COOKIE_NAME = 'nura_admin_session';
+import { verifyAdminTokenEdge, ADMIN_COOKIE_NAME } from '@/lib/edgeAuth';
 
 /**
  * Middleware for route protection
+ * Enforces cryptographic HMAC-SHA256 signature verification via Web Crypto API.
  */
 export async function middleware(request) {
   const { pathname } = request.nextUrl;
 
   // Protect Admin Pages (/admin/...)
   if (pathname.startsWith('/admin')) {
-    // Allow access to login page
+    // Whitelist admin login page
     if (pathname === '/admin/login') {
       return NextResponse.next();
     }
 
     const sessionCookie = request.cookies.get(ADMIN_COOKIE_NAME);
     if (!sessionCookie || !sessionCookie.value) {
-      // Redirect unauthenticated user to unified login
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
     }
 
-    // Quick structural check of token
-    const parts = sessionCookie.value.split('.');
-    if (parts.length !== 2) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('redirect', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-
-    try {
-      const payload = JSON.parse(Buffer.from(parts[0], 'base64url').toString('utf-8'));
-      if ((payload.exp && payload.exp < Date.now()) || payload.role !== 'ADMIN') {
-        const loginUrl = new URL('/login', request.url);
-        loginUrl.searchParams.set('redirect', pathname);
-        return NextResponse.redirect(loginUrl);
-      }
-    } catch (e) {
+    // Cryptographic signature and claim verification
+    const admin = await verifyAdminTokenEdge(sessionCookie.value);
+    if (!admin) {
       const loginUrl = new URL('/login', request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
@@ -66,26 +52,12 @@ export async function middleware(request) {
       );
     }
 
-    const parts = sessionCookie.value.split('.');
-    if (parts.length !== 2) {
+    // Cryptographic signature and claim verification
+    const admin = await verifyAdminTokenEdge(sessionCookie.value);
+    if (!admin) {
       return NextResponse.json(
-        { success: false, error: 'Akses ditolak: Token autentikasi tidak valid.' },
+        { success: false, error: 'Akses ditolak: Token autentikasi ADMIN tidak valid atau telah berakhir.' },
         { status: 401 }
-      );
-    }
-
-    try {
-      const payload = JSON.parse(Buffer.from(parts[0], 'base64url').toString('utf-8'));
-      if (payload.exp && payload.exp < Date.now() || payload.role !== 'ADMIN') {
-        return NextResponse.json(
-          { success: false, error: 'Akses ditolak: Sesi ADMIN telah berakhir atau tidak valid.' },
-          { status: 403 }
-        );
-      }
-    } catch (e) {
-      return NextResponse.json(
-        { success: false, error: 'Akses ditolak: Format token rusak.' },
-        { status: 403 }
       );
     }
 
