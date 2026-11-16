@@ -191,7 +191,14 @@
   .navbar__toggle {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 5px;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
   }
 
   .navbar__toggle-line {
@@ -204,7 +211,7 @@
   .mobileMenu {
     display: block;
     position: fixed;
-    top: 100px;
+    top: 100%;
     left: 0;
     width: 100%;
     background-color: #ECE6DA;
@@ -225,8 +232,8 @@
   .mobileNavList {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    align-items: center;
+    gap: 8px;
+    align-items: stretch;
   }
 
   .mobileNavLink {
@@ -237,5 +244,53 @@
     color: #2C2018;
     text-decoration: none;
     font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+
+  .mobileNavLink:active {
+    background-color: rgba(197, 154, 61, 0.15);
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 16px;
+  }
+
+  .navbar__logo-name {
+    font-size: 1.2rem;
+  }
+
+  .navbar__logo-brand {
+    font-size: 0.55rem;
+    letter-spacing: 0.22em;
+  }
+
+  .navbar__right {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .navbar {
+    padding: 0 12px;
+  }
+
+  .navbar__logo-icon {
+    font-size: 2rem;
+  }
+
+  .navbar__logo-name {
+    font-size: 1.05rem;
+  }
+
+  .navbar__right {
+    gap: 6px;
   }
 }

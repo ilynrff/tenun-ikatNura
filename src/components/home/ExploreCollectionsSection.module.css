@@ -210,3 +210,28 @@
     font-size: 12px;
   }
 }
+
+@media (max-width: 360px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  .categoryGrid {
+    gap: 16px 10px;
+  }
+
+  .categoryName {
+    font-size: 0.95rem;
+  }
+
+  .arrowIcon {
+    display: none;
+  }
+
+  .categoryNumber {
+    top: 8px;
+    left: 8px;
+    font-size: 9.5px;
+    padding: 2px 6px;
+  }
+}

@@ -979,7 +979,7 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-top: 1px solid rgba(110, 94, 85, 0.15);
-  padding: 0.75rem 1.25rem;
+  padding: 0.75rem 1.25rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
   z-index: 100;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
 }
@@ -1016,6 +1016,7 @@
 }
 
 .stickyBarBtn {
+  min-height: 44px;
   padding: 0.65rem 1.25rem;
   background: var(--dark-brown, #2A1D17);
   color: #FBF9F5;
@@ -1025,6 +1026,9 @@
   font-weight: 600;
   cursor: pointer;
   white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .stickyBarBtn:hover {
@@ -1032,6 +1036,7 @@
 }
 
 .stickyBarBtnCustom {
+  min-height: 44px;
   padding: 0.65rem 1.25rem;
   background: #25D366;
   color: #FFFFFF;
@@ -1043,6 +1048,7 @@
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem;
   transition: background 0.2s, transform 0.15s;
 }
@@ -1058,6 +1064,17 @@
   }
 }
 
+@media (max-width: 768px) {
+  .detailPage {
+    padding-bottom: 6.5rem;
+  }
+
+  .quantityBtn {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 /* Mobile Optimizations (Down to 320px) */
 @media (max-width: 480px) {
   .breadcrumbSection {
@@ -1068,6 +1085,25 @@
     padding: 1.5rem 0 2.5rem;
   }
 
+  .tabBtn {
+    padding: 0.75rem 0.25rem;
+    font-size: 0.78rem;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stickyBarInner {
+    gap: 0.75rem;
+  }
+
+  .stickyBarBtn,
+  .stickyBarBtnCustom {
+    padding: 0.65rem 0.95rem;
+    font-size: 0.78rem;
+  }
+
   .mainButtonsRow {
     grid-template-columns: 1fr;
   }
@@ -1076,5 +1112,26 @@
   .buyNowBtn {
     height: 48px;
     font-size: 0.84rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .container,
+  .containerNarrow {
+    padding: 0 0.85rem;
+  }
+
+  .stickyBarName {
+    font-size: 0.82rem;
+  }
+
+  .stickyBarPrice {
+    font-size: 0.78rem;
+  }
+
+  .stickyBarBtn,
+  .stickyBarBtnCustom {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.74rem;
   }
 }

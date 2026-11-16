@@ -43,3 +43,46 @@
   color: var(--warm-brown);
   margin-top: 4px;
 }
+
+@media (max-width: 767px) {
+  .testi {
+    padding: 48px 0;
+  }
+
+  .testi__inner {
+    padding: 0 20px;
+  }
+
+  .testi__quote {
+    font-size: 1.45rem;
+    line-height: 1.45;
+    margin-bottom: 20px;
+  }
+
+  .testi__author {
+    font-size: 13px;
+  }
+
+  .testi__role {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .testi {
+    padding: 38px 0;
+  }
+
+  .testi__inner {
+    padding: 0 14px;
+  }
+
+  .testi__label {
+    font-size: 11px;
+    letter-spacing: 3px;
+  }
+
+  .testi__quote {
+    font-size: 1.25rem;
+  }
+}

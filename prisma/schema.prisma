@@ -157,7 +157,14 @@ model Order {
   shippingCity       String?
   shippingPostalCode String?
 
+  // Shipping details & tracking (Admin Order Management - Tahap 4.5.2)
+  courier            String?
+  shippingService    String?
+  trackingNumber     String?
+
+  // Customer note & Admin internal notes
   note               String?
+  adminNotes         String?
 
   subtotal           Int
   shippingCost       Int           @default(0)
@@ -196,6 +203,7 @@ model OrderItem {
 
   size        String?
   variant     String?
+  color       String?
 
   unitPrice   Int
   quantity    Int

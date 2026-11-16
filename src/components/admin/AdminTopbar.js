@@ -9,6 +9,7 @@ export default function AdminTopbar({ onOpenMenu }) {
 
   const getPageTitle = () => {
     if (pathname === '/admin') return 'Dashboard';
+    if (pathname.startsWith('/admin/orders')) return 'Manajemen Pesanan';
     if (pathname.startsWith('/admin/products/new')) return 'Tambah Produk Baru';
     if (pathname.startsWith('/admin/products/')) return 'Edit Produk';
     if (pathname.startsWith('/admin/products')) return 'Manajemen Produk';

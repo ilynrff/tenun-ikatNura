@@ -425,3 +425,72 @@
     font-size: 1.8rem;
   }
 }
+
+@media (max-width: 480px) {
+  .backdrop {
+    padding: 10px;
+  }
+
+  .modal {
+    max-height: 94vh;
+  }
+
+  .closeBtn {
+    width: 44px;
+    height: 44px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .imageWrapper {
+    height: 260px;
+  }
+
+  .infoCol {
+    padding: 20px 16px;
+  }
+
+  .title {
+    font-size: 1.45rem;
+    margin-bottom: 8px;
+  }
+
+  .sizeChip {
+    min-height: 40px;
+    padding: 8px 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .addToCartBtn,
+  .waBtn,
+  .waCustomBtn {
+    min-height: 48px;
+    height: auto;
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .backdrop {
+    padding: 6px;
+  }
+
+  .imageWrapper {
+    height: 220px;
+  }
+
+  .infoCol {
+    padding: 16px 12px;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+
+  .skuBanner {
+    padding: 6px 10px;
+    font-size: 0.78rem;
+  }
+}

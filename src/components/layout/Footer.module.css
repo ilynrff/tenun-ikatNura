@@ -232,10 +232,43 @@
     max-width: 100%;
   }
 
+  .footer__subscribe input {
+    font-size: 16px; /* Prevents auto-zoom on iOS Safari */
+    min-height: 46px;
+  }
+
+  .footer__subscribe button {
+    min-height: 46px;
+    padding: 0 18px;
+  }
+
+  .footer__links a,
+  .footer__socials a {
+    display: inline-block;
+    padding: 4px 0;
+  }
+
   .footer__bottom {
     flex-direction: column;
     align-items: center;
     text-align: center;
     gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .footer__inner {
+    padding: 0 16px;
+  }
+
+  .footer__subscribe {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .footer__subscribe button {
+    width: 100%;
+    min-height: 44px;
+    padding: 12px;
   }
 }
