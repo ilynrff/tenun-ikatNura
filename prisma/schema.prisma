@@ -33,6 +33,11 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum CompletionSource {
+  CUSTOMER_CONFIRMED
+  ADMIN_CONFIRMED
+}
+
 // ============================================================
 // CATEGORY
 // ============================================================
@@ -170,8 +175,12 @@ model Order {
   shippingCost       Int           @default(0)
   total              Int
 
-  orderStatus        OrderStatus   @default(PENDING)
-  paymentStatus      PaymentStatus @default(UNPAID)
+  orderStatus        OrderStatus       @default(PENDING)
+  paymentStatus      PaymentStatus     @default(UNPAID)
+
+  // Order completion tracking (Tahap Customer Account 3B)
+  receivedAt         DateTime?
+  completionSource   CompletionSource?
 
   items              OrderItem[]
 

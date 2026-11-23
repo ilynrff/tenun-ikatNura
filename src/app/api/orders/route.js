@@ -21,8 +21,46 @@
 // ============================================================
 
 import { NextResponse } from 'next/server';
-import { createOrder } from '@/lib/orders';
+import { createOrder, getCustomerOrders } from '@/lib/orders';
 import { verifyServerCustomer } from '@/lib/customerAuth';
+
+export const dynamic = 'force-dynamic';
+
+/**
+ * GET /api/orders
+ * Mengambil daftar riwayat pesanan milik customer yang sedang login.
+ */
+export async function GET() {
+  try {
+    const { authorized, user } = await verifyServerCustomer();
+    if (!authorized || !user?.id) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Akses ditolak: Silakan masuk terlebih dahulu untuk melihat pesanan Anda.',
+        },
+        { status: 401 }
+      );
+    }
+
+    const orders = await getCustomerOrders(user.id);
+
+    return NextResponse.json({
+      success: true,
+      orders,
+    });
+  } catch (err) {
+    console.error('[GET /api/orders] Error:', err.message);
+    const status = err.statusCode || 500;
+    return NextResponse.json(
+      {
+        success: false,
+        error: err.message || 'Terjadi kesalahan pada server saat memuat riwayat pesanan.',
+      },
+      { status }
+    );
+  }
+}
 
 /**
  * POST /api/orders

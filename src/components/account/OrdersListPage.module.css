@@ -1,0 +1,666 @@
+/* ============================================================
+   MY ORDERS LIST PAGE STYLES — TENUN IKAT NURA
+   Warm Ivory / Deep Brown / Heritage Gold (Mobile-First)
+   ============================================================ */
+
+.ordersPage {
+  min-height: 100vh;
+  background-color: var(--ivory, #ECE6DA);
+  color: var(--dark-brown, #1A120C);
+  padding-top: 110px;
+  padding-bottom: 80px;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── Breadcrumb ──────────────────────────────────────────── */
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.8rem;
+  color: #7A6655;
+  margin-bottom: 24px;
+}
+
+.breadcrumbLink {
+  color: #7A6655;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.breadcrumbLink:hover {
+  color: var(--heritage-gold, #C59A3D);
+}
+
+.breadcrumbSep {
+  color: #B3A090;
+}
+
+.breadcrumbActive {
+  color: var(--dark-brown, #1A120C);
+  font-weight: 600;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+
+.header {
+  margin-bottom: 32px;
+}
+
+.eyebrow {
+  display: inline-block;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.78rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--heritage-gold, #C59A3D);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.title {
+  font-family: var(--font-heading, serif);
+  font-size: 2.2rem;
+  font-weight: 500;
+  color: var(--dark-brown, #1A120C);
+  margin: 0 0 8px 0;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+}
+
+.subtitle {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.95rem;
+  color: #6B5749;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Order Cards List ────────────────────────────────────── */
+
+.ordersList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.orderCard {
+  background-color: var(--ivory-light, #F8F5EE);
+  border: 1px solid rgba(197, 154, 61, 0.25);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(44, 32, 24, 0.04);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.orderCard:hover {
+  border-color: rgba(197, 154, 61, 0.45);
+  box-shadow: 0 6px 20px rgba(44, 32, 24, 0.08);
+}
+
+/* ── Card Header ─────────────────────────────────────────── */
+
+.cardHeader {
+  padding: 16px 20px;
+  background-color: #F1ECE2;
+  border-bottom: 1px solid rgba(197, 154, 61, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.orderMeta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.orderNumber {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--dark-brown, #1A120C);
+  word-break: break-all;
+}
+
+.orderDate {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.8rem;
+  color: #7A6655;
+}
+
+.badgesGroup {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ── Status Badges ───────────────────────────────────────── */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Order Status */
+.statusPending {
+  background-color: #FEF3C7;
+  color: #92400E;
+  border: 1px solid #FCD34D;
+}
+
+.statusProcessing {
+  background-color: #E0E7FF;
+  color: #3730A3;
+  border: 1px solid #C7D2FE;
+}
+
+.statusShipped {
+  background-color: #E0F2FE;
+  color: #075985;
+  border: 1px solid #BAE6FD;
+}
+
+.statusCompleted {
+  background-color: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+}
+
+.statusCancelled {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+/* Payment Status */
+.payUnpaid {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.payPending {
+  background-color: #FEF9C3;
+  color: #854D0E;
+  border: 1px solid #FDE047;
+}
+
+.payPaid {
+  background-color: #DCFCE7;
+  color: #166534;
+  border: 1px solid #BBF7D0;
+}
+
+.payFailed {
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+}
+
+.payRefunded {
+  background-color: #F3E8FF;
+  color: #6B21A8;
+  border: 1px solid #E9D5FF;
+}
+
+/* ── Card Body (Items) ───────────────────────────────────── */
+
+.cardBody {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.itemRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.itemThumbWrapper {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #E6DFD3;
+  border: 1px solid rgba(197, 154, 61, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1 / 1;
+}
+
+.itemThumb {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.itemThumbPlaceholder {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.65rem;
+  color: #8C7866;
+  text-align: center;
+  padding: 4px;
+}
+
+.itemDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.itemName {
+  font-family: var(--font-heading, serif);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--dark-brown, #1A120C);
+  margin: 0 0 4px 0;
+  line-height: 1.35;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.itemMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.78rem;
+  color: #7A6655;
+}
+
+.itemMetaTag {
+  background-color: #EAE4D7;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+.itemPriceQty {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.82rem;
+  color: #4A3A2F;
+  margin-top: 4px;
+}
+
+.itemSubtotal {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--dark-brown, #1A120C);
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.moreItems {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.82rem;
+  color: #7A6655;
+  font-style: italic;
+  padding-left: 88px;
+}
+
+/* ── Card Footer ─────────────────────────────────────────── */
+
+.cardFooter {
+  padding: 16px 20px;
+  background-color: #FAF8F3;
+  border-top: 1px solid rgba(197, 154, 61, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.totalSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.totalLabel {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.76rem;
+  color: #7A6655;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.totalAmount {
+  font-family: var(--font-accent, sans-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--dark-brown, #1A120C);
+}
+
+.detailBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background-color: var(--dark-brown, #1A120C);
+  color: #FFFFFF;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 4px;
+  border: 1px solid var(--dark-brown, #1A120C);
+  transition: all 0.25s ease;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.detailBtn:hover {
+  background-color: var(--heritage-gold, #C59A3D);
+  border-color: var(--heritage-gold, #C59A3D);
+  color: #1A120C;
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+
+.emptyState {
+  background-color: var(--ivory-light, #F8F5EE);
+  border: 1px dashed rgba(197, 154, 61, 0.4);
+  border-radius: 8px;
+  padding: 60px 24px;
+  text-align: center;
+  max-width: 560px;
+  margin: 40px auto;
+}
+
+.emptyIcon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  color: var(--heritage-gold, #C59A3D);
+  opacity: 0.85;
+}
+
+.emptyTitle {
+  font-family: var(--font-heading, serif);
+  font-size: 1.6rem;
+  color: var(--dark-brown, #1A120C);
+  margin: 0 0 10px 0;
+}
+
+.emptyDesc {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.92rem;
+  color: #6B5749;
+  line-height: 1.6;
+  margin: 0 0 24px 0;
+}
+
+.shopBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  background-color: var(--dark-brown, #1A120C);
+  color: #FFFFFF;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: all 0.25s ease;
+  min-height: 48px;
+}
+
+.shopBtn:hover {
+  background-color: var(--heritage-gold, #C59A3D);
+  color: #1A120C;
+}
+
+/* ── Error State ─────────────────────────────────────────── */
+
+.errorState {
+  background-color: #FEF2F2;
+  border: 1px solid #FECACA;
+  border-radius: 8px;
+  padding: 36px 24px;
+  text-align: center;
+  margin: 40px auto;
+  max-width: 500px;
+}
+
+.errorTitle {
+  font-family: var(--font-heading, serif);
+  font-size: 1.3rem;
+  color: #991B1B;
+  margin: 0 0 8px 0;
+}
+
+.errorDesc {
+  font-family: var(--font-body, sans-serif);
+  font-size: 0.9rem;
+  color: #7F1D1D;
+  margin: 0 0 20px 0;
+}
+
+.retryBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  background-color: #991B1B;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  font-family: var(--font-accent, sans-serif);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  min-height: 44px;
+  transition: background-color 0.2s ease;
+}
+
+.retryBtn:hover {
+  background-color: #7F1D1D;
+}
+
+/* ── Skeleton Loading ────────────────────────────────────── */
+
+.skeletonCard {
+  background-color: var(--ivory-light, #F8F5EE);
+  border: 1px solid rgba(197, 154, 61, 0.15);
+  border-radius: 6px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.skeletonLine {
+  height: 16px;
+  background: linear-gradient(90deg, #EAE4D7 25%, #F4EFE6 50%, #EAE4D7 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 4px;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── Responsive Refinements ──────────────────────────────── */
+
+@media (max-width: 768px) {
+  .ordersPage {
+    padding-top: 100px;
+    padding-bottom: 70px;
+  }
+
+  .container {
+    padding: 0 20px;
+  }
+
+  .title {
+    font-size: 1.9rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .ordersPage {
+    padding-top: 92px;
+    padding-bottom: 60px;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .title {
+    font-size: 1.65rem;
+  }
+
+  .subtitle {
+    font-size: 0.88rem;
+  }
+
+  .cardHeader {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .orderMeta {
+    width: 100%;
+  }
+
+  .orderNumber {
+    font-size: 0.9rem;
+  }
+
+  .badgesGroup {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 6px;
+  }
+
+  .badge {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+  }
+
+  .cardBody {
+    padding: 16px;
+    gap: 14px;
+  }
+
+  .itemRow {
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .itemThumbWrapper {
+    width: 64px;
+    height: 64px;
+  }
+
+  .itemName {
+    font-size: 0.95rem;
+  }
+
+  .itemSubtotal {
+    text-align: left;
+    margin-top: 4px;
+    font-size: 0.9rem;
+  }
+
+  .moreItems {
+    padding-left: 0;
+    font-size: 0.78rem;
+  }
+
+  .cardFooter {
+    padding: 14px 16px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+
+  .totalSection {
+    text-align: left;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .totalLabel {
+    font-size: 0.74rem;
+  }
+
+  .totalAmount {
+    font-size: 1.1rem;
+  }
+
+  .detailBtn {
+    width: 100%;
+    min-height: 48px;
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .container {
+    padding: 0 12px;
+  }
+
+  .title {
+    font-size: 1.45rem;
+  }
+
+  .cardHeader,
+  .cardBody,
+  .cardFooter {
+    padding: 12px;
+  }
+
+  .itemThumbWrapper {
+    width: 56px;
+    height: 56px;
+  }
+
+  .itemName {
+    font-size: 0.88rem;
+  }
+}

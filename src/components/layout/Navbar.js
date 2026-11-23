@@ -39,6 +39,11 @@ export default function Navbar() {
     };
   }, []);
 
+  // Close mobile navigation drawer on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
+
   return (
     <div className={styles.headerWrapper}>
       {/* 1. ANNOUNCEMENT MARQUEE BAR */}

@@ -144,6 +144,8 @@ function normalizeOrder(order) {
     total: typeof order.total === 'number' ? order.total : 0,
     orderStatus: order.orderStatus,
     paymentStatus: order.paymentStatus,
+    receivedAt: order.receivedAt ? new Date(order.receivedAt).toISOString() : null,
+    completionSource: order.completionSource || null,
     items,
     totalItemsCount,
     user: order.user
@@ -820,8 +822,50 @@ export async function updateAdminOrder(idOrOrderNumber, updateData) {
         }
       }
     });
+  } else if (targetOrderStatus === 'COMPLETED') {
+    // Skenario B-1: Penyelesaian Pesanan oleh Admin (Conditional Atomic Update)
+    // Menjamin perlindungan terhadap race condition jika pelanggan mengonfirmasi pada waktu bersamaan
+    const completionResult = await db.order.updateMany({
+      where: {
+        id: currentOrder.id,
+        orderStatus: 'SHIPPED',
+      },
+      data: {
+        orderStatus: 'COMPLETED',
+        receivedAt: new Date(),
+        completionSource: 'ADMIN_CONFIRMED',
+        ...(targetPaymentStatus ? { paymentStatus: targetPaymentStatus } : {}),
+        ...(targetCourier !== undefined ? { courier: targetCourier } : {}),
+        ...(targetShippingService !== undefined ? { shippingService: targetShippingService } : {}),
+        ...(targetTrackingNumber !== undefined ? { trackingNumber: targetTrackingNumber } : {}),
+        ...(targetAdminNotes !== undefined ? { adminNotes: targetAdminNotes } : {}),
+      },
+    });
+
+    if (completionResult.count === 0) {
+      const fresh = await db.order.findUnique({
+        where: { id: currentOrder.id },
+        select: { orderStatus: true, completionSource: true },
+      });
+
+      if (fresh?.orderStatus === 'COMPLETED') {
+        const sourceText =
+          fresh.completionSource === 'CUSTOMER_CONFIRMED'
+            ? 'oleh pelanggan'
+            : 'oleh admin lain';
+        const err = new Error(
+          `Pesanan telah diselesaikan ${sourceText} sebelumnya. Perubahan status tidak dapat diproses ulang.`
+        );
+        err.statusCode = 409;
+        throw err;
+      }
+
+      const err = new Error('Gagal menyelesaikan pesanan: Status pesanan telah berubah dari SHIPPED.');
+      err.statusCode = 409;
+      throw err;
+    }
   } else {
-    // Skenario B: Update Non-Pembatalan (Normal Update)
+    // Skenario B-2: Update Non-Penyelesaian (Update Normal untuk status/field lain)
     await db.order.update({
       where: { id: currentOrder.id },
       data: {

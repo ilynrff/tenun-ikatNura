@@ -78,14 +78,13 @@ export default function AccountDrawer() {
                 >
                   My Profile
                 </button>
-                <button
-                  type="button"
-                  onClick={() => alert('Pesanan Saya: Belum ada pesanan aktif.')}
+                <Link
+                  href="/account/orders"
+                  onClick={closeAccountDrawer}
                   className={styles.menuItem}
-                  style={{ background: 'none', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}
                 >
                   My Orders
-                </button>
+                </Link>
               </div>
 
               <button onClick={logout} className={styles.logoutBtn}>

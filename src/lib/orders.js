@@ -528,3 +528,457 @@ export async function createOrder(params) {
   };
 }
 
+// ──────────────────────────────────────────────────────────────
+// CUSTOMER ORDER RETRIEVAL
+// ──────────────────────────────────────────────────────────────
+
+/**
+ * Mengambil seluruh riwayat pesanan milik pelanggan tertentu.
+ * Mengisolasi query berdasarkan userId dari sesi pelanggan yang valid.
+ *
+ * @param {string} userId - ID pelanggan terverifikasi
+ * @returns {Promise<Array>} Daftar pesanan terformat
+ */
+export async function getCustomerOrders(userId) {
+  if (!userId || typeof userId !== 'string') {
+    const err = new Error('User ID wajib diisi.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const db = getPrisma();
+  if (!db) {
+    const err = new Error('Layanan database tidak tersedia saat ini.');
+    err.statusCode = 503;
+    throw err;
+  }
+
+  const cleanUserId = String(userId).trim();
+
+  // Query orders milik customer dengan select spesifik (tanpa adminNotes)
+  const orders = await db.order.findMany({
+    where: { userId: cleanUserId },
+    orderBy: { createdAt: 'desc' },
+    select: {
+      id: true,
+      orderNumber: true,
+      orderStatus: true,
+      paymentStatus: true,
+      subtotal: true,
+      shippingCost: true,
+      total: true,
+      courier: true,
+      shippingService: true,
+      trackingNumber: true,
+      createdAt: true,
+      items: {
+        select: {
+          id: true,
+          sku: true,
+          productName: true,
+          size: true,
+          variant: true,
+          color: true,
+          unitPrice: true,
+          quantity: true,
+          subtotal: true,
+          product: {
+            select: {
+              id: true,
+              slug: true,
+              images: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return orders.map((order) => {
+    const items = Array.isArray(order.items) ? order.items : [];
+    const totalItemsCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+    return {
+      id: order.id,
+      orderNumber: order.orderNumber,
+      orderStatus: order.orderStatus,
+      paymentStatus: order.paymentStatus,
+      subtotal: order.subtotal,
+      shippingCost: order.shippingCost,
+      total: order.total,
+      courier: order.courier,
+      shippingService: order.shippingService,
+      trackingNumber: order.trackingNumber,
+      totalItemsCount,
+      createdAt: order.createdAt ? new Date(order.createdAt).toISOString() : null,
+      items: items.map((item) => ({
+        id: item.id,
+        sku: item.sku,
+        productName: item.productName,
+        size: item.size,
+        variant: item.variant,
+        color: item.color,
+        unitPrice: item.unitPrice,
+        quantity: item.quantity,
+        subtotal: item.subtotal,
+        image: Array.isArray(item.product?.images) && item.product.images.length > 0 ? item.product.images[0] : null,
+        productSlug: item.product?.slug || null,
+      })),
+    };
+  });
+}
+
+/**
+ * Mengambil detail satu pesanan milik pelanggan tertentu.
+ * Memverifikasi kepemilikan userId langsung pada query database.
+ * Mengecualikan adminNotes agar tidak bocor ke pelanggan.
+ *
+ * @param {string} userId - ID pelanggan terverifikasi
+ * @param {string} orderIdOrNumber - ID pesanan (cuid) atau nomor pesanan (NURA-...)
+ * @returns {Promise<Object>} Detail pesanan terformat
+ */
+export async function getCustomerOrderDetail(userId, orderIdOrNumber) {
+  if (!userId || typeof userId !== 'string') {
+    const err = new Error('User ID wajib diisi.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (!orderIdOrNumber || typeof orderIdOrNumber !== 'string') {
+    const err = new Error('ID atau nomor pesanan wajib diisi.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const db = getPrisma();
+  if (!db) {
+    const err = new Error('Layanan database tidak tersedia saat ini.');
+    err.statusCode = 503;
+    throw err;
+  }
+
+  const cleanUserId = String(userId).trim();
+  const cleanId = String(orderIdOrNumber).trim();
+
+  // Query database dengan verifikasi kepemilikan userId langsung di klausa WHERE
+  const order = await db.order.findFirst({
+    where: {
+      userId: cleanUserId,
+      OR: [
+        { id: cleanId },
+        { orderNumber: cleanId },
+      ],
+    },
+    select: {
+      id: true,
+      orderNumber: true,
+      userId: true,
+      customerName: true,
+      customerWhatsapp: true,
+      customerEmail: true,
+      shippingAddress: true,
+      shippingCity: true,
+      shippingPostalCode: true,
+      courier: true,
+      shippingService: true,
+      trackingNumber: true,
+      note: true,
+      subtotal: true,
+      shippingCost: true,
+      total: true,
+      orderStatus: true,
+      paymentStatus: true,
+      receivedAt: true,
+      completionSource: true,
+      createdAt: true,
+      updatedAt: true,
+      items: {
+        select: {
+          id: true,
+          productId: true,
+          sku: true,
+          productName: true,
+          size: true,
+          variant: true,
+          color: true,
+          unitPrice: true,
+          quantity: true,
+          subtotal: true,
+          product: {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+              images: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!order) {
+    const err = new Error('Pesanan tidak ditemukan.');
+    err.statusCode = 404;
+    throw err;
+  }
+
+  const items = Array.isArray(order.items)
+    ? order.items.map((item) => ({
+        id: item.id,
+        productId: item.productId,
+        sku: item.sku,
+        productName: item.productName,
+        size: item.size,
+        variant: item.variant,
+        color: item.color,
+        unitPrice: item.unitPrice,
+        quantity: item.quantity,
+        subtotal: item.subtotal,
+        image: Array.isArray(item.product?.images) && item.product.images.length > 0 ? item.product.images[0] : null,
+        productSlug: item.product?.slug || null,
+      }))
+    : [];
+
+  const totalItemsCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+  return {
+    id: order.id,
+    orderNumber: order.orderNumber,
+    customerName: order.customerName,
+    customerWhatsapp: order.customerWhatsapp,
+    customerEmail: order.customerEmail,
+    shippingAddress: order.shippingAddress,
+    shippingCity: order.shippingCity,
+    shippingPostalCode: order.shippingPostalCode,
+    courier: order.courier,
+    shippingService: order.shippingService,
+    trackingNumber: order.trackingNumber,
+    note: order.note,
+    subtotal: order.subtotal,
+    shippingCost: order.shippingCost,
+    total: order.total,
+    orderStatus: order.orderStatus,
+    paymentStatus: order.paymentStatus,
+    receivedAt: order.receivedAt ? new Date(order.receivedAt).toISOString() : null,
+    completionSource: order.completionSource ?? null,
+    items,
+    totalItemsCount,
+    createdAt: order.createdAt ? new Date(order.createdAt).toISOString() : null,
+    updatedAt: order.updatedAt ? new Date(order.updatedAt).toISOString() : null,
+  };
+}
+
+// ──────────────────────────────────────────────────────────────
+// CUSTOMER ORDER RECEIPT CONFIRMATION (Tahap Customer Account 3C)
+// ──────────────────────────────────────────────────────────────
+
+/**
+ * Konfirmasi penerimaan pesanan oleh pelanggan.
+ * Mengubah orderStatus dari SHIPPED menjadi COMPLETED secara atomik.
+ * Mencatat receivedAt dan completionSource = CUSTOMER_CONFIRMED.
+ *
+ * @param {string} userId - ID pelanggan terverifikasi
+ * @param {string} orderIdOrNumber - ID pesanan (cuid) atau nomor pesanan (NURA-...)
+ * @returns {Promise<Object>} Data pesanan yang diperbarui
+ */
+export async function confirmCustomerOrderReceipt(userId, orderIdOrNumber) {
+  if (!userId || typeof userId !== 'string') {
+    const err = new Error('User ID wajib diisi.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  if (!orderIdOrNumber || typeof orderIdOrNumber !== 'string') {
+    const err = new Error('ID atau nomor pesanan wajib diisi.');
+    err.statusCode = 400;
+    throw err;
+  }
+
+  const db = getPrisma();
+  if (!db) {
+    const err = new Error('Layanan database tidak tersedia saat ini.');
+    err.statusCode = 503;
+    throw err;
+  }
+
+  const cleanUserId = String(userId).trim();
+  const cleanId = String(orderIdOrNumber).trim();
+
+  // 1. Cari pesanan milik customer yang bersangkutan (ownership check via query)
+  const order = await db.order.findFirst({
+    where: {
+      userId: cleanUserId,
+      OR: [
+        { id: cleanId },
+        { orderNumber: cleanId },
+      ],
+    },
+    select: {
+      id: true,
+      orderNumber: true,
+      orderStatus: true,
+      paymentStatus: true,
+      receivedAt: true,
+      completionSource: true,
+    },
+  });
+
+  if (!order) {
+    const err = new Error('Pesanan tidak ditemukan.');
+    err.statusCode = 404;
+    throw err;
+  }
+
+  // 2. Validasi status saat ini — konfirmasi hanya diizinkan jika statusnya SHIPPED
+  if (order.orderStatus === 'COMPLETED') {
+    const err = new Error('Pesanan sudah berstatus COMPLETED (telah dikonfirmasi selesai sebelumnya).');
+    err.statusCode = 409;
+    throw err;
+  }
+
+  if (order.orderStatus === 'CANCELLED') {
+    const err = new Error('Pesanan telah dibatalkan dan tidak dapat dikonfirmasi penerimaannya.');
+    err.statusCode = 409;
+    throw err;
+  }
+
+  if (order.orderStatus !== 'SHIPPED') {
+    const err = new Error(
+      `Konfirmasi penerimaan hanya dapat dilakukan setelah pesanan dikirim (SHIPPED). Status pesanan saat ini: ${order.orderStatus}.`
+    );
+    err.statusCode = 409;
+    throw err;
+  }
+
+  // 3. Conditional Atomic Update — hanya berhasil jika status di database masih SHIPPED
+  const confirmationTime = new Date();
+  const updateResult = await db.order.updateMany({
+    where: {
+      id: order.id,
+      userId: cleanUserId,
+      orderStatus: 'SHIPPED',
+    },
+    data: {
+      orderStatus: 'COMPLETED',
+      receivedAt: confirmationTime,
+      completionSource: 'CUSTOMER_CONFIRMED',
+    },
+  });
+
+  // 4. Strict Concurrency Guard: jika count === 0, status telah berubah secara bersamaan
+  if (updateResult.count === 0) {
+    const fresh = await db.order.findUnique({
+      where: { id: order.id },
+      select: { orderStatus: true, completionSource: true, receivedAt: true },
+    });
+
+    if (fresh?.orderStatus === 'COMPLETED') {
+      const err = new Error('Pesanan sudah dikonfirmasi selesai sebelumnya.');
+      err.statusCode = 409;
+      throw err;
+    }
+
+    const err = new Error('Gagal mengonfirmasi penerimaan: Status pesanan telah berubah.');
+    err.statusCode = 409;
+    throw err;
+  }
+
+  // 5. Ambil data pesanan lengkap terbaru yang telah diperbarui
+  const updatedOrder = await db.order.findUnique({
+    where: { id: order.id },
+    select: {
+      id: true,
+      orderNumber: true,
+      userId: true,
+      customerName: true,
+      customerWhatsapp: true,
+      customerEmail: true,
+      shippingAddress: true,
+      shippingCity: true,
+      shippingPostalCode: true,
+      courier: true,
+      shippingService: true,
+      trackingNumber: true,
+      note: true,
+      subtotal: true,
+      shippingCost: true,
+      total: true,
+      orderStatus: true,
+      paymentStatus: true,
+      receivedAt: true,
+      completionSource: true,
+      createdAt: true,
+      updatedAt: true,
+      items: {
+        select: {
+          id: true,
+          productId: true,
+          sku: true,
+          productName: true,
+          size: true,
+          variant: true,
+          color: true,
+          unitPrice: true,
+          quantity: true,
+          subtotal: true,
+          product: {
+            select: {
+              id: true,
+              slug: true,
+              name: true,
+              images: true,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  const items = Array.isArray(updatedOrder.items)
+    ? updatedOrder.items.map((item) => ({
+        id: item.id,
+        productId: item.productId,
+        sku: item.sku,
+        productName: item.productName,
+        size: item.size,
+        variant: item.variant,
+        color: item.color,
+        unitPrice: item.unitPrice,
+        quantity: item.quantity,
+        subtotal: item.subtotal,
+        image: Array.isArray(item.product?.images) && item.product.images.length > 0 ? item.product.images[0] : null,
+        productSlug: item.product?.slug || null,
+      }))
+    : [];
+
+  const totalItemsCount = items.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+  return {
+    id: updatedOrder.id,
+    orderNumber: updatedOrder.orderNumber,
+    customerName: updatedOrder.customerName,
+    customerWhatsapp: updatedOrder.customerWhatsapp,
+    customerEmail: updatedOrder.customerEmail,
+    shippingAddress: updatedOrder.shippingAddress,
+    shippingCity: updatedOrder.shippingCity,
+    shippingPostalCode: updatedOrder.shippingPostalCode,
+    courier: updatedOrder.courier,
+    shippingService: updatedOrder.shippingService,
+    trackingNumber: updatedOrder.trackingNumber,
+    note: updatedOrder.note,
+    subtotal: updatedOrder.subtotal,
+    shippingCost: updatedOrder.shippingCost,
+    total: updatedOrder.total,
+    orderStatus: updatedOrder.orderStatus,
+    paymentStatus: updatedOrder.paymentStatus,
+    receivedAt: updatedOrder.receivedAt ? new Date(updatedOrder.receivedAt).toISOString() : null,
+    completionSource: updatedOrder.completionSource,
+    items,
+    totalItemsCount,
+    createdAt: updatedOrder.createdAt ? new Date(updatedOrder.createdAt).toISOString() : null,
+    updatedAt: updatedOrder.updatedAt ? new Date(updatedOrder.updatedAt).toISOString() : null,
+  };
+}
+
+
