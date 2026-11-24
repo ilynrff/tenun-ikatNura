@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -61,7 +61,19 @@ const navItems = [
 export default function AdminSidebar({ isOpen, onClose }) {
   const pathname = usePathname();
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { user } = useAuth();
+
+  // Escape key handler to close modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && showLogoutConfirm && !isLoggingOut) {
+        setShowLogoutConfirm(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showLogoutConfirm, isLoggingOut]);
 
   const handleLogout = async () => {
     if (isLoggingOut) return;
@@ -147,7 +159,7 @@ export default function AdminSidebar({ isOpen, onClose }) {
 
           <button
             type="button"
-            onClick={handleLogout}
+            onClick={() => setShowLogoutConfirm(true)}
             disabled={isLoggingOut}
             className={styles.logoutBtn}
             aria-label="Keluar dari panel admin"
@@ -157,10 +169,81 @@ export default function AdminSidebar({ isOpen, onClose }) {
               <polyline points="16 17 21 12 16 7" />
               <line x1="21" y1="12" x2="9" y2="12" />
             </svg>
-            <span>{isLoggingOut ? 'Sedang Keluar...' : 'Keluar (Logout)'}</span>
+            <span>Keluar (Logout)</span>
           </button>
         </div>
       </aside>
+
+      {/* Confirmation Modal Dialog for Admin Logout */}
+      {showLogoutConfirm && (
+        <div
+          className={styles.modalBackdrop}
+          onClick={() => {
+            if (!isLoggingOut) setShowLogoutConfirm(false);
+          }}
+          aria-hidden="true"
+        >
+          <div
+            className={styles.modalBox}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="admin-logout-title"
+            aria-describedby="admin-logout-desc"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalIconWrapper}>
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </div>
+
+            <h3 id="admin-logout-title" className={styles.modalTitle}>
+              Konfirmasi Keluar Administrator
+            </h3>
+            <p id="admin-logout-desc" className={styles.modalText}>
+              Apakah kamu yakin ingin keluar dari akun administrator?
+            </p>
+
+            <div className={styles.modalActions}>
+              <button
+                type="button"
+                onClick={() => setShowLogoutConfirm(false)}
+                disabled={isLoggingOut}
+                className={styles.modalCancelBtn}
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                disabled={isLoggingOut}
+                className={styles.modalConfirmBtn}
+              >
+                {isLoggingOut ? (
+                  <>
+                    <span className={styles.btnSpinner} aria-hidden="true" />
+                    <span>Mengeluarkan...</span>
+                  </>
+                ) : (
+                  'Ya, Logout'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

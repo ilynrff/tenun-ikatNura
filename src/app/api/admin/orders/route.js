@@ -49,11 +49,18 @@ export async function GET(request) {
     });
   } catch (error) {
     console.error('[Admin Orders API GET] Error:', error.message || error);
-    const status = error.statusCode || 500;
-    const clientMessage =
-      status === 400 || status === 503
-        ? (error.message || 'Permintaan tidak valid.')
-        : 'Terjadi kesalahan pada server saat memuat daftar pesanan.';
+
+    const isConnectionError =
+      error?.name === 'PrismaClientInitializationError' ||
+      error?.code === 'P1001' ||
+      /Can't reach database server|timed out|timeout|Connection terminated/i.test(error?.message || '');
+
+    const status = isConnectionError ? 503 : (error.statusCode || 500);
+    const clientMessage = isConnectionError
+      ? 'Koneksi ke database sedang mengalami gangguan atau batas waktu (timeout). Silakan coba lagi.'
+      : status === 400 || status === 503
+      ? (error.message || 'Permintaan tidak valid.')
+      : 'Terjadi kesalahan pada server saat memuat daftar pesanan.';
 
     return NextResponse.json(
       {

@@ -269,50 +269,48 @@ export async function getAdminOrders({
     }
   }
 
-  // 3. Eksekusi Query Count & FindMany secara paralel
-  const [total, rawOrders] = await Promise.all([
-    db.order.count({ where }),
-    db.order.findMany({
-      where,
-      include: {
-        items: {
-          select: {
-            id: true,
-            sku: true,
-            productName: true,
-            size: true,
-            variant: true,
-            color: true,
-            unitPrice: true,
-            quantity: true,
-            subtotal: true,
-            productId: true,
-            product: {
-              select: {
-                id: true,
-                sku: true,
-                name: true,
-                slug: true,
-                images: true,
-              },
+  // 3. Eksekusi Query Count & FindMany secara berurutan untuk efisiensi connection pool
+  const total = await db.order.count({ where });
+  const rawOrders = await db.order.findMany({
+    where,
+    include: {
+      items: {
+        select: {
+          id: true,
+          sku: true,
+          productName: true,
+          size: true,
+          variant: true,
+          color: true,
+          unitPrice: true,
+          quantity: true,
+          subtotal: true,
+          productId: true,
+          product: {
+            select: {
+              id: true,
+              sku: true,
+              name: true,
+              slug: true,
+              images: true,
             },
           },
         },
-        user: {
-          select: {
-            id: true,
-            name: true,
-            email: true,
-            phone: true,
-            role: true,
-          },
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          role: true,
         },
       },
-      orderBy: { createdAt: 'desc' },
-      skip,
-      take: limitNum,
-    }),
-  ]);
+    },
+    orderBy: { createdAt: 'desc' },
+    skip,
+    take: limitNum,
+  });
 
   const orders = rawOrders.map(normalizeOrder);
   const totalPages = Math.ceil(total / limitNum) || 1;

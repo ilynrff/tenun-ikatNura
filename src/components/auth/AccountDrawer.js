@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import styles from './AccountDrawer.module.css';
@@ -12,6 +13,50 @@ export default function AccountDrawer() {
     isAccountDrawerOpen,
     closeAccountDrawer,
   } = useAuth();
+
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+  // Close modal when Account Drawer itself closes
+  useEffect(() => {
+    if (!isAccountDrawerOpen) {
+      setShowConfirmModal(false);
+    }
+  }, [isAccountDrawerOpen]);
+
+  // Escape key handler to close modal
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && showConfirmModal && !isLoggingOut) {
+        setShowConfirmModal(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showConfirmModal, isLoggingOut]);
+
+  const handleOpenConfirm = () => {
+    setShowConfirmModal(true);
+  };
+
+  const handleCancelLogout = () => {
+    if (isLoggingOut) return;
+    setShowConfirmModal(false);
+  };
+
+  const handleConfirmLogout = async () => {
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
+
+    try {
+      await logout();
+      setShowConfirmModal(false);
+      window.location.assign('/');
+    } catch (err) {
+      console.error('Logout error:', err);
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <>
@@ -87,13 +132,86 @@ export default function AccountDrawer() {
                 </Link>
               </div>
 
-              <button onClick={logout} className={styles.logoutBtn}>
+              <button
+                type="button"
+                onClick={handleOpenConfirm}
+                className={styles.logoutBtn}
+              >
                 LOGOUT
               </button>
             </div>
           )}
         </div>
       </aside>
+
+      {/* Confirmation Modal Dialog for Customer Logout */}
+      {showConfirmModal && (
+        <div
+          className={styles.modalBackdrop}
+          onClick={handleCancelLogout}
+          aria-hidden="true"
+        >
+          <div
+            className={styles.modalBox}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="customer-logout-title"
+            aria-describedby="customer-logout-desc"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalIconWrapper}>
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </div>
+
+            <h3 id="customer-logout-title" className={styles.modalTitle}>
+              Konfirmasi Keluar
+            </h3>
+            <p id="customer-logout-desc" className={styles.modalText}>
+              Apakah kamu yakin ingin keluar dari akun?
+            </p>
+
+            <div className={styles.modalActions}>
+              <button
+                type="button"
+                onClick={handleCancelLogout}
+                disabled={isLoggingOut}
+                className={styles.modalCancelBtn}
+              >
+                Batal
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmLogout}
+                disabled={isLoggingOut}
+                className={styles.modalConfirmBtn}
+              >
+                {isLoggingOut ? (
+                  <>
+                    <span className={styles.btnSpinner} aria-hidden="true" />
+                    <span>Mengeluarkan...</span>
+                  </>
+                ) : (
+                  'Ya, Logout'
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
