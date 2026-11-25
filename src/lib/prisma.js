@@ -9,7 +9,7 @@ if (typeof window === 'undefined' && process.env.DATABASE_URL) {
       new PrismaClient({
         log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
       });
-    if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prismaInstance;
+    globalForPrisma.prisma = prismaInstance;
   } catch (err) {
     console.warn('[Prisma] Client initialization deferred:', err.message);
   }

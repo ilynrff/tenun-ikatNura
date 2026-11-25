@@ -48,19 +48,55 @@ export async function GET(request) {
       pagination: result.pagination,
     });
   } catch (error) {
-    console.error('[Admin Orders API GET] Error:', error.message || error);
+    // 1. Log detail lengkap ke Vercel Runtime Logs untuk observabilitas tanpa mengekspos credential ke browser
+    console.error('[Admin Orders API GET] Error Details:', {
+      name: error?.name,
+      code: error?.code,
+      meta: error?.meta,
+      message: error?.message,
+      stack: error?.stack,
+    });
 
-    const isConnectionError =
+    // 2. Identifikasi kategori error database
+    const isAuthError =
+      error?.code === 'P1000' ||
+      /authentication failed|password authentication|credentials.*not valid/i.test(error?.message || '');
+
+    const isConnectionOrTimeout =
       error?.name === 'PrismaClientInitializationError' ||
-      error?.code === 'P1001' ||
-      /Can't reach database server|timed out|timeout|Connection terminated/i.test(error?.message || '');
+      error?.name === 'PrismaClientRustPanicError' ||
+      ['P1001', 'P1002', 'P1003', 'P1008', 'P1011', 'P1017', 'P2024'].includes(error?.code) ||
+      /Can't reach database|timed out|timeout|Connection terminated|Server has closed the connection|connection closed|Connection refused|ETIMEDOUT|ECONNRESET|ECONNREFUSED|ENOTFOUND|EAI_AGAIN/i.test(
+        error?.message || ''
+      );
 
-    const status = isConnectionError ? 503 : (error.statusCode || 500);
-    const clientMessage = isConnectionError
-      ? 'Koneksi ke database sedang mengalami gangguan atau batas waktu (timeout). Silakan coba lagi.'
-      : status === 400 || status === 503
-      ? (error.message || 'Permintaan tidak valid.')
-      : 'Terjadi kesalahan pada server saat memuat daftar pesanan.';
+    const isSchemaError =
+      ['P2021', 'P2022', 'P2010'].includes(error?.code) ||
+      /does not exist|column .* does not exist|relation .* does not exist|prepared statement .* does not exist/i.test(
+        error?.message || ''
+      );
+
+    let status = 500;
+    let clientMessage = 'Terjadi kesalahan pada server saat memuat daftar pesanan.';
+
+    if (isAuthError) {
+      status = 503;
+      clientMessage =
+        'Kredensial database pada server (DATABASE_URL) tidak valid. Silakan periksa konfigurasi environment variable di Vercel.';
+    } else if (isConnectionOrTimeout) {
+      status = 503;
+      clientMessage =
+        'Koneksi ke database sedang mengalami gangguan atau batas waktu (timeout). Silakan coba lagi beberapa saat lagi.';
+    } else if (isSchemaError) {
+      status = 503;
+      clientMessage =
+        'Struktur database belum sesuai atau parameter koneksi pooler perlu diperbarui (pastikan pgbouncer=true aktif di Vercel).';
+    } else if (error?.statusCode === 400 || error?.statusCode === 503) {
+      status = error.statusCode;
+      clientMessage = error.message || 'Permintaan tidak valid.';
+    } else if (error?.statusCode) {
+      status = error.statusCode;
+    }
 
     return NextResponse.json(
       {
